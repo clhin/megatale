@@ -1,0 +1,1 @@
+SPRITE heart_sprite	"heart.png" 1 1 FAST NONE
