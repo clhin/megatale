@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    "genesis.h": "c",
+    "state_menu.h": "c",
+    "state_manager.h": "c",
+    "resources.h": "c"
+  },
+  "C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4}"
+}
