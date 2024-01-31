@@ -4,6 +4,7 @@
 #include <resources.h>
 
 #include "../collisions.h"
+#include "state_battle.h"
 
 Sprite *heart;
 
@@ -70,9 +71,25 @@ void world_update() {
         /*
             Todo: Push battle transistion
         */
-        VDP_drawText("Battle State transistion", 1, 7);
+
+        state_info_t state_info;
+        state_info.clean = battle_clean;
+        state_info.init = battle_init;
+        state_info.redraw = battle_redraw;
+        state_info.input = battle_input;
+        state_info.update = battle_update;
+        state_info.shutdown = battle_shutdown;
+
+        state_parameters_t args;
+        state_push(state_info, args);
+
+        // VDP_drawText("Battle State transistion", 1, 7);
     }
 }
-void world_clean() {}
+void world_clean() {
+    VDP_clearSprites();
+
+    VDP_clearTextArea(0, 0, 40, 28);
+}
 void world_redraw() {}
 state_return_t world_shutdown() {}
