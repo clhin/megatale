@@ -1,3 +1,7 @@
+#Binaries
 out/*
+
+#Etc.
 res/workspace
 res/*.aseprite
+*.DS_Store
