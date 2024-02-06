@@ -21,7 +21,6 @@ void battle_init(state_parameters_t args) {
     SPR_init();
 
     select = 0;
-
     VDP_drawText("Start", 10, 13);
     VDP_drawText("Quit", 10, 15);
 

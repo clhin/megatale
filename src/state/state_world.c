@@ -20,6 +20,10 @@ u8 velocity;
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
+    VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+
+    VDP_setTileMapXY(BG_A, 10, 4, 4);
+
     heart_x = 20;
     heart_y = 20;
     velocity = 4;
