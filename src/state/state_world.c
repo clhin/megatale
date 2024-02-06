@@ -25,10 +25,15 @@ void world_init(state_parameters_t args) {
     char buf[4];
     intToStr(res, buf, 1);
 
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 0),
+                     4, 3);
     VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26),
                      4, 4);
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 25),
+
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 0),
                      4, 3);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26),
+                     4, 4);
 
     heart_x = 20;
     heart_y = 20;
