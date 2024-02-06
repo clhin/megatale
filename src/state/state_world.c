@@ -20,9 +20,15 @@ u8 velocity;
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
-    VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+    u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-    VDP_setTileMapXY(BG_A, 10, 4, 4);
+    char buf[4];
+    intToStr(res, buf, 1);
+
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26),
+                     4, 4);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 25),
+                     4, 3);
 
     heart_x = 20;
     heart_y = 20;
@@ -38,9 +44,7 @@ void world_init(state_parameters_t args) {
     enemy_bb.w = 8;
     enemy_bb.h = 8;
 
-    VDP_drawText("You are now in the world.", 1, 1);
-    VDP_drawText("Try moving the red heart to the green heart", 1, 2);
-    VDP_drawText("to start a battle.", 5, 3);
+    VDP_drawText(buf, 1, 1);
 
     heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
                           TILE_ATTR(PAL2, TRUE, FALSE, FALSE));

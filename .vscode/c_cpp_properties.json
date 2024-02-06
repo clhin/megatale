@@ -5,9 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${vcpkgRoot}/arm64-osx/include",
-                "/Users/ksidac/Documents/Programming/Libraries/sgdk180/inc",
-                "/Users/ksidac/Documents/Programming/Libraries/sgdk180/res",
-                "/Users/ksidac/Documents/Programming/Undertale/res",
+                "/Users/ksidac/Documents/Programming/Libraries/sgdk190/inc",
+                "/Users/ksidac/Documents/Programming/Libraries/sgdk190/res",
                 "${workspaceFolder}/res"
             ],
             "defines": [],
