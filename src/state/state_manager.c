@@ -19,6 +19,16 @@ void state_push(state_info_t state, state_parameters_t args) {
 
 void state_replace(state_info_t state, state_parameters_t args) {}
 
+void state_pop() {
+    if (state_on == 0) return;
+
+    state_info_t *top = state_top();
+    state_return_t ret = top->shutdown();
+
+    if (--state_on == 0) return;
+    state_top()->redraw(ret);
+}
+
 state_info_t *state_top() {
     if (state_on == 0) return 0;
 

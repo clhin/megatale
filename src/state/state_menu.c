@@ -14,6 +14,12 @@ u8 heart_pos = MENU_START;
 void menu_init(state_parameters_t args) {
     SPR_init();
 
+    char buf2[32];
+
+    intToStr(MEM_getFree(), buf2, 1);
+
+    VDP_drawText(buf2, 1, 1);
+
     PAL_setPalette(PAL2, heart_sprite.palette->data, DMA);
 
     heart = SPR_addSprite(&heart_sprite, 9 * 8, 13 * 8,
@@ -34,7 +40,7 @@ void menu_input(u16 changed, u16 state) {
         heart_pos = MENU_START;
     }
 
-    if (changed & BUTTON_A) {
+    if (changed & BUTTON_A && (state & BUTTON_A)) {
         state_info_t state_info;
         state_info.clean = world_clean;
         state_info.init = world_init;
@@ -56,6 +62,9 @@ void menu_clean() {
     VDP_clearTextArea(0, 0, 40, 28);
 }
 
-void menu_redraw() {}
+void menu_redraw(state_return_t ret) {
+    state_parameters_t p;
+    menu_init(p);
+}
 
 state_return_t menu_shutdown() {}

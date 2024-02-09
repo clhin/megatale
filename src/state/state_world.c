@@ -30,10 +30,29 @@ void world_init(state_parameters_t args) {
     VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26),
                      4, 4);
 
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 0),
-                     4, 3);
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26),
-                     4, 4);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 1),
+                     5, 3);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 27),
+                     5, 4);
+
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 2),
+                     6, 3);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 28),
+                     6, 4);
+
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 3),
+                     7, 3);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 29),
+                     7, 4);
+    // VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0,
+    // TILE_USER_INDEX + 0),
+    //     4, 3);
+    // VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0,
+    // TILE_USER_INDEX + 26),
+    //     4, 4);
+    char buf2[32];
+
+    intToStr(MEM_getFree(), buf2, 1);
 
     heart_x = 20;
     heart_y = 20;
@@ -49,7 +68,8 @@ void world_init(state_parameters_t args) {
     enemy_bb.w = 8;
     enemy_bb.h = 8;
 
-    VDP_drawText(buf, 1, 1);
+    VDP_drawText(buf2, 1, 1);
+    VDP_drawText(buf, 1, 2);
 
     heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
                           TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
@@ -73,6 +93,10 @@ void world_input(u16 changed, u16 state) {
     }
     if (state & BUTTON_DOWN) {
         heart_y += velocity;
+    }
+
+    if (state & BUTTON_A) {
+        state_pop();
     }
 }
 void world_update() {
@@ -104,5 +128,9 @@ void world_clean() {
 
     VDP_clearTextArea(0, 0, 40, 28);
 }
-void world_redraw() {}
-state_return_t world_shutdown() {}
+void world_redraw(state_return_t ret) {}
+state_return_t world_shutdown() {
+    world_clean();
+    state_return_t ret;
+    return ret;
+}

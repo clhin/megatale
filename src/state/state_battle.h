@@ -6,7 +6,7 @@ void battle_init(state_parameters_t args);
 void battle_input(u16 changed, u16 state);
 void battle_update();
 void battle_clean();
-void battle_redraw();
+void battle_redraw(state_return_t);
 state_return_t battle_shutdown();
 
 #endif

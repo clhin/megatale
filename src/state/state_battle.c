@@ -20,6 +20,14 @@ u8 select;
 void battle_init(state_parameters_t args) {
     SPR_init();
 
+    VDP_showCPULoad();
+
+    char buf2[32];
+
+    intToStr(MEM_getFree(), buf2, 1);
+
+    VDP_drawText(buf2, 1, 1);
+
     select = 0;
     VDP_drawText("Start", 10, 13);
     VDP_drawText("Quit", 10, 15);
@@ -97,6 +105,6 @@ void battle_update() {}
 
 void battle_clean() {}
 
-void battle_redraw() {}
+void battle_redraw(state_return_t ret) {}
 
 state_return_t battle_shutdown() {}

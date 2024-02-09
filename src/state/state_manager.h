@@ -34,7 +34,7 @@ typedef struct state_info {
     void (*input)(u16, u16);
     void (*update)(void);
     void (*clean)(void);
-    void (*redraw)(void);
+    void (*redraw)(state_return_t);
     state_return_t (*shutdown)(void);
 } state_info_t;
 
@@ -46,6 +46,7 @@ typedef struct state_info {
  */
 void state_push(state_info_t state, state_parameters_t args);
 void state_replace(state_info_t state, state_parameters_t args);
+void state_pop();
 state_info_t *state_top();
 
 #endif
