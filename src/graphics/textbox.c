@@ -31,11 +31,11 @@
    21: misc. data just to help construct the box and give animation (when in
    battle it horizontally snaps into a box)
 
-    Other notes: With this in mind the textbox should be 7 tiles vertical in
-   total, with 5 being used for the text and 2 for the borders, the textbox
+    Other notes: With this in mind the textbox should be 9 tiles vertical in
+   total, with 7 being used for the text and 2 for the borders, the textbox
    should be 34 in width. 30 for text, 2 for asterisk and 2 for borders around
    it.
-    This ends up being 272*56, which is a close enough size in relation to the
+    This ends up being 272*72, which is a close enough size in relation to the
    original game's box.
 
 
@@ -104,34 +104,115 @@ void textbox_flush() {
     /*
         5 lines:
         j=0: 0,1,2 (1)
-        j=1: 1,2,3 (2)
-        j=2: 2,3,4 (3)
+        j=1: 2,3,4 (3)
+        j=2: 4,5,6 (5)
 
     */
 
+    for (u8 j = 0; j < MAX_LINE_SIZE; ++j) {
+        VDP_setTileMapXY(
+            BG_A,
+            TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25 + 1)),
+            4 + j, 2);
+
+        VDP_setTileMapXY(
+            BG_A,
+            TILE_ATTR_FULL(PAL0, 0, 1, 0, TILE_USER_INDEX + (26 * 25 + 1)),
+            4 + j, 6 + text_info.lines_used);
+    }
+
+    for (u8 j = 0; j < text_info.lines_used + 3; ++j) {
+        VDP_setTileMapXY(
+            BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25)), 3,
+            3 + j);
+    }
+
     for (u8 i = 0; i < text_info.lines_used; ++i) {
         for (u8 j = 0; j < MAX_LINE_SIZE; ++j) {
-            if (text_info.lines[i][j] == '\0') break;
+            u16 y_off = 1 + (i * 2);
+
+            if (text_info.lines[i][j] == '\0') {
+                VDP_setTileMapXY(BG_A,
+                                 TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
+                                 4 + j, 3 + y_off - 1);
+                VDP_setTileMapXY(BG_A,
+                                 TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
+                                 4 + j, 3 + y_off);
+                VDP_setTileMapXY(BG_A,
+                                 TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
+                                 4 + j, 3 + y_off + 1);
+
+                continue;
+            }
 
             u16 pos = lookup_table[(u8)(text_info.lines[i][j])];
             // 16 pos = lookup_table[97 + j];
+
             u8 x = pos >> 8;
             u8 y = pos & 0xFF;
 
-            VDP_setTileMapXY(
-                BG_A,
-                TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26 * y + x),
-                4 + j, 3 + i);
+            u16 top = TILE_USER_INDEX + 26 * (y - 1) + x;
+            u16 middle = TILE_USER_INDEX + 26 * y + x;
+            u16 bottom = TILE_USER_INDEX + 26 * (y + 1) + x;
 
-            VDP_setTileMapXY(BG_A,
-                             TILE_ATTR_FULL(PAL0, 0, 0, 0,
-                                            TILE_USER_INDEX + 26 * y + x - 26),
-                             4 + j, 2 + i);
+            char c_above = (i > 0 && strlen(text_info.lines[i - 1]) >= j)
+                               ? text_info.lines[i - 1][j]
+                               : '\0';
 
-            VDP_setTileMapXY(BG_A,
-                             TILE_ATTR_FULL(PAL0, 0, 0, 0,
-                                            TILE_USER_INDEX + 26 * y + x + 26),
-                             4 + j, 4 + i);
+            // [g, y, j, p, q, Q]
+            // Handling union cases, could probably be optimized but fine
+            // for now
+            if (c_above == 'g' || c_above == 'y' || c_above == 'j') {
+                if (y == 1)
+                    top = 10;
+                else if (y == 4)
+                    top = 11;
+                else if (y == 7)
+                    top = 12;
+
+                top = TILE_USER_INDEX + (26 * top) + x;
+            } else if (c_above == 'p') {
+                if (y == 1)
+                    top = 13;
+                else if (y == 4)
+                    top = 14;
+                else if (y == 7)
+                    top = 15;
+
+                top = TILE_USER_INDEX + (26 * top) + x;
+            } else if (c_above == 'q') {
+                if (y == 1)
+                    top = 16;
+                else if (y == 4)
+                    top = 17;
+                else if (y == 7)
+                    top = 18;
+
+                top = TILE_USER_INDEX + (26 * top) + x;
+            } else if (c_above == 'Q') {
+                if (y == 1)
+                    top = 19;
+                else if (y == 4)
+                    top = 20;
+                else if (y == 7)
+                    top = 21;
+
+                top = TILE_USER_INDEX + (26 * top) + x;
+            }
+
+            if (text_info.lines[i][j] == ' ') {
+                top = TILE_USER_INDEX;
+                bottom = TILE_USER_INDEX;
+            }
+
+            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, top), 4 + j,
+                             3 + y_off - 1);
+
+            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, middle), 4 + j,
+                             3 + y_off);
+
+            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, bottom), 4 + j,
+                             3 + y_off + 1);
         }
     }
 }

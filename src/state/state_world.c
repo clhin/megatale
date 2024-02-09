@@ -27,13 +27,15 @@ void world_init(state_parameters_t args) {
     char buf[4];
     intToStr(res, buf, 1);
 
-    text_info.lines_used = 1;
+    text_info.lines_used = 2;
 
     // text_info.lines[0][0] = 'a';
     // text_info.lines[0][1] = 'b';
     // text_info.lines[0][2] = 'c';
     // text_info.lines[0][3] = '\0';
-    sprintf(text_info.lines[0], "abc def ghi ABC");
+    text_info.lines_used = 2;
+    sprintf(text_info.lines[0], "qpj");
+    sprintf(text_info.lines[1], "abc def ghi ABC");
     // strcpy("abc\0", text_info.lines[0]);
     //  strncpy("abcdefg", text_info.lines[0], MAX_LINE_SIZE);
     textbox_flush();
