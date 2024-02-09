@@ -1,8 +1,8 @@
 #include <genesis.h>
 #include <resources.h>
 
+#include "state/state_intro.h"
 #include "state/state_manager.h"
-#include "state/state_menu.h"
 const int LEFT_EDGE = 0;
 const int RIGHT_EDGE = 320;
 const int TOP_EDGE = 0;
@@ -19,12 +19,12 @@ int main() {
     JOY_setEventHandler(&event_handler);
 
     state_info_t state_info;
-    state_info.clean = menu_clean;
-    state_info.init = menu_init;
-    state_info.redraw = menu_redraw;
-    state_info.input = menu_input;
-    state_info.update = menu_update;
-    state_info.shutdown = menu_shutdown;
+    state_info.clean = intro_clean;
+    state_info.init = intro_init;
+    state_info.redraw = intro_redraw;
+    state_info.input = intro_input;
+    state_info.update = intro_update;
+    state_info.shutdown = intro_shutdown;
 
     state_parameters_t args;
     state_push(state_info, args);
