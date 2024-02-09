@@ -1,3 +1,4 @@
+import ctypes
 
 print("const u16 lookup_table[123] = {")
 
@@ -6,15 +7,15 @@ for i in range(123):
     y = 7
 
     if i >= 65 and i <= 90:                     # A-Z
-        x = 65 - i
+        x = i - 65
         y = 4
 
     elif i >= 97 and i <= 122:                  # a-z
-        x = 97 - i
+        x = i - 97 
         y = 1
 
     elif i >= 48 and i <= 57:                   # 0-9
-        x = 48 - i
+        x = i - 48
         y = 7
 
     elif i == 32:                               # Space

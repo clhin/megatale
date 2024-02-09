@@ -2,6 +2,7 @@
 
 #include <genesis.h>
 #include <resources.h>
+#include <string.h>
 
 #include "../collisions.h"
 #include "../graphics/textbox.h"
@@ -28,7 +29,13 @@ void world_init(state_parameters_t args) {
 
     text_info.lines_used = 1;
 
-    strncpy("Hello World", text_info.lines[0], MAX_LINE_SIZE);
+    // text_info.lines[0][0] = 'a';
+    // text_info.lines[0][1] = 'b';
+    // text_info.lines[0][2] = 'c';
+    // text_info.lines[0][3] = '\0';
+    sprintf(text_info.lines[0], "abc def ghi ABC");
+    // strcpy("abc\0", text_info.lines[0]);
+    //  strncpy("abcdefg", text_info.lines[0], MAX_LINE_SIZE);
     textbox_flush();
 
     /*
