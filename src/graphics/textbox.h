@@ -1,30 +1,29 @@
 #ifndef TEXT_BOX_H_
 #define TEXT_BOX_H_
-#include "genesis.h"
+#include <genesis.h>
 
 #define MAX_LINE_SIZE 30
 
 struct {
-    union {
-        struct {
-            u8 asterisk_one : 1;
-            u8 asterisk_two : 1;
-            u8 asterisk_three : 1;
+    /*
+        I don't think there's ever a case where the third line is used and first
+       two aren't or second line is used and first isn't.
+    */
+    u8 lines_used;
+    u8 asterisks[3];
 
-            u8 line_one : 1;
-            u8 line_two : 1;
-            u8 line_three : 1;
-
-            u8 box_size : 2;
-        };
-
-        u8 data;
-    } parameters;
-
-    char line_one[MAX_LINE_SIZE + 1];
-    char line_two[MAX_LINE_SIZE + 1];
-    char line_three[MAX_LINE_SIZE + 1];
+    char lines[3][MAX_LINE_SIZE + 1];
 
 } text_info;
+
+/*
+    Update the textbox
+*/
+void textbox_flush();
+
+/*
+    Erase the textbox
+*/
+void textbox_clear();
 
 #endif

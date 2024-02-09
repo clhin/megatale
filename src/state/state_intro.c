@@ -26,6 +26,7 @@ void intro_update() {}
 void intro_clean() { VDP_clearTextArea(0, 0, 40, 28); }
 void intro_redraw(state_return_t ret) {}
 state_return_t intro_shutdown() {
+    intro_clean();
     state_return_t ret;
     return ret;
 }

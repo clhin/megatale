@@ -24,7 +24,7 @@ typedef struct state_return {
  * clean: When another state is added, everything needs to be momentarily
  * cleared only to be restored later, this does that.
  * redraw: When coming back to this state, redraw everything you previously got
- * rid of.
+ * rid of. state_return_t is given back from the previous state's shutdown.
  * shutdown: Finish, the state_return_t variable just gives some possible info
  * needed by preceding state.
  *
@@ -43,6 +43,9 @@ typedef struct state_info {
  * State replace, on the other hand, replaces the state on top. This is useful
  * for when the player loses a battle and the game over state essentially
  * 'overwrites' the battle state.
+ *
+ * Note that clean is not called alongside shutdown, clean should be used in
+ * shutdown. Keep this in mind for future reference.
  */
 void state_push(state_info_t state, state_parameters_t args);
 void state_replace(state_info_t state, state_parameters_t args);

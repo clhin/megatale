@@ -4,6 +4,7 @@
 #include <resources.h>
 
 #include "../collisions.h"
+#include "../graphics/textbox.h"
 #include "state_battle.h"
 
 Sprite *heart;
@@ -25,6 +26,12 @@ void world_init(state_parameters_t args) {
     char buf[4];
     intToStr(res, buf, 1);
 
+    text_info.lines_used = 1;
+
+    strncpy("Hello World", text_info.lines[0], MAX_LINE_SIZE);
+    textbox_flush();
+
+    /*
     VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 0),
                      4, 3);
     VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26),
@@ -44,6 +51,8 @@ void world_init(state_parameters_t args) {
                      7, 3);
     VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 29),
                      7, 4);
+
+                     */
     // VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0,
     // TILE_USER_INDEX + 0),
     //     4, 3);
