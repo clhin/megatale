@@ -27,12 +27,6 @@ void world_init(state_parameters_t args) {
     char buf[4];
     intToStr(res, buf, 1);
 
-    // text_info.lines_used = 2;
-
-    // text_info.lines[0][0] = 'a';
-    // text_info.lines[0][1] = 'b';
-    // text_info.lines[0][2] = 'c';
-    // text_info.lines[0][3] = '\0';
     text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
@@ -40,38 +34,9 @@ void world_init(state_parameters_t args) {
     sprintf(text_info.lines[0], "qpj");
     sprintf(text_info.lines[1], "abc def ghi ABC");
     sprintf(text_info.lines[2], "z[???]()-!");
-    // strcpy("abc\0", text_info.lines[0]);
-    //  strncpy("abcdefg", text_info.lines[0], MAX_LINE_SIZE);
-    // textbox_flush();
-    textbox_show(TEXT_DIALOGUE_MODE);
-    /*
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 0),
-                     4, 3);
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 26),
-                     4, 4);
 
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 1),
-                     5, 3);
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 27),
-                     5, 4);
+    textbox_show(TEXT_TORIEL_MODE);
 
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 2),
-                     6, 3);
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 28),
-                     6, 4);
-
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 3),
-                     7, 3);
-    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 29),
-                     7, 4);
-
-                     */
-    // VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0,
-    // TILE_USER_INDEX + 0),
-    //     4, 3);
-    // VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0,
-    // TILE_USER_INDEX + 26),
-    //     4, 4);
     char buf2[32];
 
     intToStr(MEM_getFree(), buf2, 1);

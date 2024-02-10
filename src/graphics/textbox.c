@@ -87,7 +87,7 @@ the character
     Local function headers that are defined lower in the file
 */
 void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y);
-void show_dialogue();
+void show_dialogue(TextBoxMode mode);
 void show_battle();
 void show_toriel();
 
@@ -118,6 +118,7 @@ void textbox_show(TextBoxMode mode) {
     text_info.mode = mode;
 
     u8 full_off;
+    u8 x_off = 0;
 
     /*
         Go ahead and render the dialogue, then afterwards this switch statement
@@ -127,16 +128,18 @@ void textbox_show(TextBoxMode mode) {
         // They share the same offset
         case TEXT_DIALOGUE_MODE:
             full_off = TEXT_DIALOGUE_OFFSET;
-            show_dialogue();
+            show_dialogue(TEXT_DIALOGUE_MODE);
             break;
         case TEXT_TORIEL_MODE:
             full_off = TEXT_DIALOGUE_OFFSET;
+            show_dialogue(TEXT_TORIEL_MODE);
+            show_toriel();
+            x_off = 7;
             break;
         case TEXT_BATTLE_MODE:
             full_off = 14;
             break;
     }
-    void show_toriel();
 
     // This just sets the horizontal line borders
     for (u8 j = 0; j < MAX_LINE_SIZE + 2; ++j) {
@@ -160,11 +163,11 @@ void textbox_show(TextBoxMode mode) {
 
         u8 i = (j - 1) / 2;
         if ((j - 1) % 2 == 0 && i < 3 && text_info.asterisks[i]) {
-            set_tile(0, 0, 24, 25, 4, full_off + j);
-            set_tile(0, 0, 25, 25, 5, full_off + j);
+            set_tile(0, 0, 24, 25, 4 + x_off, full_off + j);
+            set_tile(0, 0, 25, 25, 5 + x_off, full_off + j);
         } else {
-            set_tile(0, 0, 0, 0, 4, full_off + j);
-            set_tile(0, 0, 0, 0, 5, full_off + j);
+            set_tile(0, 0, 0, 0, 4 + x_off, full_off + j);
+            set_tile(0, 0, 0, 0, 5 + x_off, full_off + j);
         }
     }
 }
@@ -185,16 +188,21 @@ void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y) {
         x, y);
 }
 
-void show_dialogue() {
+void show_dialogue(TextBoxMode mode) {
+    u8 x_off = (mode == TEXT_DIALOGUE_MODE) ? 0 : 7;
+
     for (u8 i = 0; i < text_info.lines_used; ++i) {
-        for (u8 j = 0; j < MAX_LINE_SIZE; ++j) {
+        for (u8 j = 0; j < MAX_LINE_SIZE - x_off; ++j) {
             u16 y_off = 1 + (i * 2);
 
             // If no information, just flush with emptness
             if (text_info.lines[i][j] == '\0') {
-                set_tile(0, 0, 0, 0, 6 + j, TEXT_DIALOGUE_OFFSET + y_off - 1);
-                set_tile(0, 0, 0, 0, 6 + j, TEXT_DIALOGUE_OFFSET + y_off);
-                set_tile(0, 0, 0, 0, 6 + j, TEXT_DIALOGUE_OFFSET + y_off + 1);
+                set_tile(0, 0, 0, 0, 6 + j + x_off,
+                         TEXT_DIALOGUE_OFFSET + y_off - 1);
+                set_tile(0, 0, 0, 0, 6 + j + x_off,
+                         TEXT_DIALOGUE_OFFSET + y_off);
+                set_tile(0, 0, 0, 0, 6 + j + x_off,
+                         TEXT_DIALOGUE_OFFSET + y_off + 1);
 
                 continue;
             }
@@ -260,11 +268,23 @@ void show_dialogue() {
             }
 
             // Now write the letter
-            set_tile(0, 0, x, top, 6 + j, TEXT_DIALOGUE_OFFSET + y_off - 1);
-            set_tile(0, 0, x, middle, 6 + j, TEXT_DIALOGUE_OFFSET + y_off);
-            set_tile(0, 0, x, bottom, 6 + j, TEXT_DIALOGUE_OFFSET + y_off + 1);
+            set_tile(0, 0, x, top, 6 + j + x_off,
+                     TEXT_DIALOGUE_OFFSET + y_off - 1);
+            set_tile(0, 0, x, middle, 6 + j + x_off,
+                     TEXT_DIALOGUE_OFFSET + y_off);
+            set_tile(0, 0, x, bottom, 6 + j + x_off,
+                     TEXT_DIALOGUE_OFFSET + y_off + 1);
         }
     }
 }
 
-void show_toriel() {}
+void show_toriel() {
+    for (u8 i = 0; i < 5; ++i) {
+        set_tile(0, 0, 26, i, 5, TEXT_DIALOGUE_OFFSET + i + 1);
+        set_tile(0, 0, 27, i, 6, TEXT_DIALOGUE_OFFSET + i + 1);
+        set_tile(0, 0, 28, i, 7, TEXT_DIALOGUE_OFFSET + i + 1);
+        set_tile(0, 0, 29, i, 8, TEXT_DIALOGUE_OFFSET + i + 1);
+        set_tile(0, 0, 30, i, 9, TEXT_DIALOGUE_OFFSET + i + 1);
+        set_tile(0, 0, 31, i, 10, TEXT_DIALOGUE_OFFSET + i + 1);
+    }
+}
