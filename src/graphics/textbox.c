@@ -109,7 +109,7 @@ void textbox_flush() {
 
     */
 
-    for (u8 j = 0; j < MAX_LINE_SIZE; ++j) {
+    for (u8 j = 0; j < MAX_LINE_SIZE + 2; ++j) {
         VDP_setTileMapXY(
             BG_A,
             TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25 + 1)),
@@ -118,13 +118,37 @@ void textbox_flush() {
         VDP_setTileMapXY(
             BG_A,
             TILE_ATTR_FULL(PAL0, 0, 1, 0, TILE_USER_INDEX + (26 * 25 + 1)),
-            4 + j, 6 + text_info.lines_used);
+            4 + j, 4 + text_info.lines_used * 2);
     }
 
-    for (u8 j = 0; j < text_info.lines_used + 3; ++j) {
+    for (u8 j = 0; j < text_info.lines_used * 2 + 1; ++j) {
         VDP_setTileMapXY(
             BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25)), 3,
             3 + j);
+
+        VDP_setTileMapXY(
+            BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 1, TILE_USER_INDEX + (26 * 25)),
+            36, 3 + j);
+
+        VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
+                         4, 3 + j);
+        VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
+                         5, 3 + j);
+    }
+
+    // Asterisks
+    for (u8 i = 0; i < 3; ++i) {
+        u16 y_off = 1 + (i * 2);
+        if (text_info.asterisks[i]) {
+            VDP_setTileMapXY(
+                BG_A,
+                TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25 + 24)),
+                4, 3 + y_off);
+            VDP_setTileMapXY(
+                BG_A,
+                TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25 + 25)),
+                5, 3 + y_off);
+        }
     }
 
     for (u8 i = 0; i < text_info.lines_used; ++i) {
@@ -134,13 +158,13 @@ void textbox_flush() {
             if (text_info.lines[i][j] == '\0') {
                 VDP_setTileMapXY(BG_A,
                                  TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                                 4 + j, 3 + y_off - 1);
+                                 6 + j, 3 + y_off - 1);
                 VDP_setTileMapXY(BG_A,
                                  TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                                 4 + j, 3 + y_off);
+                                 6 + j, 3 + y_off);
                 VDP_setTileMapXY(BG_A,
                                  TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                                 4 + j, 3 + y_off + 1);
+                                 6 + j, 3 + y_off + 1);
 
                 continue;
             }
@@ -205,13 +229,13 @@ void textbox_flush() {
                 bottom = TILE_USER_INDEX;
             }
 
-            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, top), 4 + j,
+            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, top), 6 + j,
                              3 + y_off - 1);
 
-            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, middle), 4 + j,
+            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, middle), 6 + j,
                              3 + y_off);
 
-            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, bottom), 4 + j,
+            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, bottom), 6 + j,
                              3 + y_off + 1);
         }
     }
