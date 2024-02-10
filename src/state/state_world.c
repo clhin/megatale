@@ -42,8 +42,8 @@ void world_init(state_parameters_t args) {
     sprintf(text_info.lines[2], "z[???]()-!");
     // strcpy("abc\0", text_info.lines[0]);
     //  strncpy("abcdefg", text_info.lines[0], MAX_LINE_SIZE);
-    textbox_flush();
-
+    // textbox_flush();
+    textbox_show(TEXT_DIALOGUE_MODE);
     /*
     VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + 0),
                      4, 3);

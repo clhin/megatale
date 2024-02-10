@@ -83,6 +83,14 @@ the character
 123 elements * 2 bytes, 246 bytes.
 */
 
+/*
+    Local function headers that are defined lower in the file
+*/
+void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y);
+void show_dialogue();
+void show_battle();
+void show_toriel();
+
 const u16 lookup_table[123] = {
     0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,
     0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,
@@ -100,85 +108,112 @@ const u16 lookup_table[123] = {
     0x1401, 0x1501, 0x1601, 0x1701, 0x1801, 0x1901,
 };
 
-void textbox_flush() {
+/*
+    Show the textbox with the specific mode.
+
+    Why use modes? The battle textbox happens a bit higher than normal
+
+*/
+void textbox_show(TextBoxMode mode) {
+    text_info.mode = mode;
+
+    u8 full_off;
+
     /*
-        5 lines:
-        j=0: 0,1,2 (1)
-        j=1: 2,3,4 (3)
-        j=2: 4,5,6 (5)
-
+        Go ahead and render the dialogue, then afterwards this switch statement
+       we render the box around it
     */
+    switch (mode) {
+        // They share the same offset
+        case TEXT_DIALOGUE_MODE:
+            full_off = TEXT_DIALOGUE_OFFSET;
+            show_dialogue();
+            break;
+        case TEXT_TORIEL_MODE:
+            full_off = TEXT_DIALOGUE_OFFSET;
+            break;
+        case TEXT_BATTLE_MODE:
+            full_off = 14;
+            break;
+    }
+    void show_toriel();
 
+    // This just sets the horizontal line borders
     for (u8 j = 0; j < MAX_LINE_SIZE + 2; ++j) {
-        VDP_setTileMapXY(
-            BG_A,
-            TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25 + 1)),
-            4 + j, 2);
-
-        VDP_setTileMapXY(
-            BG_A,
-            TILE_ATTR_FULL(PAL0, 0, 1, 0, TILE_USER_INDEX + (26 * 25 + 1)),
-            4 + j, 4 + text_info.lines_used * 2);
+        set_tile(0, 0, 1, 25, 4 + j, full_off - 1);
+        set_tile(1, 0, 1, 25, 4 + j, full_off + 1 + text_info.lines_used * 2);
     }
 
+    // This sets everything vertical
     for (u8 j = 0; j < text_info.lines_used * 2 + 1; ++j) {
-        VDP_setTileMapXY(
-            BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25)), 3,
-            3 + j);
+        // Vertical line borders
+        set_tile(0, 0, 0, 25, 3, full_off + j);
+        set_tile(0, 1, 0, 25, 36, full_off + j);
+        /*
+                This sets the asterisks or space, since there's a max of 3 lines
+           we set them accordingly to where the text starts If the position
+           where they are at is divisible by 0 and they are enabled, otherwise
+           just write space
 
-        VDP_setTileMapXY(
-            BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 1, TILE_USER_INDEX + (26 * 25)),
-            36, 3 + j);
+           Note that asterisks for Toriel starts at a different offset.
+            */
 
-        VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                         4, 3 + j);
-        VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                         5, 3 + j);
-    }
-
-    // Asterisks
-    for (u8 i = 0; i < 3; ++i) {
-        u16 y_off = 1 + (i * 2);
-        if (text_info.asterisks[i]) {
-            VDP_setTileMapXY(
-                BG_A,
-                TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25 + 24)),
-                4, 3 + y_off);
-            VDP_setTileMapXY(
-                BG_A,
-                TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + (26 * 25 + 25)),
-                5, 3 + y_off);
+        u8 i = (j - 1) / 2;
+        if ((j - 1) % 2 == 0 && i < 3 && text_info.asterisks[i]) {
+            set_tile(0, 0, 24, 25, 4, full_off + j);
+            set_tile(0, 0, 25, 25, 5, full_off + j);
+        } else {
+            set_tile(0, 0, 0, 0, 4, full_off + j);
+            set_tile(0, 0, 0, 0, 5, full_off + j);
         }
     }
+}
 
+void textbox_flush() {}
+void textbox_clear() {}
+
+/*
+    Local function for just shorthand writing tiles without having to do the
+   entire function
+*/
+
+void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y) {
+    VDP_setTileMapXY(
+        BG_A,
+        TILE_ATTR_FULL(PAL0, 0, vflip, hflip,
+                       TILE_USER_INDEX + (FONT_SHEET_WIDTH * tile_y + tile_x)),
+        x, y);
+}
+
+void show_dialogue() {
     for (u8 i = 0; i < text_info.lines_used; ++i) {
         for (u8 j = 0; j < MAX_LINE_SIZE; ++j) {
             u16 y_off = 1 + (i * 2);
 
+            // If no information, just flush with emptness
             if (text_info.lines[i][j] == '\0') {
-                VDP_setTileMapXY(BG_A,
-                                 TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                                 6 + j, 3 + y_off - 1);
-                VDP_setTileMapXY(BG_A,
-                                 TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                                 6 + j, 3 + y_off);
-                VDP_setTileMapXY(BG_A,
-                                 TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX),
-                                 6 + j, 3 + y_off + 1);
+                set_tile(0, 0, 0, 0, 6 + j, TEXT_DIALOGUE_OFFSET + y_off - 1);
+                set_tile(0, 0, 0, 0, 6 + j, TEXT_DIALOGUE_OFFSET + y_off);
+                set_tile(0, 0, 0, 0, 6 + j, TEXT_DIALOGUE_OFFSET + y_off + 1);
 
                 continue;
             }
 
+            /*
+                We bit-unpack the position the letter has in the spritesheet
+               from the lookup table and then we get the y-position for 3
+               possible spaces the letter take.
+            */
             u16 pos = lookup_table[(u8)(text_info.lines[i][j])];
-            // 16 pos = lookup_table[97 + j];
-
             u8 x = pos >> 8;
             u8 y = pos & 0xFF;
 
-            u16 top = TILE_USER_INDEX + 26 * (y - 1) + x;
-            u16 middle = TILE_USER_INDEX + 26 * y + x;
-            u16 bottom = TILE_USER_INDEX + 26 * (y + 1) + x;
+            u16 top = y - 1;
+            u16 middle = y;
+            u16 bottom = y + 1;
 
+            // If there's a character above, make it that character. Otherwise
+            // make it NUL
             char c_above = (i > 0 && strlen(text_info.lines[i - 1]) >= j)
                                ? text_info.lines[i - 1][j]
                                : '\0';
@@ -194,7 +229,6 @@ void textbox_flush() {
                 else if (y == 7)
                     top = 12;
 
-                top = TILE_USER_INDEX + (26 * top) + x;
             } else if (c_above == 'p') {
                 if (y == 1)
                     top = 13;
@@ -203,7 +237,6 @@ void textbox_flush() {
                 else if (y == 7)
                     top = 15;
 
-                top = TILE_USER_INDEX + (26 * top) + x;
             } else if (c_above == 'q') {
                 if (y == 1)
                     top = 16;
@@ -212,7 +245,6 @@ void textbox_flush() {
                 else if (y == 7)
                     top = 18;
 
-                top = TILE_USER_INDEX + (26 * top) + x;
             } else if (c_above == 'Q') {
                 if (y == 1)
                     top = 19;
@@ -220,24 +252,19 @@ void textbox_flush() {
                     top = 20;
                 else if (y == 7)
                     top = 21;
-
-                top = TILE_USER_INDEX + (26 * top) + x;
             }
 
             if (text_info.lines[i][j] == ' ') {
-                top = TILE_USER_INDEX;
-                bottom = TILE_USER_INDEX;
+                top = 0;
+                bottom = 0;
             }
 
-            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, top), 6 + j,
-                             3 + y_off - 1);
-
-            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, middle), 6 + j,
-                             3 + y_off);
-
-            VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, bottom), 6 + j,
-                             3 + y_off + 1);
+            // Now write the letter
+            set_tile(0, 0, x, top, 6 + j, TEXT_DIALOGUE_OFFSET + y_off - 1);
+            set_tile(0, 0, x, middle, 6 + j, TEXT_DIALOGUE_OFFSET + y_off);
+            set_tile(0, 0, x, bottom, 6 + j, TEXT_DIALOGUE_OFFSET + y_off + 1);
         }
     }
 }
-void textbox_clear() {}
+
+void show_toriel() {}

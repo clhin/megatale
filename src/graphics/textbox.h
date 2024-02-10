@@ -3,6 +3,17 @@
 #include <genesis.h>
 
 #define MAX_LINE_SIZE 30
+#define MAX_TORIEL_LINE_SIZE 20
+#define FONT_SHEET_WIDTH 38
+
+#define TEXT_DIALOGUE_OFFSET 20
+
+// Hardcode Toriel as a mode because we only have one dialogue with a portrait.
+typedef enum {
+    TEXT_DIALOGUE_MODE,
+    TEXT_BATTLE_MODE,
+    TEXT_TORIEL_MODE
+} TextBoxMode;
 
 struct {
     /*
@@ -13,8 +24,14 @@ struct {
     u8 asterisks[3];
 
     char lines[3][MAX_LINE_SIZE + 1];
+    TextBoxMode mode;
 
 } text_info;
+
+/*
+    Show the textbox
+*/
+void textbox_show(TextBoxMode mode);
 
 /*
     Update the textbox
