@@ -279,7 +279,22 @@ void show_dialogue(TextBoxMode mode) {
 }
 
 void show_toriel() {
+    /*
+        What a mess.
+    */
+
+    // Top space section
+    set_tile(0, 0, 0, 0, 4, TEXT_DIALOGUE_OFFSET);
+    set_tile(0, 0, 0, 0, 5, TEXT_DIALOGUE_OFFSET);
+    set_tile(0, 0, 0, 0, 6, TEXT_DIALOGUE_OFFSET);
+    set_tile(0, 0, 0, 0, 7, TEXT_DIALOGUE_OFFSET);
+    set_tile(0, 0, 0, 0, 8, TEXT_DIALOGUE_OFFSET);
+    set_tile(0, 0, 0, 0, 9, TEXT_DIALOGUE_OFFSET);
+    set_tile(0, 0, 0, 0, 10, TEXT_DIALOGUE_OFFSET);
+
+    // Left space section + Toriel ipse
     for (u8 i = 0; i < 5; ++i) {
+        set_tile(0, 0, 0, 0, 4, TEXT_DIALOGUE_OFFSET + i + 1);
         set_tile(0, 0, 26, i, 5, TEXT_DIALOGUE_OFFSET + i + 1);
         set_tile(0, 0, 27, i, 6, TEXT_DIALOGUE_OFFSET + i + 1);
         set_tile(0, 0, 28, i, 7, TEXT_DIALOGUE_OFFSET + i + 1);
@@ -287,4 +302,13 @@ void show_toriel() {
         set_tile(0, 0, 30, i, 9, TEXT_DIALOGUE_OFFSET + i + 1);
         set_tile(0, 0, 31, i, 10, TEXT_DIALOGUE_OFFSET + i + 1);
     }
+
+    // Bottom space section
+    set_tile(0, 0, 0, 0, 4, TEXT_DIALOGUE_OFFSET + 6);
+    set_tile(0, 0, 0, 0, 5, TEXT_DIALOGUE_OFFSET + 6);
+    set_tile(0, 0, 0, 0, 6, TEXT_DIALOGUE_OFFSET + 6);
+    set_tile(0, 0, 0, 0, 7, TEXT_DIALOGUE_OFFSET + 6);
+    set_tile(0, 0, 0, 0, 8, TEXT_DIALOGUE_OFFSET + 6);
+    set_tile(0, 0, 0, 0, 9, TEXT_DIALOGUE_OFFSET + 6);
+    set_tile(0, 0, 0, 0, 10, TEXT_DIALOGUE_OFFSET + 6);
 }
