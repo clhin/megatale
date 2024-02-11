@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include "../collisions.h"
-#include "../graphics/textbox.h"
 #include "state_battle.h"
 
 Sprite *heart;
@@ -22,22 +21,6 @@ u8 velocity;
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
-    /*
-    Do not uncomment this
-    u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-
-
-
-    text_info.lines_used = 3;
-    text_info.asterisks[0] = 1;
-    text_info.asterisks[1] = 1;
-    text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "qpj");
-    sprintf(text_info.lines[1], "abc def ghi ABC");
-    sprintf(text_info.lines[2], "z[???]()-!");
-
-    textbox_show(TEXT_TORIEL_MODE);
-    */
     char buf2[32];
 
     intToStr(MEM_getFree(), buf2, 1);
@@ -57,7 +40,6 @@ void world_init(state_parameters_t args) {
     enemy_bb.h = 8;
 
     VDP_drawText(buf2, 1, 1);
-    VDP_drawText(buf, 1, 2);
 
     heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
                           TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
