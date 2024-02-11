@@ -22,10 +22,11 @@ u8 velocity;
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
+    /*
+    Do not uncomment this
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-    char buf[4];
-    intToStr(res, buf, 1);
+
 
     text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
@@ -36,7 +37,7 @@ void world_init(state_parameters_t args) {
     sprintf(text_info.lines[2], "z[???]()-!");
 
     textbox_show(TEXT_TORIEL_MODE);
-
+    */
     char buf2[32];
 
     intToStr(MEM_getFree(), buf2, 1);
