@@ -25,7 +25,7 @@ tbl = pd.read_excel("misc/lookup_table.xlsx")
 switch = []
 
 
-print("const u8 lookup_table[][] = {")
+print("const u8 lookup_table[" + str(tbl.shape[0]) + "][3] = \{")
 for i, row in tbl.iterrows(): 
     print("{")
     
@@ -48,7 +48,7 @@ for i, row in tbl.iterrows():
     x = row['Letter'][0]
     switch.append(ord(x))
 
-print("}")
+print("};")
 
 
 # We are relying on the compiler to produce a lookup table from the switch statement in order to make it more optimized. 
@@ -57,10 +57,10 @@ print("}")
 print("switch(c){")
 for i,v in enumerate(switch):
     print("case {0}:".format(v))
-    print("\t return lookup_table[{0}]".format(i)) 
-    print("\t break")
+    print("\t return lookup_table[{0}];".format(i)) 
+    print("\t break;")
 print("default:")
-print("\t return lookup_table[0]")
+print("\t return lookup_table[0];")
 print("\t break;")
 print("}")
 

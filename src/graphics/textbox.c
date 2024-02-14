@@ -91,7 +91,7 @@ void show_dialogue(TextBoxMode mode);
 void show_battle();
 void show_toriel();
 
-const u16 lookup_table[123] = {
+const u16 lookup_table_old[123] = {
     0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,
     0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,
     0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,  0xf07,
@@ -212,7 +212,7 @@ void show_dialogue(TextBoxMode mode) {
                from the lookup table and then we get the y-position for 3
                possible spaces the letter take.
             */
-            u16 pos = lookup_table[(u8)(text_info.lines[i][j])];
+            u16 pos = lookup_table_old[(u8)(text_info.lines[i][j])];
             u8 x = pos >> 8;
             u8 y = pos & 0xFF;
 

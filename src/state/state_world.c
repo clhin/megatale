@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "../collisions.h"
-#include "../graphics/textbox.h"
+#include "../graphics/text.h"
 #include "state_battle.h"
 
 Sprite *heart;
@@ -33,22 +33,50 @@ void world_init(state_parameters_t args) {
     intToStr(index, buf_test, 1);
     VDP_drawText(buf_test, 8, 9);
 
+    u8 *c = get_char_info('f');
+
+    VDP_setTileMapXY(
+        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_TOP(c)), 20,
+        9);
+
+    VDP_setTileMapXY(
+        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_MIDDLE(c)),
+        20, 10);
+
+    VDP_setTileMapXY(
+        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_BOTTOM(c)),
+        20, 11);
+
+    c = get_char_info('w');
+
+    VDP_setTileMapXY(
+        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_TOP(c)), 21,
+        9);
+
+    VDP_setTileMapXY(
+        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_MIDDLE(c)),
+        21, 10);
+
+    VDP_setTileMapXY(
+        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_BOTTOM(c)),
+        21, 11);
     /*
-    Do not uncomment this
+Do not uncomment this
 
 VDP_setTileMapXY(VDPPlane plane, u16 tile, u16 x, u16 y);
 
+TILE_ATTR_FULL(PAL0, 0, vflip, hflip,
+                       TILE_USER_INDEX + (FONT_SHEET_WIDTH * tile_y + tile_x)
+text_info.lines_used = 3;
+text_info.asterisks[0] = 1;
+text_info.asterisks[1] = 1;
+text_info.asterisks[2] = 1;
+sprintf(text_info.lines[0], "qpj");
+sprintf(text_info.lines[1], "abc def ghi ABC");
+sprintf(text_info.lines[2], "z[???]()-!");
 
-    text_info.lines_used = 3;
-    text_info.asterisks[0] = 1;
-    text_info.asterisks[1] = 1;
-    text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "qpj");
-    sprintf(text_info.lines[1], "abc def ghi ABC");
-    sprintf(text_info.lines[2], "z[???]()-!");
-
-    textbox_show(TEXT_TORIEL_MODE);
-    */
+textbox_show(TEXT_TORIEL_MODE);
+*/
     char buf2[32];
 
     intToStr(MEM_getFree(), buf2, 1);
