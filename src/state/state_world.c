@@ -19,13 +19,24 @@ u16 heart_x;
 u16 heart_y;
 u8 velocity;
 
+u16 index = 0;
+
+char buf_test[20];
+
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
-    /*
-    Do not uncomment this
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
+    VDP_setTileMapXY(BG_A, TILE_USER_INDEX + index, 8, 8);
+
+    intToStr(index, buf_test, 1);
+    VDP_drawText(buf_test, 8, 9);
+
+    /*
+    Do not uncomment this
+
+VDP_setTileMapXY(VDPPlane plane, u16 tile, u16 x, u16 y);
 
 
     text_info.lines_used = 3;
@@ -57,7 +68,6 @@ void world_init(state_parameters_t args) {
     enemy_bb.h = 8;
 
     VDP_drawText(buf2, 1, 1);
-    VDP_drawText(buf, 1, 2);
 
     heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
                           TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
@@ -85,6 +95,13 @@ void world_input(u16 changed, u16 state) {
 
     if (state & BUTTON_A) {
         state_pop();
+    }
+
+    if (state & BUTTON_B) {
+        index = (index + 1) % font_sheet.numTile;
+        VDP_setTileMapXY(BG_A, TILE_USER_INDEX + index, 8, 8);
+        intToStr(index, buf_test, 1);
+        VDP_drawText(buf_test, 8, 9);
     }
 }
 void world_update() {
