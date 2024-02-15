@@ -23,6 +23,14 @@ u16 index = 0;
 
 char buf_test[20];
 
+u8 rank_index = 0;
+char rank[74] = {
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',  'k', 'l', 'm', 'n', 'o',
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',  'z', 'A', 'B', 'C', 'D',
+    'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',  'O', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2',  '3', '4', '5', '6', '7',
+    '8', '9', '.', ',', '(', ')', ':', '!', '?', '\'', '"', '-', '[', ']'};
+
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
@@ -33,7 +41,7 @@ void world_init(state_parameters_t args) {
     intToStr(index, buf_test, 1);
     VDP_drawText(buf_test, 8, 9);
 
-    u8 *c = get_char_info('f');
+    u8 *c = get_char_info(rank[rank_index]);
 
     VDP_setTileMapXY(
         BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_TOP(c)), 20,
@@ -47,19 +55,6 @@ void world_init(state_parameters_t args) {
         BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_BOTTOM(c)),
         20, 11);
 
-    c = get_char_info('w');
-
-    VDP_setTileMapXY(
-        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_TOP(c)), 21,
-        9);
-
-    VDP_setTileMapXY(
-        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_MIDDLE(c)),
-        21, 10);
-
-    VDP_setTileMapXY(
-        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_BOTTOM(c)),
-        21, 11);
     /*
 Do not uncomment this
 
@@ -130,6 +125,25 @@ void world_input(u16 changed, u16 state) {
         VDP_setTileMapXY(BG_A, TILE_USER_INDEX + index, 8, 8);
         intToStr(index, buf_test, 1);
         VDP_drawText(buf_test, 8, 9);
+
+        rank_index = (rank_index + 1) % 74;
+        u8 *c = get_char_info(rank[rank_index]);
+
+        VDP_setTileMapXY(
+            BG_B,
+            TILE_ATTR_FULL(PAL0, 0, GET_TOP_VFLIP(c), GET_TOP_HFLIP(c),
+                           TILE_USER_INDEX + GET_TOP(c)),
+            20, 9);
+
+        VDP_setTileMapXY(BG_B,
+                         TILE_ATTR_FULL(PAL0, 0, 0, GET_MIDDLE_HFLIP(c),
+                                        TILE_USER_INDEX + GET_MIDDLE(c)),
+                         20, 10);
+
+        VDP_setTileMapXY(BG_B,
+                         TILE_ATTR_FULL(PAL0, 0, 0, GET_BOTTOM_HFLIP(c),
+                                        TILE_USER_INDEX + GET_BOTTOM(c)),
+                         20, 11);
     }
 }
 void world_update() {
