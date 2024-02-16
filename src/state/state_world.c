@@ -6,6 +6,7 @@
 
 #include "../collisions.h"
 #include "../graphics/text.h"
+#include "../graphics/textbox.h"
 #include "state_battle.h"
 
 Sprite *heart;
@@ -43,7 +44,17 @@ void world_init(state_parameters_t args) {
 
     u8 *c = get_char_info(rank[rank_index]);
 
-    DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
+    text_info.lines_used = 3;
+    text_info.asterisks[0] = 1;
+    text_info.asterisks[1] = 1;
+    text_info.asterisks[2] = 1;
+    sprintf(text_info.lines[0], "qpj");
+    sprintf(text_info.lines[1], "abc def ghi ABC");
+    sprintf(text_info.lines[2], "z[???]()-!");
+
+    textbox_show(TEXT_DIALOGUE_MODE);
+
+    // DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
 
     /*
 Do not uncomment this
@@ -125,10 +136,10 @@ void world_input(u16 changed, u16 state) {
             On p-tail, don't add vflip and hflip options. Since p-tail is not on
            center, flipped tiles are not compressed.
         */
-        DRAW_LETTER(c, 21, 9, TILE_USER_INDEX, BG_B, PAL0);
-        DRAW_LETTER_p_TAIL(c, 22, 9, TILE_USER_INDEX, BG_B, PAL0);
-        DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
-        DRAW_LETTER_Q_TAIL(c, 24, 9, TILE_USER_INDEX, BG_B, PAL0);
+        // DRAW_LETTER(c, 21, 9, TILE_USER_INDEX, BG_B, PAL0);
+        // DRAW_LETTER_p_TAIL(c, 22, 9, TILE_USER_INDEX, BG_B, PAL0);
+        // DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
+        // DRAW_LETTER_Q_TAIL(c, 24, 9, TILE_USER_INDEX, BG_B, PAL0);
 
         /*
          /8VDP_setTileMapXY(

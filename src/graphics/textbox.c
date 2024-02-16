@@ -86,6 +86,8 @@ the character
 /*
     Local function headers that are defined lower in the file
 */
+
+void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y);
 void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y);
 void show_dialogue(TextBoxMode mode);
 void show_battle();
@@ -108,21 +110,65 @@ const u16 lookup_table_old[123] = {
     0x1401, 0x1501, 0x1601, 0x1701, 0x1801, 0x1901,
 };
 
+#define LEFT_BORDER 150
+#define BOTTOM_BORDER 151
+#define LEFT_CORNER_BORDER 152
+#define LEFT_BORDER_ANIM_1 153
+#define LEFT_BORDER_ANIM_2 154
+#define ASTERISK 155
+
+void textbox_show(TextBoxMode mode) {
+    u8 full_off = 14;
+    u8 x_off = 0;
+    // This just sets the horizontal line borders
+    for (u8 j = 0; j < MAX_LINE_SIZE + 2; ++j) {
+        tile_set(0, 0, BOTTOM_BORDER, 4 + j, full_off - 1);
+        tile_set(1, 0, BOTTOM_BORDER, 4 + j,
+                 full_off + 1 + text_info.lines_used * 2);
+    }
+
+    // This sets everything vertical
+
+    tile_set(0, 1, LEFT_CORNER_BORDER, 3, full_off - 1);
+    tile_set(0, 0, LEFT_CORNER_BORDER, 36, full_off - 1);
+    for (u8 j = 0; j < text_info.lines_used * 2 + 1; ++j) {
+        // Vertical line borders
+        tile_set(0, 0, LEFT_BORDER, 3, full_off + j);
+        tile_set(0, 1, LEFT_BORDER, 36, full_off + j);
+
+        // Asterisks
+
+        u8 i = (j - 1) / 2;
+        if ((j - 1) % 2 == 0 && i < 3 && text_info.asterisks[i]) {
+            tile_set(0, 0, ASTERISK, 4 + x_off, full_off + j);
+            tile_set(0, 1, ASTERISK, 5 + x_off, full_off + j);
+        } else {
+            tile_set(0, 0, 0, 4 + x_off, full_off + j);
+            tile_set(0, 0, 0, 5 + x_off, full_off + j);
+        }
+    }
+    tile_set(1, 0, LEFT_CORNER_BORDER, 36,
+             full_off + text_info.lines_used * 2 + 1);
+    tile_set(1, 1, LEFT_CORNER_BORDER, 3,
+             full_off + text_info.lines_used * 2 + 1);
+}
+
 /*
     Show the textbox with the specific mode.
 
     Why use modes? The battle textbox happens a bit higher than normal
 
 */
-void textbox_show(TextBoxMode mode) {
+
+void textbox_show_old(TextBoxMode mode) {
     text_info.mode = mode;
 
     u8 full_off;
     u8 x_off = 0;
 
     /*
-        Go ahead and render the dialogue, then afterwards this switch statement
-       we render the box around it
+        Go ahead and render the dialogue, then afterwards this switch
+       statement we render the box around it
     */
     switch (mode) {
         // They share the same offset
@@ -153,10 +199,10 @@ void textbox_show(TextBoxMode mode) {
         set_tile(0, 0, 0, 25, 3, full_off + j);
         set_tile(0, 1, 0, 25, 36, full_off + j);
         /*
-                This sets the asterisks or space, since there's a max of 3 lines
-           we set them accordingly to where the text starts If the position
-           where they are at is divisible by 0 and they are enabled, otherwise
-           just write space
+                This sets the asterisks or space, since there's a max of 3
+           lines we set them accordingly to where the text starts If the
+           position where they are at is divisible by 0 and they are
+           enabled, otherwise just write space
 
            Note that asterisks for Toriel starts at a different offset.
             */
@@ -179,6 +225,12 @@ void textbox_clear() {}
     Local function for just shorthand writing tiles without having to do the
    entire function
 */
+
+void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y) {
+    VDP_setTileMapXY(
+        BG_A, TILE_ATTR_FULL(PAL0, 0, vflip, hflip, TILE_USER_INDEX + tile_id),
+        x, y);
+}
 
 void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y) {
     VDP_setTileMapXY(
@@ -220,8 +272,8 @@ void show_dialogue(TextBoxMode mode) {
             u16 middle = y;
             u16 bottom = y + 1;
 
-            // If there's a character above, make it that character. Otherwise
-            // make it NUL
+            // If there's a character above, make it that character.
+            // Otherwise make it NUL
             char c_above = (i > 0 && strlen(text_info.lines[i - 1]) >= j)
                                ? text_info.lines[i - 1][j]
                                : '\0';
