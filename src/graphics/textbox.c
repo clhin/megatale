@@ -121,21 +121,26 @@ void textbox_show(TextBoxMode mode) {
     u8 full_off = 14;
     u8 x_off = 0;
     // This just sets the horizontal line borders
-    for (u8 j = 0; j < MAX_LINE_SIZE + 2; ++j) {
-        tile_set(0, 0, BOTTOM_BORDER, 4 + j, full_off - 1);
-        tile_set(1, 0, BOTTOM_BORDER, 4 + j,
-                 full_off + 1 + text_info.lines_used * 2);
-    }
 
-    // This sets everything vertical
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
+        full_off - 1, MAX_LINE_SIZE + 2, 1);
 
-    tile_set(0, 1, LEFT_CORNER_BORDER, 3, full_off - 1);
-    tile_set(0, 0, LEFT_CORNER_BORDER, 36, full_off - 1);
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(PAL0, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
+        full_off + 1 + text_info.lines_used * 2, MAX_LINE_SIZE + 2, 1);
+
+    // Sets the vertical line borders
+
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), 3,
+        full_off, 1, text_info.lines_used * 2 + 1);
+
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER), 36,
+        full_off, 1, text_info.lines_used * 2 + 1);
+
     for (u8 j = 0; j < text_info.lines_used * 2 + 1; ++j) {
-        // Vertical line borders
-        tile_set(0, 0, LEFT_BORDER, 3, full_off + j);
-        tile_set(0, 1, LEFT_BORDER, 36, full_off + j);
-
         // Asterisks
 
         u8 i = (j - 1) / 2;
@@ -147,6 +152,14 @@ void textbox_show(TextBoxMode mode) {
             tile_set(0, 0, 0, 5 + x_off, full_off + j);
         }
     }
+
+    // Fill body
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX), 6,
+                        full_off, 30, text_info.lines_used * 2 + 1);
+
+    // Corner pieces
+    tile_set(0, 1, LEFT_CORNER_BORDER, 3, full_off - 1);
+    tile_set(0, 0, LEFT_CORNER_BORDER, 36, full_off - 1);
     tile_set(1, 0, LEFT_CORNER_BORDER, 36,
              full_off + text_info.lines_used * 2 + 1);
     tile_set(1, 1, LEFT_CORNER_BORDER, 3,
