@@ -135,10 +135,10 @@ void world_input(u16 changed, u16 state) {
             On p-tail, don't add vflip and hflip options. Since p-tail is not on
            center, flipped tiles are not compressed.
         */
-        VDP_setTileMapXY(
-            BG_B,
-            TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_TOP_P_TAIL(c)),
-            20, 9);
+        VDP_setTileMapXY(BG_B,
+                         TILE_ATTR_FULL(PAL0, 0, 0, GET_q_TAIL_HFLIP(c),
+                                        TILE_USER_INDEX + GET_TOP_q_TAIL(c)),
+                         20, 9);
 
         VDP_setTileMapXY(BG_B,
                          TILE_ATTR_FULL(PAL0, 0, 0, GET_MIDDLE_HFLIP(c),
