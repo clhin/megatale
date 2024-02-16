@@ -137,7 +137,8 @@ void world_input(u16 changed, u16 state) {
         */
         VDP_setTileMapXY(
             BG_B,
-            TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_TOP_Q_TAIL(c)),
+            TILE_ATTR_FULL(PAL0, 0, 0, 0,
+                           TILE_USER_INDEX + GET_TOP_comma_TAIL(c)),
             20, 9);
 
         VDP_setTileMapXY(BG_B,
