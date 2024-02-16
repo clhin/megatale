@@ -117,7 +117,7 @@ void world_input(u16 changed, u16 state) {
         VDP_drawText(buf_test, 8, 9);
 
         rank_index = (rank_index + 1) % 74;
-        u8 *c = get_char_info(rank[rank_index]);
+        u8 *c = get_char_info(' ');
 
         /*
             Note to self:
@@ -125,7 +125,7 @@ void world_input(u16 changed, u16 state) {
             On p-tail, don't add vflip and hflip options. Since p-tail is not on
            center, flipped tiles are not compressed.
         */
-
+        DRAW_LETTER(c, 21, 9, TILE_USER_INDEX, BG_B, PAL0);
         DRAW_LETTER_p_TAIL(c, 22, 9, TILE_USER_INDEX, BG_B, PAL0);
         DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
         DRAW_LETTER_Q_TAIL(c, 24, 9, TILE_USER_INDEX, BG_B, PAL0);

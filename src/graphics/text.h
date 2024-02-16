@@ -2,7 +2,7 @@
 #define TEXT_H_
 #include <genesis.h>
 
-extern u8 lookup_table[74][8];
+extern u8 lookup_table[75][8];
 u8 *get_char_info(char c);
 
 #define GET_TOP(arr) (arr[0] & 0x3F)

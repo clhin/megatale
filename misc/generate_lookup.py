@@ -74,4 +74,3 @@ print("}")
 
 
 
-print(tbl['q_hflip'])
