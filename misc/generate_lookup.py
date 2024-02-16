@@ -25,7 +25,7 @@ tbl = pd.read_excel("misc/lookup_table.xlsx")
 switch = []
 
 
-print("u8 lookup_table[" + str(tbl.shape[0]) + "][4] = {")
+print("u8 lookup_table[" + str(tbl.shape[0]) + "][5] = {")
 for i, row in tbl.iterrows(): 
     print("{")
     
@@ -37,11 +37,12 @@ for i, row in tbl.iterrows():
     m_vflip = (1 << 6) if row['Middle_vflip'] else 0 
     b_vflip = (1 << 6) if row['Bottom_vflip'] else 0 
  
-    print("{0}, {1}, {2},  {3}".format(
+    print("{0}, {1}, {2}, {3}, {4}".format(
         hex(row['Top']    | t_hflip | t_vflip),
         hex(row['Middle'] | m_hflip | m_vflip),
         hex(row['Bottom'] | b_hflip | b_vflip),
-        hex(row['g_union'])
+        hex(row['g_union']),
+        hex(row['p_union'])
     ))
     print("},")
 
