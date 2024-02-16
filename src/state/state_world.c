@@ -43,17 +43,7 @@ void world_init(state_parameters_t args) {
 
     u8 *c = get_char_info(rank[rank_index]);
 
-    VDP_setTileMapXY(
-        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_TOP(c)), 20,
-        9);
-
-    VDP_setTileMapXY(
-        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_MIDDLE(c)),
-        20, 10);
-
-    VDP_setTileMapXY(
-        BG_B, TILE_ATTR_FULL(PAL0, 0, 0, 0, TILE_USER_INDEX + GET_BOTTOM(c)),
-        20, 11);
+    DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
 
     /*
 Do not uncomment this
@@ -135,21 +125,29 @@ void world_input(u16 changed, u16 state) {
             On p-tail, don't add vflip and hflip options. Since p-tail is not on
            center, flipped tiles are not compressed.
         */
-        VDP_setTileMapXY(
-            BG_B,
-            TILE_ATTR_FULL(PAL0, 0, 0, 0,
-                           TILE_USER_INDEX + GET_TOP_comma_TAIL(c)),
-            20, 9);
 
-        VDP_setTileMapXY(BG_B,
-                         TILE_ATTR_FULL(PAL0, 0, 0, GET_MIDDLE_HFLIP(c),
-                                        TILE_USER_INDEX + GET_MIDDLE(c)),
-                         20, 10);
+        DRAW_LETTER_p_TAIL(c, 22, 9, TILE_USER_INDEX, BG_B, PAL0);
+        DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
+        DRAW_LETTER_Q_TAIL(c, 24, 9, TILE_USER_INDEX, BG_B, PAL0);
 
-        VDP_setTileMapXY(BG_B,
-                         TILE_ATTR_FULL(PAL0, 0, 0, GET_BOTTOM_HFLIP(c),
-                                        TILE_USER_INDEX + GET_BOTTOM(c)),
-                         20, 11);
+        /*
+         /8VDP_setTileMapXY(
+             BG_B,
+             TILE_ATTR_FULL(PAL0, 0, 0, 0,
+                            TILE_USER_INDEX + GET_TOP_comma_TAIL(c)),
+             20, 9);
+
+         VDP_setTileMapXY(BG_B,
+                          TILE_ATTR_FULL(PAL0, 0, 0, GET_MIDDLE_HFLIP(c),
+                                         TILE_USER_INDEX + GET_MIDDLE(c)),
+                          20, 10);
+
+         VDP_setTileMapXY(BG_B,
+                          TILE_ATTR_FULL(PAL0, 0, 0, GET_BOTTOM_HFLIP(c),
+                                         TILE_USER_INDEX + GET_BOTTOM(c)),
+                          20, 11);
+
+                          */
     }
 }
 void world_update() {

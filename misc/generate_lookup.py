@@ -74,4 +74,4 @@ print("}")
 
 
 
-print(tbl.shape)
+print(tbl['q_hflip'])
