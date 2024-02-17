@@ -18,13 +18,51 @@
 #define GET_BOTTOM(arr) (arr[2] & 0x7F)
 #define GET_BOTTOM_HFLIP(arr) (arr[2] >> 7)
 
-void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette) {
+void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
+                 LetterTail tail) {
     u8 *arr = get_char_info(c);
 
-    VDP_setTileMapXY(plane,
-                     TILE_ATTR_FULL(palette, 0, GET_TOP_VFLIP(arr),
-                                    GET_TOP_HFLIP(arr), offset + GET_TOP(arr)),
-                     x, y);
+    switch (tail) {
+        case LETTER_TAIL_NONE:
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, 0, GET_TOP_VFLIP(arr),
+                               GET_TOP_HFLIP(arr), offset + GET_TOP(arr)),
+                x, y);
+            break;
+        case LETTER_TAIL_g:
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, 0, 0, GET_TOP_HFLIP(arr),
+                                            offset + GET_TOP_g_TAIL(arr)),
+                             x, y);
+            break;
+        case LETTER_TAIL_p:
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_p_TAIL(arr)),
+                x, y);
+            break;
+        case LETTER_TAIL_q:
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, 0, 0, GET_q_TAIL_HFLIP(arr),
+                               offset + GET_TOP_q_TAIL(arr)),
+                x, y);
+            break;
+        case LETTER_TAIL_Q:
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_Q_TAIL(arr)),
+                x, y);
+            break;
+        case LETTER_TAIL_comma:
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, 0, 0, 0,
+                                            offset + GET_TOP_comma_TAIL(arr)),
+                             x, y);
+            break;
+    }
+
     VDP_setTileMapXY(plane,
                      TILE_ATTR_FULL(palette, 0, 0, GET_MIDDLE_HFLIP(arr),
                                     offset + GET_MIDDLE(arr)),

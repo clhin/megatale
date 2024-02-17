@@ -6,6 +6,7 @@
     Local function headers that are defined lower in the file
 */
 
+void letter_help(char c, u8 line, u8 position, u8 x, u8 y);
 void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y);
 void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y);
 void show_dialogue(TextBoxMode mode);
@@ -101,22 +102,19 @@ u8 textbox_tick() {
     u8 len = text_info.chars_written;
 
     if (len < strlen(text_info.lines[0])) {
-        draw_letter(text_info.lines[0][len], 6 + len, 14, TILE_USER_INDEX, BG_A,
-                    PAL0);
+        letter_help(text_info.lines[0][len], 0, len, 6 + len, 14);
 
     } else if (len >= strlen(text_info.lines[0]) &&
                len - strlen(text_info.lines[0]) < strlen(text_info.lines[1])) {
         u8 offset = (len - strlen(text_info.lines[0]));
 
-        draw_letter(text_info.lines[1][offset], 6 + offset, 16, TILE_USER_INDEX,
-                    BG_A, PAL0);
+        letter_help(text_info.lines[1][offset], 1, offset, 6 + offset, 16);
 
     } else {
         u8 offset =
             (len - strlen(text_info.lines[0]) - strlen(text_info.lines[1]));
 
-        draw_letter(text_info.lines[2][offset], 6 + offset, 18, TILE_USER_INDEX,
-                    BG_A, PAL0);
+        letter_help(text_info.lines[2][offset], 2, offset, 6 + offset, 18);
     }
 
     text_info.chars_written++;
@@ -196,6 +194,35 @@ void textbox_clear() {}
     Local function for just shorthand writing tiles without having to do the
    entire function
 */
+
+void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
+    LetterTail tail = LETTER_TAIL_NONE;
+
+    if (line > 0 && position < strlen(text_info.lines[line - 1])) {
+        char above_c = text_info.lines[line - 1][position];
+
+        switch (above_c) {
+            case 'g':
+            case 'j':
+            case 'y':
+                tail = LETTER_TAIL_g;
+                break;
+            case 'p':
+                tail = LETTER_TAIL_p;
+                break;
+            case 'q':
+                tail = LETTER_TAIL_q;
+                break;
+            case 'Q':
+                tail = LETTER_TAIL_Q;
+                break;
+            case ',':
+                tail = LETTER_TAIL_comma;
+                break;
+        }
+    }
+    draw_letter(c, x, y, TILE_USER_INDEX, BG_A, PAL0, tail);
+}
 
 void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y) {
     VDP_setTileMapXY(
