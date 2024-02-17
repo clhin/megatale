@@ -1,87 +1,6 @@
 #include "textbox.h"
 
-/*
-    Intuitions on how the textbox is styled.
-
-    The textbox used in undertale handles up to 3 lines, each going as far as
-   around 30 charaters. Each line has an asterisk that takes up two characters
-   to indicate a new dialogue line. We can take advantage of that when designing
-   this.
-
-    Undertale letters don't fit in 8x8 blocks.
-    Each character takes up to 3 tiles, with most of it centered on the middle.
-   No tile that is above or below the centered on goes as far as half of the
-   tile down. We can take advantage of that and create tiles that account for
-   characters with extra space under them unioned with tiles that go above.
-
-   Because the amount of tiles that "go under" are relatively low, [q, p, y, j,
-   g, Q], this is not that troublesome and doesn't take that much space.
-
-   Fontsheet overlay by 8-pixel rows:
-
-   Row (0-indexed)
-   0-2: a-z (Middle:1)
-   3-5: A-Z (Middle:4)
-   6-8: 0-9.,():!?'"-[] (Middle: 7)
-   9-11: for [g, y, j], 3 rows enumerating top selections of [1-3, 4-6, 7-9]
-   12-14: for [p], enumerating top selections of [1-3, 4-6, 7-9]
-   15-17: for [q], enumerating top selections of [1-3, 4-6, 7-9]
-   18-20: for [Q], enumerating top selections of [1-3, 4-6, 7-9]
-
-   21: misc. data just to help construct the box and give animation (when in
-   battle it horizontally snaps into a box)
-
-    Other notes: With this in mind the textbox should be 9 tiles vertical in
-   total, with 7 being used for the text and 2 for the borders, the textbox
-   should be 34 in width. 30 for text, 2 for asterisk and 2 for borders around
-   it.
-    This ends up being 272*72, which is a close enough size in relation to the
-   original game's box.
-
-
-
-    Algorithm:
-
-    For every line that is committed we note the following:
-
-    If line above is written to and text in same location is of set [g, y, j, p,
-   q, Q] then we switch tile of "top" to where the text "union" is handled
-
-
-
-
-    ASCII Mapping:
-    A-Z ~ 65-90
-    a-z ~ 97-122
-    0-9 ~ 48-57
-
-    .   ~ 46
-    ,   ~ 44
-    (   ~ 40
-    )   ~ 41
-    :   ~ 58
-    !   ~ 33
-    ?   ~ 63
-    '   ~ 39
-    "   ~ 34
-    -   ~ 45
-    [   ~ 91
-    ]   ~ 93
-
-
-   Addendum: If this turns out to be a memory issue in the long run,
-   experimenting into tile-unions as ORing both is a possibility.
-*/
-
-/* Python script to generate this can be found on src/generate_lookup.py
-
-
-Using a pregenerated static array, takes space but I think is computationally
-faster as it's just a lookup table. The location corresponds to the "middle" of
-the character
-
-123 elements * 2 bytes, 246 bytes.
-*/
+#include "text.h"
 
 /*
     Local function headers that are defined lower in the file
@@ -118,6 +37,8 @@ const u16 lookup_table_old[123] = {
 #define ASTERISK 155
 
 void textbox_show(TextBoxMode mode) {
+    text_info.chars_written = 0;
+
     u8 full_off = 14;
     u8 x_off = 0;
     // This just sets the horizontal line borders
@@ -164,6 +85,43 @@ void textbox_show(TextBoxMode mode) {
              full_off + text_info.lines_used * 2 + 1);
     tile_set(1, 1, LEFT_CORNER_BORDER, 3,
              full_off + text_info.lines_used * 2 + 1);
+}
+
+u8 textbox_tick() {
+    u8 total_len = 0;
+    for (u8 i = 0; i < text_info.lines_used; ++i) {
+        total_len += strlen(text_info.lines[i]);
+    }
+    if (text_info.chars_written >= total_len) return 1;
+
+    /*
+        First case: we need to draw the first line.
+    */
+
+    u8 len = text_info.chars_written;
+
+    if (len < strlen(text_info.lines[0])) {
+        draw_letter(text_info.lines[0][len], 6 + len, 14, TILE_USER_INDEX, BG_A,
+                    PAL0);
+
+    } else if (len >= strlen(text_info.lines[0]) &&
+               len - strlen(text_info.lines[0]) < strlen(text_info.lines[1])) {
+        u8 offset = (len - strlen(text_info.lines[0]));
+
+        draw_letter(text_info.lines[1][offset], 6 + offset, 16, TILE_USER_INDEX,
+                    BG_A, PAL0);
+
+    } else {
+        u8 offset =
+            (len - strlen(text_info.lines[0]) - strlen(text_info.lines[1]));
+
+        draw_letter(text_info.lines[2][offset], 6 + offset, 18, TILE_USER_INDEX,
+                    BG_A, PAL0);
+    }
+
+    text_info.chars_written++;
+
+    return 0;
 }
 
 /*

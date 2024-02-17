@@ -22,57 +22,22 @@ u8 velocity;
 
 u16 index = 0;
 
-char buf_test[20];
-
-u8 rank_index = 0;
-char rank[74] = {
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',  'k', 'l', 'm', 'n', 'o',
-    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',  'z', 'A', 'B', 'C', 'D',
-    'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',  'O', 'P', 'Q', 'R', 'S',
-    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2',  '3', '4', '5', '6', '7',
-    '8', '9', '.', ',', '(', ')', ':', '!', '?', '\'', '"', '-', '[', ']'};
+u16 counter = 0;
 
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-    VDP_setTileMapXY(BG_A, TILE_USER_INDEX + index, 8, 8);
-
-    intToStr(index, buf_test, 1);
-    VDP_drawText(buf_test, 8, 9);
-
-    u8 *c = get_char_info(rank[rank_index]);
-
     text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
     text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "qpj");
+    sprintf(text_info.lines[0], "foobar barfoo gqpG");
     sprintf(text_info.lines[1], "abc def ghi ABC");
     sprintf(text_info.lines[2], "z[???]()-!");
 
     textbox_show(TEXT_DIALOGUE_MODE);
-
-    // DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
-
-    /*
-Do not uncomment this
-
-VDP_setTileMapXY(VDPPlane plane, u16 tile, u16 x, u16 y);
-
-TILE_ATTR_FULL(PAL0, 0, vflip, hflip,
-                       TILE_USER_INDEX + (FONT_SHEET_WIDTH * tile_y + tile_x)
-text_info.lines_used = 3;
-text_info.asterisks[0] = 1;
-text_info.asterisks[1] = 1;
-text_info.asterisks[2] = 1;
-sprintf(text_info.lines[0], "qpj");
-sprintf(text_info.lines[1], "abc def ghi ABC");
-sprintf(text_info.lines[2], "z[???]()-!");
-
-textbox_show(TEXT_TORIEL_MODE);
-*/
     char buf2[32];
 
     intToStr(MEM_getFree(), buf2, 1);
@@ -97,7 +62,7 @@ textbox_show(TEXT_TORIEL_MODE);
                           TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
 
     enemy_heart = SPR_addSprite(&heart_sprite, 80, 80,
-                                TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+                                TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
 }
 void world_input(u16 changed, u16 state) {
     if (state & BUTTON_RIGHT) {
@@ -119,46 +84,6 @@ void world_input(u16 changed, u16 state) {
 
     if (state & BUTTON_A) {
         state_pop();
-    }
-
-    if (state & BUTTON_B) {
-        index = (index + 1) % font_sheet.numTile;
-        VDP_setTileMapXY(BG_A, TILE_USER_INDEX + index, 8, 8);
-        intToStr(index, buf_test, 1);
-        VDP_drawText(buf_test, 8, 9);
-
-        rank_index = (rank_index + 1) % 74;
-        u8 *c = get_char_info(' ');
-
-        /*
-            Note to self:
-
-            On p-tail, don't add vflip and hflip options. Since p-tail is not on
-           center, flipped tiles are not compressed.
-        */
-        // DRAW_LETTER(c, 21, 9, TILE_USER_INDEX, BG_B, PAL0);
-        // DRAW_LETTER_p_TAIL(c, 22, 9, TILE_USER_INDEX, BG_B, PAL0);
-        // DRAW_LETTER_q_TAIL(c, 23, 9, TILE_USER_INDEX, BG_B, PAL0);
-        // DRAW_LETTER_Q_TAIL(c, 24, 9, TILE_USER_INDEX, BG_B, PAL0);
-
-        /*
-         /8VDP_setTileMapXY(
-             BG_B,
-             TILE_ATTR_FULL(PAL0, 0, 0, 0,
-                            TILE_USER_INDEX + GET_TOP_comma_TAIL(c)),
-             20, 9);
-
-         VDP_setTileMapXY(BG_B,
-                          TILE_ATTR_FULL(PAL0, 0, 0, GET_MIDDLE_HFLIP(c),
-                                         TILE_USER_INDEX + GET_MIDDLE(c)),
-                          20, 10);
-
-         VDP_setTileMapXY(BG_B,
-                          TILE_ATTR_FULL(PAL0, 0, 0, GET_BOTTOM_HFLIP(c),
-                                         TILE_USER_INDEX + GET_BOTTOM(c)),
-                          20, 11);
-
-                          */
     }
 }
 void world_update() {
@@ -183,6 +108,12 @@ void world_update() {
         state_push(state_info, args);
 
         // VDP_drawText("Battle State transistion", 1, 7);
+    }
+    counter++;
+
+    if (counter >= 5) {
+        textbox_tick();
+        counter = 0;
     }
 }
 void world_clean() {

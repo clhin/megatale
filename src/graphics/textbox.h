@@ -26,12 +26,23 @@ struct {
     char lines[3][MAX_LINE_SIZE + 1];
     TextBoxMode mode;
 
+    // How many letters of the textbox have been written.
+    u8 chars_written;
+
 } text_info;
 
 /*
     Show the textbox
 */
 void textbox_show(TextBoxMode mode);
+
+/*
+    Update the textbox if its in an animated mode of talking.
+
+    Return value is 1 if the textbox is "done" animating.
+
+*/
+u8 textbox_tick();
 
 /*
     Update the textbox
