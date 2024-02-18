@@ -17,7 +17,16 @@ void state_push(state_info_t state, state_parameters_t args) {
     state_on++;
 }
 
-void state_replace(state_info_t state, state_parameters_t args) {}
+void state_replace(state_info_t state, state_parameters_t args) {
+    if (state_on == 0) {  // if there's no state on top just push instead.
+        state_push(state, args);
+        return;
+    }
+
+    state_top()->shutdown();
+    game_states[state_on - 1] = state;
+    game_states[state_on - 1].init(args);
+}
 
 void state_pop() {
     if (state_on == 0) return;
