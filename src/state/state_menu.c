@@ -23,7 +23,7 @@ void menu_init(state_parameters_t args) {
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
 
     heart = SPR_addSprite(&heart_sprite, 9 * 8, 13 * 8,
-                          TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     VDP_drawText("Start", 10, 13);
     VDP_drawText("Quit", 10, 15);

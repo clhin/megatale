@@ -6,6 +6,7 @@
 
 #include "../collisions.h"
 #include "../graphics/text.h"
+#include "../graphics/textbox.h"
 #include "state_battle.h"
 
 Sprite *heart;
