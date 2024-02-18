@@ -29,6 +29,14 @@ void world_init(state_parameters_t args) {
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
+    // Palette for textbox
+    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
+    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
+    PAL_setColor(35, RGB24_TO_VDPCOLOR(0x111111));
+
+    /*
+        Initialize textbox
+    */
     text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
@@ -38,6 +46,7 @@ void world_init(state_parameters_t args) {
     sprintf(text_info.lines[2], "z[???]()-!");
 
     textbox_show(TEXT_DIALOGUE_MODE);
+
     char buf2[32];
 
     intToStr(MEM_getFree(), buf2, 1);
@@ -59,10 +68,10 @@ void world_init(state_parameters_t args) {
     VDP_drawText(buf2, 1, 1);
 
     heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
-                          TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     enemy_heart = SPR_addSprite(&heart_sprite, 80, 80,
-                                TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
+                                TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 }
 void world_input(u16 changed, u16 state) {
     if (state & BUTTON_RIGHT) {
@@ -106,13 +115,11 @@ void world_update() {
 
         state_parameters_t args;
         state_push(state_info, args);
-
-        // VDP_drawText("Battle State transistion", 1, 7);
     }
     counter++;
 
     if (counter >= 5) {
-        textbox_tick();
+        if (textbox_tick()) textbox_close();
         counter = 0;
     }
 }

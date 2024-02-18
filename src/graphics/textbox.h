@@ -26,13 +26,13 @@ struct {
     char lines[3][MAX_LINE_SIZE + 1];
     TextBoxMode mode;
 
-    // How many letters of the textbox have been written.
+    // How many letters of the textbox have been written. <= sum(lines[0, 1, 2])
     u8 chars_written;
-
 } text_info;
 
 /*
-    Show the textbox
+    Show the textbox. Before you call this function, you should set the values
+   of "lines," "lines_used" and "asterisks" to initialize the textbox.
 */
 void textbox_show(TextBoxMode mode);
 
@@ -45,13 +45,13 @@ void textbox_show(TextBoxMode mode);
 u8 textbox_tick();
 
 /*
-    Update the textbox
+    Clear the text from the box.
 */
 void textbox_flush();
 
 /*
-    Erase the textbox
+    Erase the textbox completely
 */
-void textbox_clear();
+void textbox_close();
 
 #endif
