@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../collisions.h"
+#include "../graphics/text.h"
 #include "state_battle.h"
 
 Sprite *heart;
@@ -18,8 +19,32 @@ u16 heart_x;
 u16 heart_y;
 u8 velocity;
 
+u16 index = 0;
+
+u16 counter = 0;
+
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
+
+    u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+
+    // Palette for textbox
+    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
+    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
+    PAL_setColor(35, RGB24_TO_VDPCOLOR(0x111111));
+
+    /*
+        Initialize textbox
+    */
+    text_info.lines_used = 3;
+    text_info.asterisks[0] = 1;
+    text_info.asterisks[1] = 1;
+    text_info.asterisks[2] = 1;
+    sprintf(text_info.lines[0], "foobar barfoo gqpG");
+    sprintf(text_info.lines[1], "abc def ghi ABC");
+    sprintf(text_info.lines[2], "z[???]()-!");
+
+    textbox_show(TEXT_DIALOGUE_MODE);
 
     char buf2[32];
 
@@ -42,7 +67,7 @@ void world_init(state_parameters_t args) {
     VDP_drawText(buf2, 1, 1);
 
     heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
-                          TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     enemy_heart = SPR_addSprite(&heart_sprite, 80, 80,
                                 TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
@@ -89,8 +114,12 @@ void world_update() {
 
         state_parameters_t args;
         state_push(state_info, args);
+    }
+    counter++;
 
-        // VDP_drawText("Battle State transistion", 1, 7);
+    if (counter >= 5) {
+        if (textbox_tick()) textbox_close();
+        counter = 0;
     }
 }
 void world_clean() {
