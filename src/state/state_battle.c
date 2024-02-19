@@ -32,22 +32,20 @@ void battle_init(state_parameters_t args) {
     VDP_drawText("Start", 10, 13);
     VDP_drawText("Quit", 10, 15);
 
-    PAL_setPalette(PAL3, battle_select.palette->data, DMA);
-
     heart = SPR_addSprite(&heart_sprite, 24, 198,
-                          TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     fight = SPR_addSprite(&battle_select, 20, 190,
-                          TILE_ATTR(PAL3, TRUE, FALSE, FALSE));
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     act = SPR_addSprite(&battle_select, 96, 190,
-                        TILE_ATTR(PAL3, TRUE, FALSE, FALSE));
+                        TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     item = SPR_addSprite(&battle_select, 168, 190,
-                         TILE_ATTR(PAL3, TRUE, FALSE, FALSE));
+                         TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     mercy = SPR_addSprite(&battle_select, 244, 190,
-                          TILE_ATTR(PAL3, TRUE, FALSE, FALSE));
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     SPR_setAnim(act, 1);
     SPR_setAnim(item, 2);
