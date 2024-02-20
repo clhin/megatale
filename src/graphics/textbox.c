@@ -30,25 +30,25 @@ void textbox_show(TextBoxMode mode) {
 
     // This just sets the horizontal line borders
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL2, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
+        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
         full_off - 1, MAX_LINE_SIZE + 2, 1);
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL2, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
+        BG_A, TILE_ATTR_FULL(PAL1, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
         full_off + 1 + text_info.lines_used * 2, MAX_LINE_SIZE + 2, 1);
 
     // Sets the vertical line borders
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL2, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), 3,
+        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), 3,
         full_off, 1, text_info.lines_used * 2 + 1);
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL2, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER), 36,
+        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER), 36,
         full_off, 1, text_info.lines_used * 2 + 1);
 
     // Fill body
-    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL2, 0, 0, 0, TILE_USER_INDEX), 4,
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX), 4,
                         full_off, 32, text_info.lines_used * 2 + 1);
 
     // Corner pieces
@@ -188,7 +188,7 @@ void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
                 break;
         }
     }
-    draw_letter(c, x, y, TILE_USER_INDEX, BG_A, PAL2, tail);
+    draw_letter(c, x, y, TILE_USER_INDEX, BG_A, PAL1, tail);
 }
 
 /*
@@ -198,7 +198,7 @@ void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
 
 void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y) {
     VDP_setTileMapXY(
-        BG_A, TILE_ATTR_FULL(PAL2, 0, vflip, hflip, TILE_USER_INDEX + tile_id),
+        BG_A, TILE_ATTR_FULL(PAL1, 0, vflip, hflip, TILE_USER_INDEX + tile_id),
         x, y);
 }
 

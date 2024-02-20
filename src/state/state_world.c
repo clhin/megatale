@@ -28,15 +28,14 @@ void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-/*
-    // Palette for textbox
-//    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
-//    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
-//    PAL_setColor(35, RGB24_TO_VDPCOLOR(0x111111));
 
-    
-     //   Initialize textbox
-    
+    // Palette for textbox
+    //    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
+    //    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
+    //    PAL_setColor(35, RGB24_TO_VDPCOLOR(0x111111));
+
+    //   Initialize textbox
+
     text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
@@ -46,7 +45,7 @@ void world_init(state_parameters_t args) {
     sprintf(text_info.lines[2], "XXXX");
 
     textbox_show(TEXT_DIALOGUE_MODE);
-*/
+
     char buf2[32];
 
     intToStr(MEM_getFree(), buf2, 1);
@@ -64,30 +63,30 @@ void world_init(state_parameters_t args) {
     enemy_bb.y = 80;
     enemy_bb.w = 8;
     enemy_bb.h = 8;
-/*
-    VDP_drawText(buf2, 1, 1);
+    /*
+        VDP_drawText(buf2, 1, 1);
 
-    heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
-                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-*/
+        heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
+                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    */
     enemy_heart = SPR_addSprite(&heart_sprite, 80, 80,
                                 TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
-	// where are we in a world init? Well, we started from the main
-	// menu, and thus we have two options as to where we are: 1. we have
-	// a blank save (load from the beginning), or we have save data and 
-	// thus we load from our save state (not implemented yet)
-	if (0 /* save state */){
-		// load save data
-	} else {
-		//we assume that menu has taken care of the fade to white
-		PAL_setPalette(PAL0,ruinspal.data, DMA);
-//		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
-		frisk = SPR_addSprite(&frisk_sprite, 80, 80,
-                                TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-		heart_test = SPR_addSprite(&heart_sprite, 80, 80,
-                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-	}
+    // where are we in a world init? Well, we started from the main
+    // menu, and thus we have two options as to where we are: 1. we have
+    // a blank save (load from the beginning), or we have save data and
+    // thus we load from our save state (not implemented yet)
+    if (0 /* save state */) {
+        // load save data
+    } else {
+        // we assume that menu has taken care of the fade to white
+        PAL_setPalette(PAL0, ruinspal.data, DMA);
+        //		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
+        frisk = SPR_addSprite(&frisk_sprite, 80, 80,
+                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+        heart_test = SPR_addSprite(&heart_sprite, 80, 80,
+                                   TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    }
 }
 void world_input(u16 changed, u16 state) {
     if (state & BUTTON_RIGHT) {
