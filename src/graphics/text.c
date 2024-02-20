@@ -27,6 +27,7 @@
     [7]
     - bit 7-0: comma-tail top index
 */
+extern u8 lookup_table[75][8];
 
 #define GET_TOP(arr) (arr[0] & 0x3F)
 #define GET_TOP_VFLIP(arr) ((arr[0] >> 6) & 1)

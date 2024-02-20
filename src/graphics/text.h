@@ -28,8 +28,6 @@ typedef enum {
     LETTER_TAIL_comma
 } LetterTail;
 
-extern u8 lookup_table[75][8];
-
 /* draw_letter(...)
 
     Basically draws a letter onto screen with the specified parameters.
