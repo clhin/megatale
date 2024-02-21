@@ -4,7 +4,9 @@
     "state_menu.h": "c",
     "state_manager.h": "c",
     "resources.h": "c",
-    "chrono": "c"
+    "chrono": "c",
+    "locale": "c",
+    "string": "c"
   },
   "C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4}"
 }

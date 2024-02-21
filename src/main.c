@@ -1,12 +1,16 @@
 #include <genesis.h>
 #include <resources.h>
 
+// Only define this if you want the game to go directly into testing
+#include "globals.h"
+
+#ifdef TEST_MODE
+#include "state/testing/state_test.h"
+#else
 #include "state/state_intro.h"
+#endif
+
 #include "state/state_manager.h"
-const int LEFT_EDGE = 0;
-const int RIGHT_EDGE = 320;
-const int TOP_EDGE = 0;
-const int BOTTOM_EDGE = 224;
 
 void event_handler(u16 joy, u16 changed, u16 state) {
     if (state_top()) {
@@ -22,12 +26,22 @@ int main() {
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
     VDP_setTextPalette(PAL1);
     state_info_t state_info;
+
+#ifndef TEST_MODE
     state_info.clean = intro_clean;
     state_info.init = intro_init;
     state_info.redraw = intro_redraw;
     state_info.input = intro_input;
     state_info.update = intro_update;
     state_info.shutdown = intro_shutdown;
+#else
+    state_info.clean = test_clean;
+    state_info.init = test_init;
+    state_info.redraw = test_redraw;
+    state_info.input = test_input;
+    state_info.update = test_update;
+    state_info.shutdown = test_shutdown;
+#endif
 
     state_parameters_t args;
     state_push(state_info, args);
