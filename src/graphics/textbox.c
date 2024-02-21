@@ -11,12 +11,12 @@ void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y);
 void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y);
 void asterisk_show(u8 asterisk_num);
 
-#define LEFT_BORDER 150
-#define BOTTOM_BORDER 151
-#define LEFT_CORNER_BORDER 152
-#define LEFT_BORDER_ANIM_1 153
-#define LEFT_BORDER_ANIM_2 154
-#define ASTERISK 155
+#define LEFT_BORDER 151
+#define BOTTOM_BORDER 152
+#define LEFT_CORNER_BORDER 153
+#define LEFT_BORDER_ANIM_1 154
+#define LEFT_BORDER_ANIM_2 155
+#define ASTERISK 156
 
 #define DIALOGUE_OFFSET 19
 

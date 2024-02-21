@@ -44,8 +44,8 @@ void world_init(state_parameters_t args) {
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
     text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "ppppppp");
-    sprintf(text_info.lines[1], "WWWWW");
+    sprintf(text_info.lines[0], "jpqQ,wg");
+    sprintf(text_info.lines[1], "//////");
     sprintf(text_info.lines[2], "XXXX");
 
     textbox_show(TEXT_DIALOGUE_MODE);
@@ -56,7 +56,7 @@ void world_init(state_parameters_t args) {
 
     frisk_x = 20;
     frisk_y = 20;
-    //velocity = 4;
+    // velocity = 4;
 
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
@@ -95,20 +95,20 @@ void world_init(state_parameters_t args) {
 void world_input(u16 changed, u16 state) {
     if (state & BUTTON_RIGHT) {
         xvelocity = 1;
-	SPR_setFrame(frisk, 2);
+        SPR_setFrame(frisk, 2);
     } else if (state & BUTTON_LEFT) {
         xvelocity = -1;
     } else {
-    	xvelocity = 0;
-	//SPR_setAnimationLoop(frisk, FALSE);
-	SPR_setFrame(frisk, 0);
+        xvelocity = 0;
+        // SPR_setAnimationLoop(frisk, FALSE);
+        SPR_setFrame(frisk, 0);
     }
     if (state & BUTTON_UP) {
         yvelocity = -1;
     } else if (state & BUTTON_DOWN) {
         yvelocity = 1;
     } else {
-    	yvelocity = 0;
+        yvelocity = 0;
     }
 
     if (state & BUTTON_A) {
@@ -121,9 +121,9 @@ void world_update() {
     SPR_setPosition(frisk, frisk_x + xvelocity, frisk_y + yvelocity);
     frisk_x += xvelocity;
     frisk_y += yvelocity;
-//    if (xvelocity) {
-//	SPR_setAnim(frisk, 2);
-//    }
+    //    if (xvelocity) {
+    //	SPR_setAnim(frisk, 2);
+    //    }
     if (collides(heart_bb, enemy_bb)) {
         /*
             Todo: Push battle transistion
