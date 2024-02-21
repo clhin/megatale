@@ -1,17 +1,17 @@
 #Palettes
-PALETTE ruinspal "start.png"
+PALETTE ruinspal "backgrounds/start.png"
 
 #Sprites
-SPRITE heart_sprite	"heart.png" 1 1 FAST NONE
-SPRITE battle_select "battle_sheet.png" 7 3 FAST NONE 
-SPRITE frisk_sprite "frisk.png" 3 4 FAST NONE
+SPRITE heart_sprite	"sprites/heart.png" 1 1 FAST NONE
+SPRITE battle_select "sprites/battle_sheet.png" 7 3 FAST NONE 
+SPRITE frisk_sprite "sprites/frisk.png" 3 4 FAST NONE
 
 #Images
-IMAGE font "8bitfonts.png" BEST NONE
+IMAGE font "fonts/8bitfonts.png" BEST NONE
 
 #Tilesets
-TILESET room_one "start.png" AUTO 1
-TILESET font_sheet "font_sheet.png" AUTO 1
+TILESET room_one "backgrounds/start.png" AUTO 1
+TILESET font_sheet "fonts/font_sheet.png" AUTO 1
 
 #Maps
-MAP room_1 "start.png" room_one -1
+MAP room_1 "backgrounds/start.png" room_one -1
