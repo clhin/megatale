@@ -3,10 +3,17 @@
 #define STATE_TEST_H_
 #include "../state_manager.h"
 
+#define TEST_CASE_CONTINUE 0
+#define TEST_CASE_SUCCESS 1
+#define TEST_CASE_FAIL 2
+
 typedef struct test_case {
+    const char* text;
+
     void (*init)(void);
     void (*input)(u16, u16);
     u8 (*update)(void);
+    void (*shutdown)(void);
 } test_case_t;
 
 typedef struct test_category {
