@@ -2,23 +2,27 @@
 
 #include <genesis.h>
 #include <resources.h>
-#include <string.h>
 
 #include "../collisions.h"
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
 #include "state_battle.h"
 
-Sprite *heart;
+#define TRUE 1
+#define FALSE 0
 
+Sprite *heart_test;
 Sprite *enemy_heart;
+
+Sprite *frisk;
 
 box_t heart_bb;
 box_t enemy_bb;
 
-u16 heart_x;
-u16 heart_y;
-u8 velocity;
+u16 frisk_x;
+u16 frisk_y;
+int8_t xvelocity;
+int8_t yvelocity;
 
 u16 index = 0;
 
@@ -30,20 +34,19 @@ void world_init(state_parameters_t args) {
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
     // Palette for textbox
-    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
-    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
-    PAL_setColor(35, RGB24_TO_VDPCOLOR(0x111111));
+    //    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
+    //    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
+    //    PAL_setColor(35, RGB24_TO_VDPCOLOR(0x111111));
 
-    /*
-        Initialize textbox
-    */
+    //   Initialize textbox
+
     text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
     text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "foobar barfoo gqpG");
-    sprintf(text_info.lines[1], "abc def ghi ABC");
-    sprintf(text_info.lines[2], "z[???]()-!");
+    sprintf(text_info.lines[0], "ppppppp");
+    sprintf(text_info.lines[1], "WWWWW");
+    sprintf(text_info.lines[2], "XXXX");
 
     textbox_show(TEXT_DIALOGUE_MODE);
 
@@ -51,12 +54,12 @@ void world_init(state_parameters_t args) {
 
     intToStr(MEM_getFree(), buf2, 1);
 
-    heart_x = 20;
-    heart_y = 20;
-    velocity = 4;
+    frisk_x = 20;
+    frisk_y = 20;
+    //velocity = 4;
 
-    heart_bb.x = heart_x;
-    heart_bb.y = heart_y;
+    heart_bb.x = frisk_x;
+    heart_bb.y = frisk_y;
     heart_bb.w = 8;
     heart_bb.h = 8;
 
@@ -64,31 +67,48 @@ void world_init(state_parameters_t args) {
     enemy_bb.y = 80;
     enemy_bb.w = 8;
     enemy_bb.h = 8;
+    /*
+        VDP_drawText(buf2, 1, 1);
 
-    VDP_drawText(buf2, 1, 1);
-
-    heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
-                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-
+        heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
+                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    */
     enemy_heart = SPR_addSprite(&heart_sprite, 80, 80,
                                 TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+
+    // where are we in a world init? Well, we started from the main
+    // menu, and thus we have two options as to where we are: 1. we have
+    // a blank save (load from the beginning), or we have save data and
+    // thus we load from our save state (not implemented yet)
+    if (0 /* save state */) {
+        // load save data
+    } else {
+        // we assume that menu has taken care of the fade to white
+        PAL_setPalette(PAL0, ruinspal.data, DMA);
+        //		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
+        frisk = SPR_addSprite(&frisk_sprite, 80, 80,
+                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+        heart_test = SPR_addSprite(&heart_sprite, 80, 80,
+                                   TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    }
 }
 void world_input(u16 changed, u16 state) {
     if (state & BUTTON_RIGHT) {
-        heart_x += velocity;
-    }
-    if (state & BUTTON_LEFT) {
-        heart_x -= velocity;
+        xvelocity = 1;
+	SPR_setFrame(frisk, 2);
+    } else if (state & BUTTON_LEFT) {
+        xvelocity = -1;
+    } else {
+    	xvelocity = 0;
+	//SPR_setAnimationLoop(frisk, FALSE);
+	SPR_setFrame(frisk, 0);
     }
     if (state & BUTTON_UP) {
-        // I know that if two directions are on it goes *sqrt(2) as fast, but we
-        // are dealing with integers and not floating point. Does Sega Genesis
-        // support floating point calculation? (Look into this later, simple
-        // fix, you just multiple both by 0.707)
-        heart_y -= velocity;
-    }
-    if (state & BUTTON_DOWN) {
-        heart_y += velocity;
+        yvelocity = -1;
+    } else if (state & BUTTON_DOWN) {
+        yvelocity = 1;
+    } else {
+    	yvelocity = 0;
     }
 
     if (state & BUTTON_A) {
@@ -96,10 +116,14 @@ void world_input(u16 changed, u16 state) {
     }
 }
 void world_update() {
-    heart_bb.x = heart_x;
-    heart_bb.y = heart_y;
-    SPR_setPosition(heart, heart_x, heart_y);
-
+    heart_bb.x = frisk_x;
+    heart_bb.y = frisk_y;
+    SPR_setPosition(frisk, frisk_x + xvelocity, frisk_y + yvelocity);
+    frisk_x += xvelocity;
+    frisk_y += yvelocity;
+//    if (xvelocity) {
+//	SPR_setAnim(frisk, 2);
+//    }
     if (collides(heart_bb, enemy_bb)) {
         /*
             Todo: Push battle transistion
