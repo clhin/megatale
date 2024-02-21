@@ -8,6 +8,9 @@
 #include "../graphics/textbox.h"
 #include "state_battle.h"
 
+#define TRUE 1
+#define FALSE 0
+
 Sprite *heart_test;
 Sprite *enemy_heart;
 
@@ -16,9 +19,10 @@ Sprite *frisk;
 box_t heart_bb;
 box_t enemy_bb;
 
-u16 heart_x;
-u16 heart_y;
-u8 velocity;
+u16 frisk_x;
+u16 frisk_y;
+int8_t xvelocity;
+int8_t yvelocity;
 
 u16 index = 0;
 
@@ -50,12 +54,12 @@ void world_init(state_parameters_t args) {
 
     intToStr(MEM_getFree(), buf2, 1);
 
-    heart_x = 20;
-    heart_y = 20;
-    velocity = 4;
+    frisk_x = 20;
+    frisk_y = 20;
+    //velocity = 4;
 
-    heart_bb.x = heart_x;
-    heart_bb.y = heart_y;
+    heart_bb.x = frisk_x;
+    heart_bb.y = frisk_y;
     heart_bb.w = 8;
     heart_bb.h = 8;
 
@@ -90,20 +94,21 @@ void world_init(state_parameters_t args) {
 }
 void world_input(u16 changed, u16 state) {
     if (state & BUTTON_RIGHT) {
-        heart_x += velocity;
-    }
-    if (state & BUTTON_LEFT) {
-        heart_x -= velocity;
+        xvelocity = 1;
+	SPR_setFrame(frisk, 2);
+    } else if (state & BUTTON_LEFT) {
+        xvelocity = -1;
+    } else {
+    	xvelocity = 0;
+	//SPR_setAnimationLoop(frisk, FALSE);
+	SPR_setFrame(frisk, 0);
     }
     if (state & BUTTON_UP) {
-        // I know that if two directions are on it goes *sqrt(2) as fast, but we
-        // are dealing with integers and not floating point. Does Sega Genesis
-        // support floating point calculation? (Look into this later, simple
-        // fix, you just multiple both by 0.707)
-        heart_y -= velocity;
-    }
-    if (state & BUTTON_DOWN) {
-        heart_y += velocity;
+        yvelocity = -1;
+    } else if (state & BUTTON_DOWN) {
+        yvelocity = 1;
+    } else {
+    	yvelocity = 0;
     }
 
     if (state & BUTTON_A) {
@@ -111,10 +116,14 @@ void world_input(u16 changed, u16 state) {
     }
 }
 void world_update() {
-    heart_bb.x = heart_x;
-    heart_bb.y = heart_y;
-    SPR_setPosition(heart_test, heart_x, heart_y);
-
+    heart_bb.x = frisk_x;
+    heart_bb.y = frisk_y;
+    SPR_setPosition(frisk, frisk_x + xvelocity, frisk_y + yvelocity);
+    frisk_x += xvelocity;
+    frisk_y += yvelocity;
+//    if (xvelocity) {
+//	SPR_setAnim(frisk, 2);
+//    }
     if (collides(heart_bb, enemy_bb)) {
         /*
             Todo: Push battle transistion

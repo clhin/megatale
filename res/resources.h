@@ -5,6 +5,7 @@ extern const Palette ruinspal;
 extern const SpriteDefinition heart_sprite;
 extern const SpriteDefinition battle_select;
 extern const SpriteDefinition frisk_sprite;
+extern const Image font;
 extern const TileSet room_one;
 extern const TileSet font_sheet;
 extern const MapDefinition room_1;

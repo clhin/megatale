@@ -18,6 +18,9 @@ int main() {
     JOY_init();
     JOY_setEventHandler(&event_handler);
 
+    VDP_loadFont(font.tileset, DMA);
+    PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
+    VDP_setTextPalette(PAL1);
     state_info_t state_info;
     state_info.clean = intro_clean;
     state_info.init = intro_init;
