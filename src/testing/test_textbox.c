@@ -1,4 +1,5 @@
 #include "test_textbox.h"
+#if defined(TEST_MODE)
 
 void test_textbox1_init();
 void test_textbox1_input(u16, u16);
@@ -17,3 +18,5 @@ void test_textbox1_init() {}
 void test_textbox1_input(u16 changed, u16 state) {}
 u8 test_textbox1_update() { return TEST_CASE_SUCCESS; }
 void test_textbox1_shutdown() {}
+
+#endif
