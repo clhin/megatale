@@ -7,7 +7,7 @@
 
 test_category_t categories[] = {
     {.text = ": Textbox",
-     .amount = sizeof(textbox_tests) / sizeof(test_case_t),
+     .amount = 0,
      .tests = {textbox_tests}},  //{.text = ": World"}, //{.text = ": Sound"}
 };
 
@@ -19,6 +19,8 @@ u8 case_selection = 0;
 Sprite *heart;
 
 void test_init(state_parameters_t args) {
+    categories[0].amount = 2;
+
     SPR_init();
 
     VDP_drawText("Testing Menu", 2, 0);
@@ -44,11 +46,15 @@ void test_input(u16 changed, u16 state) {
         return;
     }
 
-    if ((changed & BUTTON_DOWN) && (state & BUTTON_DOWN)) {
+    if ((changed & BUTTON_DOWN) && (state & BUTTON_DOWN) && at_category) {
         category_selection = (category_selection + 1) %
                              (sizeof(categories) / sizeof(categories[0]));
 
         SPR_setPosition(heart, 0, (4 + category_selection) * 8);
+    } else if ((changed & BUTTON_DOWN) && (state & BUTTON_DOWN)) {
+        case_selection =
+            (case_selection + 1) % categories[category_selection].amount;
+        SPR_setPosition(heart, 0, (4 + case_selection) * 8);
     }
 
     if (changed & BUTTON_A && state & BUTTON_A && at_category) {
