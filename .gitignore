@@ -4,4 +4,5 @@ out/*
 #Etc.
 res/workspace
 res/*.aseprite
+res/*.h
 *.DS_Store
