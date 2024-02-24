@@ -8,9 +8,6 @@
 #include "../graphics/textbox.h"
 #include "state_battle.h"
 
-#define TRUE 1
-#define FALSE 0
-
 Sprite *heart_test;
 Sprite *enemy_heart;
 
@@ -33,20 +30,15 @@ void world_init(state_parameters_t args) {
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-    // Palette for textbox
-    //    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
-    //    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
-    //    PAL_setColor(35, RGB24_TO_VDPCOLOR(0x111111));
-
     //   Initialize textbox
 
     text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
     text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "jpqQ,wg");
-    sprintf(text_info.lines[1], "//////");
-    sprintf(text_info.lines[2], "XXXX");
+    sprintf(text_info.lines[0], "Make sure there is\n");
+    sprintf(text_info.lines[1], "room in your pockets\n");
+    sprintf(text_info.lines[2], "for that.");
 
     textbox_show(TEXT_DIALOGUE_MODE);
 
@@ -95,13 +87,10 @@ void world_init(state_parameters_t args) {
 void world_input(u16 changed, u16 state) {
     if (state & BUTTON_RIGHT) {
         xvelocity = 1;
-        SPR_setFrame(frisk, 2);
     } else if (state & BUTTON_LEFT) {
         xvelocity = -1;
     } else {
         xvelocity = 0;
-        // SPR_setAnimationLoop(frisk, FALSE);
-        SPR_setFrame(frisk, 0);
     }
     if (state & BUTTON_UP) {
         yvelocity = -1;
@@ -116,8 +105,37 @@ void world_input(u16 changed, u16 state) {
     }
 }
 void world_update() {
+    static uint8_t priority = 0;
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
+    if (xvelocity != 0 && yvelocity == 0) {
+	priority = 1;
+    } else if (xvelocity == 0 && yvelocity != 0){
+	priority = 0;
+    }
+    if (priority) {
+        if(xvelocity == -1) {
+	    SPR_setHFlip(frisk, TRUE);
+	    SPR_setAnim(frisk, SIDE_WALK);
+        } else if (xvelocity == 1) {
+	    SPR_setHFlip(frisk, FALSE);
+	    SPR_setAnim(frisk, SIDE_WALK);
+        } else {
+	    SPR_setAnim(frisk, SIDE);
+	}
+    } else {
+	SPR_setHFlip(frisk, FALSE);
+	if (yvelocity == -1){
+	    SPR_setAnim(frisk, BACK_WALK);
+	} else if (yvelocity == 1) {
+	    SPR_setAnim(frisk, FRONT_WALK);
+	} else {
+	    if(frisk->animInd == FRONT_WALK)
+		SPR_setAnim(frisk, FRONT);
+	    else if(frisk->animInd == BACK_WALK)
+		SPR_setAnim(frisk, BACK);    
+	}
+    }
     SPR_setPosition(frisk, frisk_x + xvelocity, frisk_y + yvelocity);
     frisk_x += xvelocity;
     frisk_y += yvelocity;
