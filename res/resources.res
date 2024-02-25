@@ -13,5 +13,8 @@ IMAGE font "fonts/8bitfonts.png" BEST NONE
 TILESET room_one "backgrounds/start.png" AUTO 1
 TILESET font_sheet "fonts/font_sheet.png" AUTO 1
 
+#Portraits (Tilesets)
+TILESET portrait_flowey "portrait/flowey.png" AUTO 1 
+
 #Maps
 MAP room_1 "backgrounds/start.png" room_one -1

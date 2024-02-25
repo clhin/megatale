@@ -4,12 +4,13 @@
 #include <resources.h>
 
 #include "../collisions.h"
+#include "../graphics/portrait.h"
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
 #include "state_battle.h"
-
 #define TRUE 1
 #define FALSE 0
+#include "../graphics/portrait.h"
 
 Sprite *heart_test;
 Sprite *enemy_heart;
@@ -32,7 +33,9 @@ void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-
+    portrait_flowey_loadtiles(TILE_USER_INDEX + font_sheet.numTile);
+    portrait_flowey_draw(20, 4, PAL1);
+    portrait_flowey_animate(20, 4, PAL1, 1);
     // Palette for textbox
     //    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
     //    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
@@ -48,11 +51,21 @@ void world_init(state_parameters_t args) {
     sprintf(text_info.lines[1], "//////");
     sprintf(text_info.lines[2], "XXXX");
 
+    /*VDP_setTileMapXY(
+        BG_A,
+        TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + font_sheet.numTile), 24,
+        4);
+*/
     textbox_show(TEXT_DIALOGUE_MODE);
 
     char buf2[32];
+    char buf3[32];
+
+    intToStr(portrait_flowey.numTile, buf3, 1);
 
     intToStr(MEM_getFree(), buf2, 1);
+
+    VDP_drawText(buf3, 1, 1);
 
     frisk_x = 20;
     frisk_y = 20;
@@ -67,6 +80,7 @@ void world_init(state_parameters_t args) {
     enemy_bb.y = 80;
     enemy_bb.w = 8;
     enemy_bb.h = 8;
+
     /*
         VDP_drawText(buf2, 1, 1);
 
@@ -144,6 +158,8 @@ void world_update() {
 
     if (counter >= 5) {
         if (textbox_tick()) textbox_close();
+
+        portrait_flowey_animate(20, 4, PAL1, index++);
         counter = 0;
     }
 }
