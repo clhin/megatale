@@ -4,13 +4,11 @@
 #include <resources.h>
 
 #include "../collisions.h"
-#include "../graphics/portrait.h"
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
 #include "state_battle.h"
 #define TRUE 1
 #define FALSE 0
-#include "../graphics/portrait.h"
 
 Sprite *heart_test;
 Sprite *enemy_heart;
@@ -33,9 +31,6 @@ void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-    portrait_flowey_loadtiles(TILE_USER_INDEX + font_sheet.numTile);
-    portrait_flowey_draw(20, 4, PAL1);
-    portrait_flowey_animate(20, 4, PAL1, 1);
     // Palette for textbox
     //    PAL_setColor(33, RGB24_TO_VDPCOLOR(0x000000));
     //    PAL_setColor(34, RGB24_TO_VDPCOLOR(0xffffff));
@@ -43,25 +38,26 @@ void world_init(state_parameters_t args) {
 
     //   Initialize textbox
 
-    text_info.lines_used = 3;
+    /*text_info.lines_used = 3;
     text_info.asterisks[0] = 1;
     text_info.asterisks[1] = 1;
     text_info.asterisks[2] = 1;
     sprintf(text_info.lines[0], "jpqQ,wg");
     sprintf(text_info.lines[1], "//////");
-    sprintf(text_info.lines[2], "XXXX");
+    sprintf(text_info.lines[2], "XXXX");*/
+
+    textbox_init(TEXT_FLOWEY_MODE, DIALOGUE_OFFSET, "Hello\nWorld", TRUE, TRUE,
+                 TRUE);
 
     /*VDP_setTileMapXY(
         BG_A,
         TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + font_sheet.numTile), 24,
         4);
 */
-    textbox_show(TEXT_DIALOGUE_MODE);
+    // textbox_show(TEXT_DIALOGUE_MODE);
 
     char buf2[32];
     char buf3[32];
-
-    intToStr(portrait_flowey.numTile, buf3, 1);
 
     intToStr(MEM_getFree(), buf2, 1);
 
@@ -156,10 +152,9 @@ void world_update() {
     }
     counter++;
 
-    if (counter >= 5) {
-        if (textbox_tick()) textbox_close();
-
-        portrait_flowey_animate(20, 4, PAL1, index++);
+    if (counter >= 20) {
+        if (textbox_tick())
+            textbox_flush("I'm repeating\nmyself", TRUE, FALSE, FALSE);
         counter = 0;
     }
 }

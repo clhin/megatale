@@ -6,12 +6,13 @@
 #define MAX_TORIEL_LINE_SIZE 20
 #define FONT_SHEET_WIDTH 38
 
-#define TEXT_DIALOGUE_OFFSET 20
+#define DIALOGUE_OFFSET 19
 
 // Hardcode Toriel as a mode because we only have one dialogue with a portrait.
 typedef enum {
     TEXT_DIALOGUE_MODE,
     TEXT_BATTLE_MODE,
+    TEXT_FLOWEY_MODE,
     TEXT_TORIEL_MODE
 } TextBoxMode;
 
@@ -28,11 +29,22 @@ struct {
 
     // How many letters of the textbox have been written. <= sum(lines[0, 1, 2])
     u8 chars_written;
+    u8 y_off;
+    u8 x_off;
+
+    Sprite *portrait;
 } text_info;
 
 /*
-    Show the textbox. Before you call this function, you should set the values
-   of "lines," "lines_used" and "asterisks" to initialize the textbox.
+    Handler for textbox_show that also handles setting up structure for you.
+*/
+void textbox_init(TextBoxMode mode, u8 y_off, const char *text, u8 asterisk_one,
+                  u8 asterisk_two, u8 asterisk_three);
+
+/*
+    Show the textbox. Before you call this function, you should set the
+   values of "lines," "lines_used" and "asterisks" to initialize the
+   textbox.
 */
 void textbox_show(TextBoxMode mode);
 
@@ -45,9 +57,10 @@ void textbox_show(TextBoxMode mode);
 u8 textbox_tick();
 
 /*
-    Clear the text from the box.
+    Clear the text from the box and supply it with more text.
 */
-void textbox_flush();
+void textbox_flush(const char *text, u8 asterisk_one, u8 asterisk_two,
+                   u8 asterisk_three);
 
 /*
     Erase the textbox completely
