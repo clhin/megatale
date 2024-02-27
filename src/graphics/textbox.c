@@ -62,8 +62,7 @@ void textbox_init(TextBoxMode mode, u8 y_off, const char *text, u8 asterisk_one,
 
     // If we're in portrait mode, we ignore the lines_used done by
     // set_dialogue() and set it to 3.
-    if (mode == TEXT_FLOWEY_MODE || mode == TEXT_TORIEL_MODE)
-        text_info.lines_used = 3;
+    if (mode == TEXT_FLOWEY_MODE) text_info.lines_used = 3;
 
     textbox_show(mode);
 }
@@ -84,9 +83,6 @@ void textbox_show(TextBoxMode mode) {
             text_info.portrait =
                 SPR_addSprite(&portrait_flowey, 4 * 8, (full_off + 1) * 8,
                               TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-            break;
-        case TEXT_TORIEL_MODE:
-            text_info.x_off = 12;
             break;
     }
 
@@ -200,9 +196,7 @@ void textbox_flush(const char *text, u8 asterisk_one, u8 asterisk_two,
 
     set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
 
-    if (text_info.mode == TEXT_FLOWEY_MODE ||
-        text_info.mode == TEXT_TORIEL_MODE)
-        text_info.lines_used = 3;
+    if (text_info.mode == TEXT_FLOWEY_MODE) text_info.lines_used = 3;
 
     text_info.chars_written = 0;
 }
