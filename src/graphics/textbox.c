@@ -1,15 +1,20 @@
 #include "textbox.h"
 
+#include <resources.h>
+
 #include "text.h"
 
 /*
-    Local function headers that are defined lower in the file
+    Local function headers that are defined lower in the file - help with DRY
+   principles
 */
 
 void letter_help(char c, u8 line, u8 position, u8 x, u8 y);
 void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y);
 void set_tile(u8 vflip, u8 hflip, u16 tile_x, u16 tile_y, u16 x, u16 y);
 void asterisk_show(u8 asterisk_num);
+void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
+                  u8 asterisk_three);
 
 #define LEFT_BORDER 151
 #define BOTTOM_BORDER 152
@@ -18,50 +23,87 @@ void asterisk_show(u8 asterisk_num);
 #define LEFT_BORDER_ANIM_2 155
 #define ASTERISK 156
 
-#define DIALOGUE_OFFSET 19
-
-void textbox_show(TextBoxMode mode) {
-    text_info.chars_written = 0;
-
-    // For now we only handle Dialogue, gotta handle Portrait mode and Battle
-    // mode soon
-    u8 full_off = DIALOGUE_OFFSET;
-    u8 x_off = 0;
-
+void box_draw(u8 x, u8 y, u8 w, u8 h, u8 pal) {
+    if (w < 3 || h < 3) return;
     // This just sets the horizontal line borders
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
-        full_off - 1, MAX_LINE_SIZE + 2, 1);
+        BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER),
+        x + 1, y, w - 2, 1);
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
-        full_off + 1 + text_info.lines_used * 2, MAX_LINE_SIZE + 2, 1);
+        BG_A, TILE_ATTR_FULL(pal, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER),
+        x + 1, y + h - 1, w - 2, 1);
 
     // Sets the vertical line borders
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), 3,
-        full_off, 1, text_info.lines_used * 2 + 1);
+        BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), x,
+        y + 1, 1, h - 2);
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER), 36,
-        full_off, 1, text_info.lines_used * 2 + 1);
+        BG_A, TILE_ATTR_FULL(pal, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER),
+        x + w - 1, y + 1, 1, h - 2);
 
-    // Fill body
-    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX), 4,
-                        full_off, 32, text_info.lines_used * 2 + 1);
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX),
+                        x + 1, y + 1, w - 2, h - 2);
 
-    // Corner pieces
-    tile_set(0, 1, LEFT_CORNER_BORDER, 3, full_off - 1);
-    tile_set(0, 0, LEFT_CORNER_BORDER, 36, full_off - 1);
-    tile_set(1, 0, LEFT_CORNER_BORDER, 36,
-             full_off + text_info.lines_used * 2 + 1);
-    tile_set(1, 1, LEFT_CORNER_BORDER, 3,
-             full_off + text_info.lines_used * 2 + 1);
+    tile_set(0, 1, LEFT_CORNER_BORDER, x, y);
+    tile_set(0, 0, LEFT_CORNER_BORDER, x + w - 1, y);
+
+    tile_set(1, 1, LEFT_CORNER_BORDER, x, y + h - 1);
+    tile_set(1, 0, LEFT_CORNER_BORDER, x + w - 1, y + h - 1);
+}
+
+void textbox_init(TextBoxMode mode, u8 y_off, const char *text, u8 asterisk_one,
+                  u8 asterisk_two, u8 asterisk_three) {
+    text_info.y_off = y_off;
+
+    set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
+
+    // If we're in portrait mode, we ignore the lines_used done by
+    // set_dialogue() and set it to 3.
+    if (mode == TEXT_FLOWEY_MODE || mode == TEXT_TORIEL_MODE)
+        text_info.lines_used = 3;
+
+    textbox_show(mode);
+}
+
+void textbox_show(TextBoxMode mode) {
+    text_info.mode = mode;
+    text_info.portrait = NULL;
+    text_info.chars_written = 0;
+
+    u8 full_off = text_info.y_off;
+
+    switch (mode) {
+        case TEXT_DIALOGUE_MODE:
+            text_info.x_off = 6;
+            break;
+        case TEXT_FLOWEY_MODE:
+            text_info.x_off = 12;
+            text_info.portrait =
+                SPR_addSprite(&portrait_flowey, 4 * 8, (full_off + 1) * 8,
+                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+            break;
+        case TEXT_TORIEL_MODE:
+            text_info.x_off = 12;
+            break;
+    }
+
+    /*
+        Explanation:
+
+        box_draw() includes borders so we need to add them.
+
+        width is lines + 2 asterisks + 2 borders
+        height is lines used * 2 * 1 + 2 for borders
+    */
+    box_draw(3, full_off - 1, MAX_LINE_SIZE + 4, text_info.lines_used * 2 + 3,
+             PAL1);
 }
 
 u8 textbox_tick() {
-    u8 full_off = DIALOGUE_OFFSET;
+    u8 full_off = text_info.y_off;
 
     // First: get the total amount of characters the textbox encompasses, if the
     // characters written >= then the length, we've finished the dialogue so we
@@ -97,7 +139,8 @@ u8 textbox_tick() {
         Third case: we need to draw the third line.
     */
     if (len < strlen(text_info.lines[0])) {
-        letter_help(text_info.lines[0][len], 0, len, 6 + len, full_off);
+        letter_help(text_info.lines[0][len], 0, len, text_info.x_off + len,
+                    full_off);
 
         if (len == 0 && text_info.asterisks[0]) {
             write_asterisk = TRUE;
@@ -112,8 +155,8 @@ u8 textbox_tick() {
 
         u8 offset = (len - strlen(text_info.lines[0]));
 
-        letter_help(text_info.lines[1][offset], 1, offset, 6 + offset,
-                    full_off + 2);
+        letter_help(text_info.lines[1][offset], 1, offset,
+                    text_info.x_off + offset, full_off + 2);
 
         if (offset == 0 && text_info.asterisks[1]) {
             write_asterisk = TRUE;
@@ -124,8 +167,8 @@ u8 textbox_tick() {
         u8 offset =
             (len - strlen(text_info.lines[0]) - strlen(text_info.lines[1]));
 
-        letter_help(text_info.lines[2][offset], 2, offset, 6 + offset,
-                    full_off + 4);
+        letter_help(text_info.lines[2][offset], 2, offset,
+                    text_info.x_off + offset, full_off + 4);
 
         if (offset == 0 && text_info.asterisks[2]) {
             write_asterisk = TRUE;
@@ -138,15 +181,36 @@ u8 textbox_tick() {
 
     text_info.chars_written++;
 
+    /* This section is for portrait animation, if there is any
+     */
+
+    switch (text_info.mode) {
+        case TEXT_FLOWEY_MODE:
+            SPR_nextFrame(text_info.portrait);
+            break;
+    }
+
     return 0;
 }
 
-void textbox_flush() {
-    VDP_clearTileMapRect(BG_A, 4, DIALOGUE_OFFSET, 32,
+void textbox_flush(const char *text, u8 asterisk_one, u8 asterisk_two,
+                   u8 asterisk_three) {
+    VDP_clearTileMapRect(BG_A, 4, text_info.y_off, 32,
                          text_info.lines_used * 2 + 1);
+
+    set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
+
+    if (text_info.mode == TEXT_FLOWEY_MODE ||
+        text_info.mode == TEXT_TORIEL_MODE)
+        text_info.lines_used = 3;
+
+    text_info.chars_written = 0;
 }
 void textbox_close() {
-    VDP_clearTileMapRect(BG_A, 3, DIALOGUE_OFFSET - 1, 34,
+    SPR_releaseSprite(text_info.portrait);
+    text_info.portrait = NULL;
+
+    VDP_clearTileMapRect(BG_A, 3, text_info.y_off - 1, 34,
                          text_info.lines_used * 2 + 3);
 }
 
@@ -204,7 +268,41 @@ void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y) {
 
 // Given an asterisk number, we just need to write it in its specified position.
 void asterisk_show(u8 asterisk_num) {
-    u8 y_off = DIALOGUE_OFFSET + asterisk_num * 2 + 1;
-    tile_set(0, 0, ASTERISK, 4, y_off);
-    tile_set(0, 1, ASTERISK, 5, y_off);
+    u8 y_off = text_info.y_off + asterisk_num * 2 + 1;
+    tile_set(0, 0, ASTERISK, text_info.x_off - 2, y_off);
+    tile_set(0, 1, ASTERISK, text_info.x_off - 1, y_off);
+}
+
+void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
+                  u8 asterisk_three) {
+    u8 line = 0;
+
+    char *src = text;
+    char *dst = text_info.lines[line];
+
+    text_info.lines_used = 1;
+
+    while (*src != '\0') {
+        if (*src == '\n') {
+            line++;
+            text_info.lines_used++;
+            if (text_info.lines_used >= 4) break;
+
+            (*dst) = '\0';
+            dst = text_info.lines[line];
+
+            src++;
+        } else {
+            *(dst++) = *(src++);
+        }
+    }
+    (*dst) = '\0';
+
+    for (u8 i = text_info.lines_used; i < 3; ++i) {
+        strncpy(text_info.lines[i], "", 1);
+    }
+
+    text_info.asterisks[0] = asterisk_one;
+    text_info.asterisks[1] = asterisk_two;
+    text_info.asterisks[2] = asterisk_three;
 }

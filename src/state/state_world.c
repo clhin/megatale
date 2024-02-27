@@ -32,25 +32,17 @@ void world_init(state_parameters_t args) {
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-    //   Initialize textbox
-
-    text_info.lines_used = 3;
-    text_info.asterisks[0] = 1;
-    text_info.asterisks[1] = 1;
-    text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "Make sure there is\n");
-    sprintf(text_info.lines[1], "room in your pockets\n");
-    sprintf(text_info.lines[2], "for that.");
-
-    textbox_show(TEXT_DIALOGUE_MODE);
+    textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET,
+                 "Make sure there is\nroom in your pockets\nfor that.", TRUE,
+                 FALSE, FALSE);
 
     char buf2[32];
-
     intToStr(MEM_getFree(), buf2, 1);
+
+    VDP_drawText(buf2, 1, 1);
 
     frisk_x = 20;
     frisk_y = 20;
-    // velocity = 4;
 
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
@@ -61,6 +53,7 @@ void world_init(state_parameters_t args) {
     enemy_bb.y = 80;
     enemy_bb.w = 8;
     enemy_bb.h = 8;
+
     /*
         VDP_drawText(buf2, 1, 1);
 
@@ -163,8 +156,9 @@ void world_update() {
     }
     counter++;
 
-    if (counter >= 5) {
-        if (textbox_tick()) textbox_close();
+    if (counter >= 10) {
+        if (textbox_tick())
+            textbox_flush("I'm repeating\nmyself", TRUE, FALSE, FALSE);
         counter = 0;
     }
 }
