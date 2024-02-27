@@ -46,7 +46,7 @@ void world_init(state_parameters_t args) {
     sprintf(text_info.lines[1], "//////");
     sprintf(text_info.lines[2], "XXXX");*/
 
-    textbox_init(TEXT_FLOWEY_MODE, DIALOGUE_OFFSET, "Hello\nWorld", TRUE, TRUE,
+    textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET, "Hello\nWorld", TRUE, TRUE,
                  TRUE);
 
     /*VDP_setTileMapXY(

@@ -5,7 +5,8 @@
 #include "text.h"
 
 /*
-    Local function headers that are defined lower in the file
+    Local function headers that are defined lower in the file - help with DRY
+   principles
 */
 
 void letter_help(char c, u8 line, u8 position, u8 x, u8 y);
@@ -28,6 +29,8 @@ void textbox_init(TextBoxMode mode, u8 y_off, const char *text, u8 asterisk_one,
 
     set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
 
+    // If we're in portrait mode, we ignore the lines_used done by
+    // set_dialogue() and set it to 3.
     if (mode == TEXT_FLOWEY_MODE || mode == TEXT_TORIEL_MODE)
         text_info.lines_used = 3;
 
@@ -36,15 +39,10 @@ void textbox_init(TextBoxMode mode, u8 y_off, const char *text, u8 asterisk_one,
 
 void textbox_show(TextBoxMode mode) {
     text_info.mode = mode;
-
     text_info.portrait = NULL;
-
     text_info.chars_written = 0;
 
-    // For now we only handle Dialogue, gotta handle Portrait mode and Battle
-    // mode soon
     u8 full_off = text_info.y_off;
-    u8 x_off = 0;
 
     switch (mode) {
         case TEXT_DIALOGUE_MODE:
@@ -186,7 +184,7 @@ u8 textbox_tick() {
 
 void textbox_flush(const char *text, u8 asterisk_one, u8 asterisk_two,
                    u8 asterisk_three) {
-    VDP_clearTileMapRect(BG_A, 4, DIALOGUE_OFFSET, 32,
+    VDP_clearTileMapRect(BG_A, 4, text_info.y_off, 32,
                          text_info.lines_used * 2 + 1);
 
     set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
@@ -201,7 +199,7 @@ void textbox_close() {
     SPR_releaseSprite(text_info.portrait);
     text_info.portrait = NULL;
 
-    VDP_clearTileMapRect(BG_A, 3, DIALOGUE_OFFSET - 1, 34,
+    VDP_clearTileMapRect(BG_A, 3, text_info.y_off - 1, 34,
                          text_info.lines_used * 2 + 3);
 }
 
@@ -277,6 +275,8 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
         if (*src == '\n') {
             line++;
             text_info.lines_used++;
+            if (text_info.lines_used >= 4) break;
+
             (*dst) = '\0';
             dst = text_info.lines[line];
 
