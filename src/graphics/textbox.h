@@ -28,8 +28,7 @@
 typedef enum {
     TEXT_DIALOGUE_MODE,
     TEXT_BATTLE_MODE,
-    TEXT_FLOWEY_MODE,
-    TEXT_TORIEL_MODE
+    TEXT_FLOWEY_MODE
 } TextBoxMode;
 
 struct {
