@@ -64,7 +64,7 @@ print("};")
 
 print("switch(c){")
 for i,v in enumerate(switch):
-    print("case {0}:".format(v))
+    print("case '{0}':".format(chr(v)))
     print("\t return lookup_table[{0}];".format(i)) 
     print("\t break;")
 print("default:")

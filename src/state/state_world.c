@@ -31,19 +31,9 @@ void world_init(state_parameters_t args) {
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-    //   Initialize textbox
-
-    /*text_info.lines_used = 3;
-    text_info.asterisks[0] = 1;
-    text_info.asterisks[1] = 1;
-    text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "jpqQ,wg");
-    sprintf(text_info.lines[1], "//////");
-    sprintf(text_info.lines[2], "XXXX");*/
-
     textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET,
-                 "Make sure there is\room in your pockets\nfor that.", TRUE,
-                 TRUE, TRUE);
+                 "Make sure there is\nroom in your pockets\nfor that.", TRUE,
+                 FALSE, FALSE);
 
     /*VDP_setTileMapXY(
         BG_A,
@@ -174,7 +164,7 @@ void world_update() {
     }
     counter++;
 
-    if (counter >= 20) {
+    if (counter >= 10) {
         if (textbox_tick())
             textbox_flush("I'm repeating\nmyself", TRUE, FALSE, FALSE);
         counter = 0;
