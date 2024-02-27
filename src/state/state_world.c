@@ -7,6 +7,7 @@
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
 #include "../graphics/utils.h"
+#include "../graphics/level.h"
 #include "state_battle.h"
 
 Sprite *heart_test;
@@ -22,15 +23,26 @@ u16 frisk_y;
 int8_t xvelocity;
 int8_t yvelocity;
 
-u16 index = 0;
+u16 ind = TILE_USER_INDEX;
 
+Map * map;
 u16 counter = 0;
 
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
+#ifdef DEBUG
+    char buffer1[32];
+#endif
+    PAL_setPalette(PAL0, ruinspal.data,DMA);
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-
+    ind += font_sheet.numTile;
+    map = loadlevel(0,ind);
+    MAP_scrollTo(map, 0,0);
+#ifdef DEBUG
+    sprintf(buffer1, "font tiles: %d bg tiles: %d", font_sheet.numTile, room_one.numTile);
+    VDP_drawText(buffer1, 1,1);
+#endif
     textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET,
                  "Make sure there is\nroom in your pockets\nfor that.", TRUE,
                  FALSE, FALSE);
