@@ -35,23 +35,13 @@ void world_init(state_parameters_t args) {
                  "Make sure there is\nroom in your pockets\nfor that.", TRUE,
                  FALSE, FALSE);
 
-    /*VDP_setTileMapXY(
-        BG_A,
-        TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + font_sheet.numTile), 24,
-        4);
-*/
-    // textbox_show(TEXT_DIALOGUE_MODE);
-
     char buf2[32];
-    char buf3[32];
-
     intToStr(MEM_getFree(), buf2, 1);
 
-    VDP_drawText(buf3, 1, 1);
+    VDP_drawText(buf2, 1, 1);
 
     frisk_x = 20;
     frisk_y = 20;
-    // velocity = 4;
 
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
