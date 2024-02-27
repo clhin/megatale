@@ -23,6 +23,37 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
 #define LEFT_BORDER_ANIM_2 155
 #define ASTERISK 156
 
+void box_draw(u8 x, u8 y, u8 w, u8 h, u8 pal) {
+    if (w < 3 || h < 3) return;
+    // This just sets the horizontal line borders
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER),
+        x + 1, y, w - 2, 1);
+
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(pal, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER),
+        x + 1, y + h - 1, w - 2, 1);
+
+    // Sets the vertical line borders
+
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), x,
+        y + 1, 1, h - 2);
+
+    VDP_fillTileMapRect(
+        BG_A, TILE_ATTR_FULL(pal, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER),
+        x + w - 1, y + 1, 1, h - 2);
+
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX),
+                        x + 1, y + 1, w - 2, h - 2);
+
+    tile_set(0, 1, LEFT_CORNER_BORDER, x, y);
+    tile_set(0, 0, LEFT_CORNER_BORDER, x + w - 1, y);
+
+    tile_set(1, 1, LEFT_CORNER_BORDER, x, y + h - 1);
+    tile_set(1, 0, LEFT_CORNER_BORDER, x + w - 1, y + h - 1);
+}
+
 void textbox_init(TextBoxMode mode, u8 y_off, const char *text, u8 asterisk_one,
                   u8 asterisk_two, u8 asterisk_three) {
     text_info.y_off = y_off;
@@ -59,36 +90,16 @@ void textbox_show(TextBoxMode mode) {
             break;
     }
 
-    // This just sets the horizontal line borders
-    VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
-        full_off - 1, MAX_LINE_SIZE + 2, 1);
+    /*
+        Explanation:
 
-    VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER), 4,
-        full_off + 1 + text_info.lines_used * 2, MAX_LINE_SIZE + 2, 1);
+        box_draw() includes borders so we need to add them.
 
-    // Sets the vertical line borders
-
-    VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), 3,
-        full_off, 1, text_info.lines_used * 2 + 1);
-
-    VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER), 36,
-        full_off, 1, text_info.lines_used * 2 + 1);
-
-    // Fill body
-    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX), 4,
-                        full_off, 32, text_info.lines_used * 2 + 1);
-
-    // Corner pieces
-    tile_set(0, 1, LEFT_CORNER_BORDER, 3, full_off - 1);
-    tile_set(0, 0, LEFT_CORNER_BORDER, 36, full_off - 1);
-    tile_set(1, 0, LEFT_CORNER_BORDER, 36,
-             full_off + text_info.lines_used * 2 + 1);
-    tile_set(1, 1, LEFT_CORNER_BORDER, 3,
-             full_off + text_info.lines_used * 2 + 1);
+        width is lines + 2 asterisks + 2 borders
+        height is lines used * 2 * 1 + 2 for borders
+    */
+    box_draw(3, full_off - 1, MAX_LINE_SIZE + 4, text_info.lines_used * 2 + 3,
+             PAL1);
 }
 
 u8 textbox_tick() {

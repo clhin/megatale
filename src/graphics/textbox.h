@@ -73,6 +73,11 @@ struct {
 } text_info;
 
 /*
+    Helper function to draw a box with these specifics
+*/
+void box_draw(u8 x, u8 y, u8 w, u8 h, u8 pal);
+
+/*
     Handler for textbox_show that also handles setting up structure for you. You
    give it the text with newline seperation and it'll fill it for you and call
    textbox_show().
