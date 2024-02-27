@@ -7,6 +7,7 @@
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
 #include "../graphics/utils.h"
+#include "extra/state_flowey.h"
 #include "state_battle.h"
 
 Sprite *heart_test;
@@ -110,32 +111,32 @@ void world_update() {
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
     if (xvelocity != 0 && yvelocity == 0) {
-	priority = 1;
-    } else if (xvelocity == 0 && yvelocity != 0){
-	priority = 0;
+        priority = 1;
+    } else if (xvelocity == 0 && yvelocity != 0) {
+        priority = 0;
     }
     if (priority) {
-        if(xvelocity == -1) {
-	    SPR_setHFlip(frisk, TRUE);
-	    SPR_setAnim(frisk, SIDE_WALK);
+        if (xvelocity == -1) {
+            SPR_setHFlip(frisk, TRUE);
+            SPR_setAnim(frisk, SIDE_WALK);
         } else if (xvelocity == 1) {
-	    SPR_setHFlip(frisk, FALSE);
-	    SPR_setAnim(frisk, SIDE_WALK);
+            SPR_setHFlip(frisk, FALSE);
+            SPR_setAnim(frisk, SIDE_WALK);
         } else {
-	    SPR_setAnim(frisk, SIDE);
-	}
+            SPR_setAnim(frisk, SIDE);
+        }
     } else {
-	SPR_setHFlip(frisk, FALSE);
-	if (yvelocity == -1){
-	    SPR_setAnim(frisk, BACK_WALK);
-	} else if (yvelocity == 1) {
-	    SPR_setAnim(frisk, FRONT_WALK);
-	} else {
-	    if(frisk->animInd == FRONT_WALK)
-		SPR_setAnim(frisk, FRONT);
-	    else if(frisk->animInd == BACK_WALK)
-		SPR_setAnim(frisk, BACK);    
-	}
+        SPR_setHFlip(frisk, FALSE);
+        if (yvelocity == -1) {
+            SPR_setAnim(frisk, BACK_WALK);
+        } else if (yvelocity == 1) {
+            SPR_setAnim(frisk, FRONT_WALK);
+        } else {
+            if (frisk->animInd == FRONT_WALK)
+                SPR_setAnim(frisk, FRONT);
+            else if (frisk->animInd == BACK_WALK)
+                SPR_setAnim(frisk, BACK);
+        }
     }
     SPR_setPosition(frisk, frisk_x + xvelocity, frisk_y + yvelocity);
     frisk_x += xvelocity;
@@ -149,15 +150,16 @@ void world_update() {
         */
 
         state_info_t state_info;
-        state_info.clean = battle_clean;
-        state_info.init = battle_init;
-        state_info.redraw = battle_redraw;
-        state_info.input = battle_input;
-        state_info.update = battle_update;
-        state_info.shutdown = battle_shutdown;
+        state_info.clean = flowey_clean;
+        state_info.init = flowey_init;
+        state_info.redraw = flowey_redraw;
+        state_info.input = flowey_input;
+        state_info.update = flowey_update;
+        state_info.shutdown = flowey_shutdown;
 
         state_parameters_t args;
         state_push(state_info, args);
+        return;
     }
     counter++;
 
@@ -170,6 +172,8 @@ void world_clean() {
     VDP_clearSprites();
 
     VDP_clearTextArea(0, 0, 40, 28);
+    textbox_close();
+    VDP_clearPlane(BG_A, FALSE);
 }
 void world_redraw(state_return_t ret) {}
 state_return_t world_shutdown() {
