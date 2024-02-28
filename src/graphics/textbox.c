@@ -191,8 +191,8 @@ u8 textbox_tick() {
 
 void textbox_flush(const char *text, u8 asterisk_one, u8 asterisk_two,
                    u8 asterisk_three) {
-    VDP_clearTileMapRect(BG_A, 4, text_info.y_off, 32,
-                         text_info.lines_used * 2 + 1);
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX), 4,
+                        text_info.y_off, 32, 7);
 
     set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
 
