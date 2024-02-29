@@ -48,7 +48,7 @@
 
 void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
                  LetterTail tail) {
-    u8 *arr = get_char_info(c);
+    const u8 *arr = get_char_info(c);
 
     // Handle the top of the letter based on enum tail
     switch (tail) {
@@ -103,7 +103,7 @@ void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
                      x, y + 2);
 }
 
-u8 lookup_table[76][8] = {
+const u8 lookup_table[76][8] = {
     {0x0, 0x5, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     // a
     {0x1, 0x6, 0x0, 0x52, 0x60, 0xe1, 0x77, 0x87},     // b
     {0x0, 0x7, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     // c
@@ -188,7 +188,7 @@ u8 lookup_table[76][8] = {
 
 
 */
-u8 *get_char_info(char c) {
+const u8 *get_char_info(char c) {
     switch (c) {
         case 'a':
             return lookup_table[0];
