@@ -29,7 +29,11 @@ with open("battle_dialogue.json", "r") as dialogue:
         dump(name, obj) 
 
         for i in range(len(obj)):
-            precomp_defs.append("#define {0} {1}".format(obj[i]["tag"], i))
+            sum = 0 
+            for j in range(i): 
+                sum += len(obj[j]["text"])
+
+            precomp_defs.append("#define {0} {1}".format(obj[i]["tag"], sum))
     
     header_dump = open(data["export"], "w")
     
