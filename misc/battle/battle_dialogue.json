@@ -1,0 +1,78 @@
+{
+    "export": "battle_dialogue.h",
+    "header": "BATTLE_DIALOGUE_H_",
+    "flowey": [
+        {
+            "tag": "DIALOGUE_FLOWEY0",
+            "text": "See that heart?\nThat is your SOUL.\nthe very culmination\nof your being!"
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY1",
+            "text": "Your SOUL starts off\nweak, but can grow\nstrong if you gain\na lot of LV."
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY2",
+            "text": "What's LV stand for?\nWhy, LOVE, of course!"
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY3",
+            "text": "You want some\nLOVE, don't you?"
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY4",
+            "text": "Don't worry,\nI'll share some\nwith you!"
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY5",
+            "text": "Down here, LOVE is\nshared through..."
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY6",
+            "text": "Little white...\n\"friendliness\npellets.\""
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY7",
+            "text": "Are you ready?"
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY8",
+            "text": "Move around!\nGet as many as\nyou can!"
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY9",
+            "text": "You idiot."
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY10",
+            "text": "In this world, it's\nkill or BE killed."
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY11",
+            "text": "Why would ANYONE pass\nup an oppurtunity\nlike this!?"
+        },
+        {
+            "tag": "DIALOGUE_FLOWEY12",
+            "text": "Die."
+        },
+        {
+            "tag": "DODGE_FLOWEY1",
+            "text": "Hey buddy,\nyou missed them."
+        },
+        {
+            "tag": "DODGE_FLOWEY2",
+            "text": "Let's try again,\nokay?"
+        },
+        {
+            "tag": "DODGE_FLOWEY3",
+            "text": "Is this a joke?\nAre you braindead?\nRUN. INTO. THE.\nfriendliness pellets"
+        },
+        {
+            "tag": "DODGE_FLOWEY4",
+            "text": "You know what's\ngoing on here,\ndon't you?"
+        },
+        {
+            "tag": "DODGE_FLOWEY5",
+            "text": "You just wanted to\nsee me suffer."
+        }
+    ]
+}
