@@ -21,12 +21,8 @@ void levelUpSound();
 // FallenDown soundtrack
 void startFallenDown();
 
-void startYourBestFriend();
-
 // Flowey Laugh (Big)
-//void startFloweyLaugh(int repeats);
 void startFloweyLaugh();
 
-
-// Heartache soundtrackm (smaller size)
-void startSmallHeartache();
+// Megalovania
+void startMegalovania();

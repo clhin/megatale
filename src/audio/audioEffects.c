@@ -6,7 +6,7 @@
 void startHeartache() {
     // Start heartache in the background
     XGM_setLoopNumber(-1);
-    XGM_startPlay(&heartache);
+    XGM_startPlay(&heartacheSmall);
 }
 
 void startRuins() {
@@ -35,21 +35,13 @@ void resume() {
     XGM_resumePlay();
 }
 
-void startYourBestFriend() {
-    XGM_setLoopNumber(-1);
-    XGM_startPlay(&YourBestFriend);
-}
-
 void startFloweyLaugh() {
     XGM_setPCM(LOWFLOWEYLAUGH, lowFloweyLaugh, sizeof(lowFloweyLaugh));
     XGM_startPlayPCM(LOWFLOWEYLAUGH,1,SOUND_PCM_CH2);
-
-    //for (int i = 0; i < repeats; i++) {
-
-    //}
 }
 
-void startSmallHeartache() {
+
+void startMegalovania() {
     XGM_setLoopNumber(-1);
-    XGM_startPlay(&HAPTest);
+    XGM_startPlay(&megalovania);
 }
