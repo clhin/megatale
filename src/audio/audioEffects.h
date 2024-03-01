@@ -1,3 +1,5 @@
+#ifndef AUDIO_EFFECTS_H_
+#define AUDIO_EFFECTS_H_
 #include <genesis.h>
 #include <resources.h>
 
@@ -10,10 +12,8 @@ void resume();
 // Heartache soundtrack
 void startHeartache();
 
-
 // Ruins soundtrack
 void startRuins();
-
 
 // Level up sound effect
 void levelUpSound();
@@ -24,9 +24,9 @@ void startFallenDown();
 // Flowey Laugh (Big)
 void startFloweyLaugh();
 
-
 // UWA
 void startUWA();
 
 // Flowey Talk beep noise
 void floweyTalk();
+#endif
