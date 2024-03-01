@@ -45,8 +45,8 @@ void world_init(state_parameters_t args) {
 
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
-    heart_bb.w = 8;
-    heart_bb.h = 8;
+    heart_bb.w = frisk_sprite.w;
+    heart_bb.h = frisk_sprite.h;
 
     enemy_bb.x = 80;
     enemy_bb.y = 80;
