@@ -88,7 +88,7 @@ void world_init(state_parameters_t args) {
         PAL_setPalette(PAL0, ruinspal.data, DMA);
         //		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
         frisk = SPR_addSprite(&frisk_sprite, 80, 80,
-                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+                              TILE_ATTR(PAL1, FALSE, FALSE, FALSE));
         SPR_setPriority(frisk, FALSE);
         heart_test = SPR_addSprite(&heart_sprite, 80, 80,
                                    TILE_ATTR(PAL1, TRUE, FALSE, FALSE));

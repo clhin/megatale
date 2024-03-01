@@ -55,50 +55,50 @@ void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
         case LETTER_TAIL_NONE:
             VDP_setTileMapXY(
                 plane,
-                TILE_ATTR_FULL(palette, 0, GET_TOP_VFLIP(arr),
+                TILE_ATTR_FULL(palette, TRUE, GET_TOP_VFLIP(arr),
                                GET_TOP_HFLIP(arr), offset + GET_TOP(arr)),
                 x, y);
             break;
         case LETTER_TAIL_g:
             VDP_setTileMapXY(plane,
-                             TILE_ATTR_FULL(palette, 0, 0, GET_TOP_HFLIP(arr),
+                             TILE_ATTR_FULL(palette, TRUE, 0, GET_TOP_HFLIP(arr),
                                             offset + GET_TOP_g_TAIL(arr)),
                              x, y);
             break;
         case LETTER_TAIL_p:
             VDP_setTileMapXY(
                 plane,
-                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_p_TAIL(arr)),
+                TILE_ATTR_FULL(palette, TRUE, 0, 0, offset + GET_TOP_p_TAIL(arr)),
                 x, y);
             break;
         case LETTER_TAIL_q:
             VDP_setTileMapXY(
                 plane,
-                TILE_ATTR_FULL(palette, 0, 0, GET_q_TAIL_HFLIP(arr),
+                TILE_ATTR_FULL(palette, TRUE, 0, GET_q_TAIL_HFLIP(arr),
                                offset + GET_TOP_q_TAIL(arr)),
                 x, y);
             break;
         case LETTER_TAIL_Q:
             VDP_setTileMapXY(
                 plane,
-                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_Q_TAIL(arr)),
+                TILE_ATTR_FULL(palette, TRUE, 0, 0, offset + GET_TOP_Q_TAIL(arr)),
                 x, y);
             break;
         case LETTER_TAIL_comma:
             VDP_setTileMapXY(plane,
-                             TILE_ATTR_FULL(palette, 0, 0, 0,
+                             TILE_ATTR_FULL(palette, TRUE, 0, 0,
                                             offset + GET_TOP_comma_TAIL(arr)),
                              x, y);
             break;
     }
     // Middle of Letter
     VDP_setTileMapXY(plane,
-                     TILE_ATTR_FULL(palette, 0, 0, GET_MIDDLE_HFLIP(arr),
+                     TILE_ATTR_FULL(palette, TRUE, 0, GET_MIDDLE_HFLIP(arr),
                                     offset + GET_MIDDLE(arr)),
                      x, y + 1);
     // Bottom of Letter
     VDP_setTileMapXY(plane,
-                     TILE_ATTR_FULL(palette, 0, 0, GET_BOTTOM_HFLIP(arr),
+                     TILE_ATTR_FULL(palette, TRUE, 0, GET_BOTTOM_HFLIP(arr),
                                     offset + GET_BOTTOM(arr)),
                      x, y + 2);
 }
