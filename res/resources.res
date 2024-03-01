@@ -28,5 +28,4 @@ XGM     FallenDown  "sound/FallenDown.vgm"  -1          # Perfect (small and cri
 WAV     lowFloweyLaugh "sound/lowFloweyLaugh.wav" 5     # Perfect (small and crispy)
 WAV     floweyVoice  "sound/snd_floweytalk1.wav" 5       # Perfect (small and crispy)
 XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1   # Perfect (small and crispy)   
-XGM     megalovania "sound/megalovaniaSmall.vgm" -1     # Not great even after optimizing
 XGM     uwa         "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)

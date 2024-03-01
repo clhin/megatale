@@ -42,10 +42,7 @@ void startFloweyLaugh() {
 }
 
 
-void startMegalovania() {
-    XGM_setLoopNumber(-1);
-    XGM_startPlay(&megalovania);
-}
+
 
 void startUWA() {
     XGM_setLoopNumber(-1);

@@ -24,8 +24,6 @@ void startFallenDown();
 // Flowey Laugh (Big)
 void startFloweyLaugh();
 
-// Megalovania
-void startMegalovania();
 
 // UWA
 void startUWA();
