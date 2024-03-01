@@ -26,8 +26,7 @@ int main() {
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
     VDP_setTextPalette(PAL1);
     state_info_t state_info;
-
-    // Audio testing
+    
     
 
 #ifndef TEST_MODE

@@ -26,3 +26,9 @@ void startFloweyLaugh();
 
 // Megalovania
 void startMegalovania();
+
+// UWA
+void startUWA();
+
+// Flowey Talk beep noise
+void floweyTalk();

@@ -2,6 +2,7 @@
 #include <resources.h>
 #define LEVELUP 64
 #define LOWFLOWEYLAUGH 64
+#define FLOWEYVOICE 64
 
 void startHeartache() {
     // Start heartache in the background
@@ -44,4 +45,14 @@ void startFloweyLaugh() {
 void startMegalovania() {
     XGM_setLoopNumber(-1);
     XGM_startPlay(&megalovania);
+}
+
+void startUWA() {
+    XGM_setLoopNumber(-1);
+    XGM_startPlay(&uwa);
+}
+
+void floweyTalk() {
+    XGM_setPCM(FLOWEYVOICE, floweyVoice, sizeof(floweyTalk));
+    XGM_startPlayPCM(FLOWEYVOICE, 1, SOUND_PCM_CH2);
 }
