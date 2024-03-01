@@ -34,7 +34,7 @@ void flowey_init(state_parameters_t args) {
     dialogue_x = 0;
     dialogue_y = 0;
     tick = 0;
-    c = 0;
+    c = DIALOGUE_FLOWEY1;
 
     SPR_init();
     box_draw(15, 14, 10, 9, PAL1);

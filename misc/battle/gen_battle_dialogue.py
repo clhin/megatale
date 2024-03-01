@@ -31,7 +31,7 @@ with open("battle_dialogue.json", "r") as dialogue:
         for i in range(len(obj)):
             sum = 0 
             for j in range(i): 
-                sum += len(obj[j]["text"])
+                sum += len(obj[j]["text"]) + 1
 
             precomp_defs.append("#define {0} {1}".format(obj[i]["tag"], sum))
     
