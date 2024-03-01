@@ -51,6 +51,6 @@ void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
 
     - c: which ascii character to draw
 */
-u8 *get_char_info(char c);
+const u8 *get_char_info(char c);
 
 #endif

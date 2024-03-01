@@ -3,6 +3,8 @@
 #include <genesis.h>
 #include <resources.h>
 
+#include "utils/save.h"
+#include "savedata.h"
 #include "state_world.h"
 
 #define MENU_START 0
@@ -41,6 +43,16 @@ void menu_input(u16 changed, u16 state) {
     }
 
     if (changed & BUTTON_A && (state & BUTTON_A)) {
+        state_parameters_t args;
+	SYS_disableInts();
+	if (SRAM_readByte(0) != SAVE_VALID) {
+	    args.parameter_data = NULL;
+	} else {
+	    savedata_t *p = malloc(sizeof(savedata_t));
+    	    readsave(p);
+	    args.parameter_data = p;
+	}
+	SYS_enableInts();
         state_info_t state_info;
         state_info.clean = world_clean;
         state_info.init = world_init;
@@ -49,7 +61,6 @@ void menu_input(u16 changed, u16 state) {
         state_info.update = world_update;
         state_info.shutdown = world_shutdown;
 
-        state_parameters_t args;
         state_push(state_info, args);
     }
 }

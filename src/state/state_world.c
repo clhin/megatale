@@ -7,7 +7,10 @@
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
 #include "../graphics/utils.h"
+#include "../graphics/level.h"
 #include "state_battle.h"
+#include "state_gamemenu.h"
+#include "savedata.h"
 
 Sprite *heart_test;
 Sprite *enemy_heart;
@@ -22,19 +25,31 @@ u16 frisk_y;
 int8_t xvelocity;
 int8_t yvelocity;
 
-u16 index = 0;
+u16 ind = TILE_USER_INDEX;
 
+Map * map;
+savedata_t * save;
 u16 counter = 0;
 
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
+#ifdef DEBUG
+    char buffer1[32];
+#endif
+    PAL_setPalette(PAL0, ruinspal.data,DMA);
 
-    u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+    VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+    ind += font_sheet.numTile;
+    map = loadlevel(0,ind);
+    MAP_scrollTo(map, 0,0);
+#ifdef DEBUG
+    sprintf(buffer1, "font tiles: %d bg tiles: %d", font_sheet.numTile, room_one.numTile);
+    VDP_drawText(buffer1, 1,1);
 
     textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET,
                  "Make sure there is\nroom in your pockets\nfor that.", TRUE,
                  FALSE, FALSE);
-
+#endif
     char buf2[32];
     intToStr(MEM_getFree(), buf2, 1);
 
@@ -59,21 +74,22 @@ void world_init(state_parameters_t args) {
         heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
                               TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
     */
-    enemy_heart = SPR_addSprite(&heart_sprite, 80, 80,
+    enemy_heart = SPR_addSprite(&heart_sprite, 22, 88,
                                 TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     // where are we in a world init? Well, we started from the main
     // menu, and thus we have two options as to where we are: 1. we have
     // a blank save (load from the beginning), or we have save data and
     // thus we load from our save state (not implemented yet)
-    if (0 /* save state */) {
+    if (args.parameter_data != NULL) {
         // load save data
     } else {
         // we assume that menu has taken care of the fade to white
         PAL_setPalette(PAL0, ruinspal.data, DMA);
         //		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
         frisk = SPR_addSprite(&frisk_sprite, 80, 80,
-                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+                              TILE_ATTR(PAL1, FALSE, FALSE, FALSE));
+        SPR_setPriority(frisk, FALSE);
         heart_test = SPR_addSprite(&heart_sprite, 80, 80,
                                    TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
     }
@@ -94,8 +110,17 @@ void world_input(u16 changed, u16 state) {
         yvelocity = 0;
     }
 
-    if (state & BUTTON_A) {
-        state_pop();
+    if (state & BUTTON_START) {
+	state_info_t state_info;
+        state_info.clean = gamemenu_clean;
+        state_info.init = gamemenu_init;
+        state_info.redraw = gamemenu_redraw;
+        state_info.input = gamemenu_input;
+        state_info.update = gamemenu_update;
+        state_info.shutdown = gamemenu_shutdown;
+
+        state_parameters_t args;
+        state_push(state_info, args);
     }
 }
 void world_update() {
@@ -152,6 +177,7 @@ void world_update() {
         state_parameters_t args;
         state_push(state_info, args);
     }
+#ifdef DEBUG
     counter++;
 
     if (counter >= 10) {
@@ -159,6 +185,7 @@ void world_update() {
             textbox_flush("I'm repeating\nmyself", TRUE, FALSE, FALSE);
         counter = 0;
     }
+#endif
 }
 void world_clean() {
     VDP_clearSprites();
