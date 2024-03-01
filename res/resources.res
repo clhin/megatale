@@ -26,3 +26,12 @@ MAP room_1 		"backgrounds/start.png" room_one -1
 
 #Battle Dialogue 
 BIN flowey_battle_dialogue "battle/flowey.bin" 1 0 
+
+#Sound (Most of these are massive and need to be optimized)
+XGM     ruins       "sound/ruinsSmall.vgm" -1           # Small version
+WAV     levelup     "sound/levelup-16khz.wav" 5         # Small but has weird fuzz at the end
+XGM     FallenDown  "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
+WAV     lowFloweyLaugh "sound/lowFloweyLaugh.wav" 5     # Perfect (small and crispy)
+WAV     floweyVoice  "sound/snd_floweytalk1.wav" 5       # Perfect (small and crispy)
+XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1   # Perfect (small and crispy)   
+XGM     uwa         "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)

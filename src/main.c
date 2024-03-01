@@ -9,7 +9,7 @@
 #else
 #include "state/state_intro.h"
 #endif
-
+#include "audio/audioEffects.h"
 #include "state/state_manager.h"
 
 void event_handler(u16 joy, u16 changed, u16 state) {
@@ -26,6 +26,8 @@ int main() {
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
     VDP_setTextPalette(PAL1);
     state_info_t state_info;
+    
+    
 
 #ifndef TEST_MODE
     state_info.clean = intro_clean;
