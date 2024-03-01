@@ -5,8 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${vcpkgRoot}/arm64-osx/include",
-                "/Users/ksidac/Documents/Programming/Libraries/sgdk190/inc",
-                "/Users/ksidac/Documents/Programming/Libraries/sgdk190/res",
+                "/Users/joeydorion/Desktop/U of I/Spring 2024/CS 222/SGDK-1.90/inc",
+                "/Users/joeydorion/Desktop/U of I/Spring 2024/CS 222/SGDK-1.90/res",
                 "${workspaceFolder}/res"
             ],
             "defines": [],

@@ -9,7 +9,7 @@
 #else
 #include "state/state_intro.h"
 #endif
-
+#include "audio/audioEffects.h"
 #include "state/state_manager.h"
 
 void event_handler(u16 joy, u16 changed, u16 state) {
