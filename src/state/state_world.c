@@ -3,6 +3,7 @@
 #include <genesis.h>
 #include <resources.h>
 
+#include "../audio/audioEffects.h"
 #include "../collisions.h"
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
@@ -45,7 +46,6 @@ void world_init(state_parameters_t args) {
 #ifdef DEBUG
     sprintf(buffer1, "font tiles: %d bg tiles: %d", font_sheet.numTile, room_one.numTile);
     VDP_drawText(buffer1, 1,1);
-
     textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET,
                  "Make sure there is\nroom in your pockets\nfor that.", TRUE,
                  FALSE, FALSE);
@@ -57,7 +57,7 @@ void world_init(state_parameters_t args) {
 
     frisk_x = 20;
     frisk_y = 20;
-
+    //startHeartache();
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
     heart_bb.w = frisk_sprite.w;
@@ -111,6 +111,12 @@ void world_input(u16 changed, u16 state) {
     }
 
     if (state & BUTTON_START) {
+        // Odd animations are taking a step, make sure we aren't animating
+	// during a pause.
+	SPR_setAnim(frisk, frisk->animInd - (frisk->animInd % 2));
+       
+	yvelocity = 0;
+	xvelocity = 0;
 	state_info_t state_info;
         state_info.clean = gamemenu_clean;
         state_info.init = gamemenu_init;

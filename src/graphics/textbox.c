@@ -21,7 +21,7 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
 #define LEFT_CORNER_BORDER 153
 #define LEFT_BORDER_ANIM_1 154
 #define LEFT_BORDER_ANIM_2 155
-#define ASTERISK 156
+#define ASTERISK 158
 
 void box_draw(u8 x, u8 y, u8 w, u8 h, u8 pal) {
     if (w < 3 || h < 3) return;
@@ -271,7 +271,7 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
                   u8 asterisk_three) {
     u8 line = 0;
 
-    char *src = text;
+    const char *src = text;
     char *dst = text_info.lines[line];
 
     text_info.lines_used = 1;

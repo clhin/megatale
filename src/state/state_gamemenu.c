@@ -13,19 +13,22 @@ void gamemenu_init(state_parameters_t args) {
     char lvbuf[6], hpbuf[9], gbuf[9];
     data = (savedata_t*)args.parameter_data;
     box_draw(1, 1, 10, 8, PAL1);
-    box_draw(1, 8, 10, 10, PAL1);
+    box_draw(1, 8, 10, 11, PAL1);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL1, TRUE, FALSE, TRUE, 
+					  TILE_USER_INDEX + 157),1, 8);
+    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL1, TRUE, FALSE, FALSE, 
+                                          TILE_USER_INDEX + 157),10, 8);
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, TRUE, FALSE, FALSE, TILE_USER_INDEX + 156), 2,
+                        8, 8, 1);
     sprintf(lvbuf, "LV %d", data->love);
     sprintf(hpbuf, "HP %d\\%d", data->hp, data->maxhp);
     sprintf(gbuf, "G  %d", data->gold);
     strconvert(lvbuf);
     strconvert(hpbuf);
     strconvert(gbuf);
-    draw_letter('C', 2, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
-    draw_letter('H', 3, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
-    draw_letter('A', 4, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
-    draw_letter('R', 5, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
-    draw_letter('A', 6, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
-    draw_letter('y', 7, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
+    for (u8 i = 0; data->name[i] != '\0'; i++) {
+    	draw_letter(data->name[i], 2+i, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
+    }
 
     draw_letter('I', 5, 10, TILE_USER_INDEX, BG_A, PAL1, 0);
     draw_letter('T', 6, 10, TILE_USER_INDEX, BG_A, PAL1, 0);
