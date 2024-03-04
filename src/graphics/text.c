@@ -106,11 +106,15 @@ void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
                      x, y + 2);
 }
 
-void draw_lines(const char **lines, u8 num, u8 x, u8 y, u16 offset, u8 plane,
-                u8 palette) {
+void draw_lines(const char lines[][MAX_LINE_LENGTH], u8 num, u8 x, u8 y,
+                u16 offset, u8 plane, u8 palette) {
     for (u8 i = 0; i < num; ++i) {
-        for (u8 j = 0; j < 30; ++j) {
-            draw_letter(lines[i][j], '\0', x + j, y + i * 2, TILE_USER_INDEX,
+        u8 size = strlen(lines[i]);
+        u8 size_above = (i > 0) ? strlen(lines[i - 1]) : 0;
+        for (u8 j = 0; j < size; ++j) {
+            char above = (j < size_above) ? lines[i - 1][j] : '\0';
+
+            draw_letter(lines[i][j], above, x + j, y + i * 2, TILE_USER_INDEX,
                         BG_A, PAL1);
         }
     }

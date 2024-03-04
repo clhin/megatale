@@ -26,7 +26,12 @@ u16 index = 0;
 
 u16 counter = 0;
 
+char strings[2][MAX_LINE_LENGTH];
+
 void world_init(state_parameters_t args) {
+    strcpy(strings[0], "Qell,!");
+    strcpy(strings[1], "World!");
+
     SPR_init();  // Needs to be called after clear?
 
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
@@ -53,8 +58,7 @@ void world_init(state_parameters_t args) {
     enemy_bb.w = 8;
     enemy_bb.h = 8;
 
-    const char strings[2][32] = {"DrawLines", "DrawLines"};
-    draw_lines(&strings, 2, 2, 9, TILE_USER_INDEX, BG_A, PAL1);
+    draw_lines(strings, 2, 2, 9, TILE_USER_INDEX, BG_A, PAL1);
 
     /*
         VDP_drawText(buf2, 1, 1);

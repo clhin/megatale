@@ -28,6 +28,8 @@ typedef enum {
     LETTER_TAIL_comma
 } LetterTail;
 
+#define MAX_LINE_LENGTH 32
+
 /* draw_letter(...)
 
     Basically draws a letter onto screen with the specified parameters.
@@ -48,8 +50,8 @@ typedef enum {
 void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
                  u8 palette);
 
-void draw_lines(const char **lines, u8 num, u8 x, u8 y, u16 offset, u8 plane,
-                u8 palette);
+void draw_lines(const char lines[][MAX_LINE_LENGTH], u8 num, u8 x, u8 y,
+                u16 offset, u8 plane, u8 palette);
 
 /* get_char_info(...)
 
