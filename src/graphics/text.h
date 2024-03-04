@@ -41,8 +41,15 @@ typedef enum {
    - palette: Which palette to use?
    - tail: Whether or not letter above it is tailed, if so what tail is it?
 */
-void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
+/*void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
                  LetterTail tail);
+*/
+
+void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
+                 u8 palette);
+
+void draw_lines(const char **lines, u8 num, u8 x, u8 y, u16 offset, u8 plane,
+                u8 palette);
 
 /* get_char_info(...)
 

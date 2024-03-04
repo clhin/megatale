@@ -219,34 +219,14 @@ void textbox_close() {
 
 */
 void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
-    LetterTail tail = LETTER_TAIL_NONE;
-
     // If we're not on the first line and the position is in the string above,
     // we check for tails. With the tail we then draw the letter.
+    char above_c = '\0';
     if (line > 0 && position < strlen(text_info.lines[line - 1])) {
         char above_c = text_info.lines[line - 1][position];
-
-        switch (above_c) {
-            case 'g':
-            case 'j':
-            case 'y':
-                tail = LETTER_TAIL_g;
-                break;
-            case 'p':
-                tail = LETTER_TAIL_p;
-                break;
-            case 'q':
-                tail = LETTER_TAIL_q;
-                break;
-            case 'Q':
-                tail = LETTER_TAIL_Q;
-                break;
-            case ',':
-                tail = LETTER_TAIL_comma;
-                break;
-        }
     }
-    draw_letter(c, x, y, TILE_USER_INDEX, BG_A, PAL1, tail);
+    draw_letter(c, above_c, x, y, TILE_USER_INDEX, BG_A, PAL1);
+    // draw_letter(c, x, y, TILE_USER_INDEX, BG_A, PAL1, tail);
 }
 
 /*

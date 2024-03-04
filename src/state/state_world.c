@@ -53,6 +53,9 @@ void world_init(state_parameters_t args) {
     enemy_bb.w = 8;
     enemy_bb.h = 8;
 
+    const char strings[2][32] = {"DrawLines", "DrawLines"};
+    draw_lines(&strings, 2, 2, 9, TILE_USER_INDEX, BG_A, PAL1);
+
     /*
         VDP_drawText(buf2, 1, 1);
 
