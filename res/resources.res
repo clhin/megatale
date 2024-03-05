@@ -13,6 +13,7 @@ SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 15
 IMAGE font		"fonts/8bitfonts.png" BEST NONE
 
 #Tilesets
+TILESET title_tiles		"backgrounds/titlescreen.png" AUTO 1
 TILESET intro_0_tiles		"backgrounds/intro_0.png" AUTO 1
 TILESET intro_1_tiles		"backgrounds/intro_1.png" AUTO 1
 TILESET intro_2_tiles		"backgrounds/intro_2.png" AUTO 1
@@ -31,6 +32,7 @@ TILESET font_sheet 		"fonts/font_sheet.png" AUTO 1
 SPRITE portrait_flowey "portrait/flowey.png" 6 5 FAST NONE
 
 #Maps
+MAP titlescreen		"backgrounds/titlescreen.png" title_tiles -1
 MAP intro_0		"backgrounds/intro_0.png" intro_0_tiles -1
 MAP intro_1		"backgrounds/intro_1.png" intro_1_tiles -1
 MAP intro_2		"backgrounds/intro_2.png" intro_2_tiles -1
