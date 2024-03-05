@@ -18,11 +18,15 @@ Sprite *enemy_heart;
 
 Sprite *frisk;
 
-box_t heart_bb;
-box_t enemy_bb;
+BoxCollision heart_bb;
+BoxCollision enemy_bb;
 
 u16 frisk_x;
 u16 frisk_y;
+
+u8 xlimit;
+u8 ylimit;
+
 int8_t xvelocity;
 int8_t yvelocity;
 
