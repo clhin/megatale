@@ -39,4 +39,10 @@ void startTorialTalk();
 // Select sound (for selecting options in menu)
 void selectSound();
 
+// Heartshot sound effect
+void heartshotSound();
+
+// Battle Start Falling Sound
+void battlefallSound();
+
 #endif

@@ -6,6 +6,8 @@
 #define MOVEMENU 64
 #define TORIALTALK 64
 #define SELECTSOUND 64
+#define HEARTSHOTSOUND 64
+#define BATTLEFALLSOUND 64
 
 void startHeartache() {
     // Start heartache in the background
@@ -68,3 +70,14 @@ void selectSound() {
     XGM_setPCM(SELECTSOUND, select, sizeof(select));
     XGM_startPlayPCM(SELECTSOUND, 1, SOUND_PCM_CH2);
 }
+
+void heartshotSound() {
+    XGM_setPCM(HEARTSHOTSOUND, heartshot, sizeof(heartshot));
+    XGM_startPlayPCM(HEARTSHOTSOUND, 1, SOUND_PCM_CH2);
+}
+
+void battlefallSound() {
+    XGM_setPCM(BATTLEFALLSOUND, battlefall, sizeof(battlefall));
+    XGM_startPlayPCM(BATTLEFALLSOUND, 1, SOUND_PCM_CH2);
+}
+

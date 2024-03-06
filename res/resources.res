@@ -57,3 +57,7 @@ XGM     uwa         "sound/uwaSmall.vgm" -1             # Perfect (small and cri
 WAV     moveMenu    "sound/movemenuSmall.wav" 5         # Perfect (small and crispy)
 WAV     torialTalk  "sound/txtTorialSmall.wav" 5        # Perfect (small and crispy)
 WAV     select      "sound/selectSmall.wav" 5           # Perfect (small and crispy)
+WAV     heartshot   "sound/heartshotSmall.wav" 5
+WAV     battlefall  "sound/battlefallSmall.wav" 5
+
+# Need saveLarge.wav and phoneLarge.wav tomorrow
