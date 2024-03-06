@@ -51,6 +51,9 @@ XGM     ruins       "sound/ruinsSmall.vgm" -1           # Small version
 WAV     levelup     "sound/levelup-16khz.wav" 5         # Small but has weird fuzz at the end
 XGM     FallenDown  "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
 WAV     lowFloweyLaugh "sound/lowFloweyLaugh.wav" 5     # Perfect (small and crispy)
-WAV     floweyVoice  "sound/snd_floweytalk1.wav" 5       # Perfect (small and crispy)
+WAV     floweyVoice  "sound/snd_floweytalk1.wav" 5      # Perfect (small and crispy)
 XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1   # Perfect (small and crispy)   
 XGM     uwa         "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)
+WAV     moveMenu    "sound/movemenuSmall.wav" 5         # Perfect (small and crispy)
+WAV     torialTalk  "sound/txtTorialSmall.wav" 5        # Perfect (small and crispy)
+WAV     select      "sound/selectSmall.wav" 5           # Perfect (small and crispy)

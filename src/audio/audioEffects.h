@@ -28,5 +28,15 @@ void startFloweyLaugh();
 void startUWA();
 
 // Flowey Talk beep noise
-void floweyTalk();
+void startFloweyTalk();
+
+// Move menu sound
+void sndmoveMenu();
+
+// Torial talking sound
+void startTorialTalk();
+
+// Select sound (for selecting options in menu)
+void selectSound();
+
 #endif

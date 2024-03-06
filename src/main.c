@@ -27,7 +27,9 @@ int main() {
     VDP_setTextPalette(PAL1);
     state_info_t state_info;
     
-    
+    // Audio effects testing
+    selectSound();
+
 
 #ifndef TEST_MODE
     state_info.clean = intro_clean;
