@@ -28,7 +28,7 @@ int main() {
     state_info_t state_info;
     
     // Audio effects testing
-    
+    saveSound();
 
 
 #ifndef TEST_MODE
