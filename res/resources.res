@@ -46,7 +46,7 @@ MAP intro_last		"backgrounds/intro_last.png" intro_last_tiles -1
 MAP room_1 		"backgrounds/start.png" room_1_tiles -1
 MAP room_main		"backgrounds/mainroom.png" room_main_tiles -1
 
-#Sound (Most of these are massive and need to be optimized)
+#Sounds (background music and sound effects)
 XGM     ruins       "sound/ruinsSmall.vgm" -1           # Small version
 WAV     levelup     "sound/levelup-16khz.wav" 5         # Small but has weird fuzz at the end
 XGM     FallenDown  "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
@@ -59,5 +59,15 @@ WAV     torialTalk  "sound/txtTorialSmall.wav" 5        # Perfect (small and cri
 WAV     select      "sound/selectSmall.wav" 5           # Perfect (small and crispy)
 WAV     heartshot   "sound/heartshotSmall.wav" 5
 WAV     battlefall  "sound/battlefallSmall.wav" 5
-
-# Need saveLarge.wav and phoneLarge.wav tomorrow
+WAV     bell        "sound/bellSmall.wav" 5
+WAV     bomb        "sound/bombSmall.wav" 5
+WAV     damage      "sound/damageSmall.wav" 5
+WAV     fall        "sound/fallSmall.wav" 5
+WAV     switches    "sound/goodSwtichpull_nSmall.wav" 5
+WAV     lightSwitch "sound/lightswitchSmall.wav" 5
+WAV     phone       "sound/phoneSmall.wav" 5
+WAV     save        "sound/saveSmall.wav" 5
+WAV     screenShake "sound/screenshakeSmall.wav" 5
+WAV     sparkle     "sound/sparkle1Small.wav" 5
+WAV     switchPull  "sound/switchpullSmall.wav" 5
+WAV     textNoise   "sound/textnoiseSmall.wav" 5
