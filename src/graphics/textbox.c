@@ -21,30 +21,30 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
 #define LEFT_CORNER_BORDER 153
 #define LEFT_BORDER_ANIM_1 154
 #define LEFT_BORDER_ANIM_2 155
-#define ASTERISK 156
+#define ASTERISK 158
 
 void box_draw(u8 x, u8 y, u8 w, u8 h, u8 pal) {
     if (w < 3 || h < 3) return;
     // This just sets the horizontal line borders
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER),
+        BG_A, TILE_ATTR_FULL(pal, TRUE, 0, 0, TILE_USER_INDEX + BOTTOM_BORDER),
         x + 1, y, w - 2, 1);
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(pal, 0, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER),
+        BG_A, TILE_ATTR_FULL(pal, TRUE, 1, 0, TILE_USER_INDEX + BOTTOM_BORDER),
         x + 1, y + h - 1, w - 2, 1);
 
     // Sets the vertical line borders
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX + LEFT_BORDER), x,
+        BG_A, TILE_ATTR_FULL(pal, TRUE, 0, 0, TILE_USER_INDEX + LEFT_BORDER), x,
         y + 1, 1, h - 2);
 
     VDP_fillTileMapRect(
-        BG_A, TILE_ATTR_FULL(pal, 0, 0, 1, TILE_USER_INDEX + LEFT_BORDER),
+        BG_A, TILE_ATTR_FULL(pal, TRUE, 0, 1, TILE_USER_INDEX + LEFT_BORDER),
         x + w - 1, y + 1, 1, h - 2);
 
-    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(pal, 0, 0, 0, TILE_USER_INDEX),
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(pal, TRUE, 0, 0, TILE_USER_INDEX),
                         x + 1, y + 1, w - 2, h - 2);
 
     tile_set(0, 1, LEFT_CORNER_BORDER, x, y);
@@ -191,7 +191,7 @@ u8 textbox_tick() {
 
 void textbox_flush(const char *text, u8 asterisk_one, u8 asterisk_two,
                    u8 asterisk_three) {
-    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, 0, 0, 0, TILE_USER_INDEX), 4,
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, TRUE, 0, 0, TILE_USER_INDEX), 4,
                         text_info.y_off, 32, 7);
 
     set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
@@ -236,7 +236,7 @@ void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
 
 void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y) {
     VDP_setTileMapXY(
-        BG_A, TILE_ATTR_FULL(PAL1, 0, vflip, hflip, TILE_USER_INDEX + tile_id),
+        BG_A, TILE_ATTR_FULL(PAL1, TRUE, vflip, hflip, TILE_USER_INDEX + tile_id),
         x, y);
 }
 
@@ -251,7 +251,7 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
                   u8 asterisk_three) {
     u8 line = 0;
 
-    char *src = text;
+    const char *src = text;
     char *dst = text_info.lines[line];
 
     text_info.lines_used = 1;

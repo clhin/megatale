@@ -60,6 +60,6 @@ void draw_lines(const char lines[][MAX_LINE_LENGTH], u8 num, u8 x, u8 y,
 
     - c: which ascii character to draw
 */
-u8 *get_char_info(char c);
+const u8 *get_char_info(char c);
 
 #endif
