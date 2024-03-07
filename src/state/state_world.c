@@ -5,13 +5,13 @@
 
 #include "../audio/audioEffects.h"
 #include "../collisions.h"
+#include "../graphics/level.h"
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
 #include "../graphics/utils.h"
-#include "../graphics/level.h"
+#include "savedata.h"
 #include "state_battle.h"
 #include "state_gamemenu.h"
-#include "savedata.h"
 
 Sprite *heart_test;
 Sprite *enemy_heart;
@@ -32,8 +32,8 @@ int8_t yvelocity;
 
 u16 ind = TILE_USER_INDEX;
 
-Map * map;
-savedata_t * save;
+Map *map;
+savedata_t *save;
 u16 counter = 0;
 
 void world_init(state_parameters_t args) {
@@ -41,15 +41,16 @@ void world_init(state_parameters_t args) {
 #ifdef DEBUG
     char buffer1[32];
 #endif
-    PAL_setPalette(PAL0, ruinspal.data,DMA);
+    PAL_setPalette(PAL0, ruinspal.data, DMA);
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
     ind += font_sheet.numTile;
-    map = loadlevel(0,ind);
-    MAP_scrollTo(map, 0,0);
+    map = loadlevel(0, ind);
+    MAP_scrollTo(map, 0, 0);
 #ifdef DEBUG
-    sprintf(buffer1, "font tiles: %d bg tiles: %d", font_sheet.numTile, room_one.numTile);
-    VDP_drawText(buffer1, 1,1);
+    sprintf(buffer1, "font tiles: %d bg tiles: %d", font_sheet.numTile,
+            room_one.numTile);
+    VDP_drawText(buffer1, 1, 1);
     textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET,
                  "Make sure there is\nroom in your pockets\nfor that.", TRUE,
                  FALSE, FALSE);
@@ -61,7 +62,7 @@ void world_init(state_parameters_t args) {
 
     frisk_x = 20;
     frisk_y = 20;
-    //startHeartache();
+    // startHeartache();
     heart_bb.x = frisk_x;
     heart_bb.y = frisk_y;
     heart_bb.w = frisk_sprite.w;
@@ -116,12 +117,12 @@ void world_input(u16 changed, u16 state) {
 
     if (state & BUTTON_START) {
         // Odd animations are taking a step, make sure we aren't animating
-	// during a pause.
-	SPR_setAnim(frisk, frisk->animInd - (frisk->animInd % 2));
-       
-	yvelocity = 0;
-	xvelocity = 0;
-	state_info_t state_info;
+        // during a pause.
+        SPR_setAnim(frisk, frisk->animInd - (frisk->animInd % 2));
+
+        yvelocity = 0;
+        xvelocity = 0;
+        state_info_t state_info;
         state_info.clean = gamemenu_clean;
         state_info.init = gamemenu_init;
         state_info.redraw = gamemenu_redraw;
