@@ -36,7 +36,7 @@ void startRuins() {
 
 
 void levelUpSound() {
-    XGM_setPCM(LEVELUP, levelup, sizeof(levelup));
+    XGM_setPCM(LEVELUP, sndLevelup, sizeof(sndLevelup));
     XGM_startPlayPCM(LEVELUP,1,SOUND_PCM_CH2);
 }
 
@@ -53,8 +53,8 @@ void resume() {
     XGM_resumePlay();
 }
 
-void startFloweyLaugh() {
-    XGM_setPCM(LOWFLOWEYLAUGH, lowFloweyLaugh, sizeof(lowFloweyLaugh));
+void floweyLaughSound() {
+    XGM_setPCM(LOWFLOWEYLAUGH, sndFloweyLaugh, sizeof(sndFloweyLaugh));
     XGM_startPlayPCM(LOWFLOWEYLAUGH,1,SOUND_PCM_CH2);
 }
 
@@ -63,93 +63,93 @@ void startUWA() {
     XGM_startPlay(uwa);
 }
 
-void startFloweyTalk() {
-    XGM_setPCM(FLOWEYVOICE, floweyVoice, sizeof(floweyVoice));
+void floweyTalkSound() {
+    XGM_setPCM(FLOWEYVOICE, sndFloweyVoice, sizeof(sndFloweyVoice));
     XGM_startPlayPCM(FLOWEYVOICE, 1, SOUND_PCM_CH2);
 }
 
-void sndmoveMenu() {
-    XGM_setPCM(MOVEMENU, moveMenu, sizeof(moveMenu));
+void moveMenuSound() {
+    XGM_setPCM(MOVEMENU, sndMoveMenu, sizeof(sndMoveMenu));
     XGM_startPlayPCM(MOVEMENU, 1, SOUND_PCM_CH2);
 }
 
-void startTorialTalk() {
-    XGM_setPCM(TORIALTALK, torialTalk, sizeof(torialTalk));
+void torialTalkSound() {
+    XGM_setPCM(TORIALTALK, sndTorialTalk, sizeof(sndTorialTalk));
     XGM_startPlayPCM(TORIALTALK, 1, SOUND_PCM_CH2);
 }
 
 void selectSound() {
-    XGM_setPCM(SELECTSOUND, sndselect, sizeof(sndselect));
+    XGM_setPCM(SELECTSOUND, sndSelect, sizeof(sndSelect));
     XGM_startPlayPCM(SELECTSOUND, 1, SOUND_PCM_CH2);
 }
 
 void heartshotSound() {
-    XGM_setPCM(HEARTSHOTSOUND, heartshot, sizeof(heartshot));
+    XGM_setPCM(HEARTSHOTSOUND, sndHeartshot, sizeof(sndHeartshot));
     XGM_startPlayPCM(HEARTSHOTSOUND, 1, SOUND_PCM_CH2);
 }
 
 void battlefallSound() {
-    XGM_setPCM(BATTLEFALLSOUND, battlefall, sizeof(battlefall));
+    XGM_setPCM(BATTLEFALLSOUND, sndBattlefall, sizeof(sndBattlefall));
     XGM_startPlayPCM(BATTLEFALLSOUND, 1, SOUND_PCM_CH2);
 }
 
 
 void bellSound() {
-    XGM_setPCM(BELLSOUND, bell, sizeof(bell));
+    XGM_setPCM(BELLSOUND, sndBell, sizeof(sndBell));
     XGM_startPlayPCM(BELLSOUND, 1, SOUND_PCM_CH2);
 }
 
 void bombSound() {
-    XGM_setPCM(BOMBSOUND, bomb, sizeof(bomb));
+    XGM_setPCM(BOMBSOUND, sndBomb, sizeof(sndBomb));
     XGM_startPlayPCM(BOMBSOUND, 1, SOUND_PCM_CH2);
 }
 
 void damageSound() {
-    XGM_setPCM(DAMAGESOUND, damage, sizeof(damage));
+    XGM_setPCM(DAMAGESOUND, sndDamage, sizeof(sndDamage));
     XGM_startPlayPCM(DAMAGESOUND, 1, SOUND_PCM_CH2);
 }
 
 void fallSound() {
-    XGM_setPCM(FALLSOUND, fall, sizeof(fall));
+    XGM_setPCM(FALLSOUND, sndFall, sizeof(sndFall));
     XGM_startPlayPCM(FALLSOUND, 1, SOUND_PCM_CH2);
 }
 
 void switchSound() {
-    XGM_setPCM(SWITCHESSOUND, switches, sizeof(switches));
+    XGM_setPCM(SWITCHESSOUND, sndSwitches, sizeof(sndSwitches));
     XGM_startPlayPCM(SWITCHESSOUND, 1, SOUND_PCM_CH2);
 }
 
 void lightSwitchSound() {
-    XGM_setPCM(LIGHTSWITCHSOUND, lightSwitch, sizeof(lightSwitch));
+    XGM_setPCM(LIGHTSWITCHSOUND, sndLightSwitch, sizeof(sndLightSwitch));
     XGM_startPlayPCM(LIGHTSWITCHSOUND, 1, SOUND_PCM_CH2);
 }
 
 void phoneSound() {
-    XGM_setPCM(PHONESOUND, phone, sizeof(phone));
+    XGM_setPCM(PHONESOUND, sndPhone, sizeof(sndPhone));
     XGM_startPlayPCM(PHONESOUND, 1, SOUND_PCM_CH2);
 }
 
 void saveSound() {
-    XGM_setPCM(SAVESOUND, sndsave, sizeof(sndsave));
+    XGM_setPCM(SAVESOUND, sndSave, sizeof(sndSave));
     XGM_startPlayPCM(SAVESOUND, 1, SOUND_PCM_CH2);
 }
 
 void screenShakeSound() {
-    XGM_setPCM(SCREENSHAKESOUND, screenShake, sizeof(screenShake));
+    XGM_setPCM(SCREENSHAKESOUND, sndScreenShake, sizeof(sndScreenShake));
     XGM_startPlayPCM(SCREENSHAKESOUND, 1, SOUND_PCM_CH2);
 }
 
 void sparkleSound() {
-    XGM_setPCM(SPARKLESOUND, sparkle, sizeof(sparkle));
+    XGM_setPCM(SPARKLESOUND, sndSparkle, sizeof(sndSparkle));
     XGM_startPlayPCM(SPARKLESOUND, 1, SOUND_PCM_CH2);
 }
 
 void switchPullSound() {
-    XGM_setPCM(SWITCHPULLSOUND, switchPull, sizeof(switchPull));
+    XGM_setPCM(SWITCHPULLSOUND, sndSwitchPull, sizeof(sndSwitchPull));
     XGM_startPlayPCM(SWITCHPULLSOUND, 1, SOUND_PCM_CH2);
 }
 
 void textNoiseSound() {
-    XGM_setPCM(TEXTNOISESOUND, textNoise, sizeof(textNoise));
+    XGM_setPCM(TEXTNOISESOUND, sndTextNoise, sizeof(sndTextNoise));
     XGM_startPlayPCM(TEXTNOISESOUND, 1, SOUND_PCM_CH2);
 }
