@@ -24,13 +24,13 @@
 void startHeartache() {
     // Start heartache in the background
     XGM_setLoopNumber(-1);
-    XGM_startPlay(&heartacheSmall);
+    XGM_startPlay(heartacheSmall);
 }
 
 void startRuins() {
     // Start ruins music
     XGM_setLoopNumber(-1);
-    XGM_startPlay(&ruins);
+    XGM_startPlay(ruins);
 }
 
 
@@ -42,7 +42,7 @@ void levelUpSound() {
 
 void startFallenDown() {
     XGM_setLoopNumber(-1);
-    XGM_startPlay(&FallenDown);
+    XGM_startPlay(FallenDown);
 }
 
 void pause() {
@@ -60,7 +60,7 @@ void startFloweyLaugh() {
 
 void startUWA() {
     XGM_setLoopNumber(-1);
-    XGM_startPlay(&uwa);
+    XGM_startPlay(uwa);
 }
 
 void startFloweyTalk() {
@@ -79,7 +79,7 @@ void startTorialTalk() {
 }
 
 void selectSound() {
-    XGM_setPCM(SELECTSOUND, select, sizeof(select));
+    XGM_setPCM(SELECTSOUND, sndselect, sizeof(sndselect));
     XGM_startPlayPCM(SELECTSOUND, 1, SOUND_PCM_CH2);
 }
 
@@ -130,7 +130,7 @@ void phoneSound() {
 }
 
 void saveSound() {
-    XGM_setPCM(SAVESOUND, save, sizeof(save));
+    XGM_setPCM(SAVESOUND, sndsave, sizeof(sndsave));
     XGM_startPlayPCM(SAVESOUND, 1, SOUND_PCM_CH2);
 }
 

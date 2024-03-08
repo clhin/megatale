@@ -56,7 +56,7 @@ XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1   # Perfect (small and cri
 XGM     uwa         "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)
 WAV     moveMenu    "sound/movemenuSmall.wav" 5         # Perfect (small and crispy)
 WAV     torialTalk  "sound/txtTorialSmall.wav" 5        # Perfect (small and crispy)
-WAV     select      "sound/selectSmall.wav" 5           # Perfect (small and crispy)
+WAV     sndselect      "sound/selectSmall.wav" 5           # Perfect (small and crispy)
 WAV     heartshot   "sound/heartshotSmall.wav" 5
 WAV     battlefall  "sound/battlefallSmall.wav" 5
 WAV     bell        "sound/bellSmall.wav" 5
@@ -66,7 +66,7 @@ WAV     fall        "sound/fallSmall.wav" 5
 WAV     switches    "sound/goodSwitchpull_nSmall.wav" 5
 WAV     lightSwitch "sound/lightswitchSmall.wav" 5
 WAV     phone       "sound/phoneSmall.wav" 5
-WAV     save        "sound/saveSmall.wav" 5
+WAV     sndsave        "sound/saveSmall.wav" 5
 WAV     screenShake "sound/screenshakeSmall.wav" 5
 WAV     sparkle     "sound/sparkle1Small.wav" 5
 WAV     switchPull  "sound/switchpullSmall.wav" 5
