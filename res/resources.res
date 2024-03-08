@@ -50,9 +50,9 @@ MAP room_main		"backgrounds/mainroom.png" room_main_tiles -1
 XGM     ruins           "sound/ruinsSmall.vgm" -1           # Small version
 WAV     sndLevelup      "sound/levelup-16khz.wav" 5         # Small but has weird fuzz at the end
 XGM     FallenDown      "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
-WAV     sndFloweyLaugh  "sound/lowFloweyLaugh.wav" 5     # Perfect (small and crispy)
-WAV     sndFloweyVoice  "sound/snd_floweytalk1.wav" 5      # Perfect (small and crispy)
-XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1   # Perfect (small and crispy)   
+WAV     sndFloweyLaugh  "sound/lowFloweyLaugh.wav" 5        # Perfect (small and crispy)
+WAV     sndFloweyVoice  "sound/snd_floweytalk1.wav" 5       # Perfect (small and crispy)
+XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1       # Perfect (small and crispy)   
 XGM     uwa             "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)
 WAV     sndMoveMenu     "sound/movemenuSmall.wav" 5         # Perfect (small and crispy)
 WAV     sndTorialTalk   "sound/txtTorialSmall.wav" 5        # Perfect (small and crispy)
@@ -60,7 +60,7 @@ WAV     sndSelect       "sound/selectSmall.wav" 5           # Perfect (small and
 WAV     sndHeartshot    "sound/heartshotSmall.wav" 5
 WAV     sndBattlefall   "sound/battlefallSmall.wav" 5
 WAV     sndBell         "sound/bellSmall.wav" 5
-WAV     sndBomb            "sound/bombSmall.wav" 5
+WAV     sndBomb         "sound/bombSmall.wav" 5
 WAV     sndDamage       "sound/damageSmall.wav" 5
 WAV     sndFall         "sound/fallSmall.wav" 5
 WAV     sndSwitches     "sound/goodSwitchpull_nSmall.wav" 5
