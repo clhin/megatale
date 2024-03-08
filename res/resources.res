@@ -47,27 +47,27 @@ MAP room_1 		"backgrounds/start.png" room_1_tiles -1
 MAP room_main		"backgrounds/mainroom.png" room_main_tiles -1
 
 #Sounds (background music and sound effects)
-XGM     ruins       "sound/ruinsSmall.vgm" -1           # Small version
-WAV     levelup     "sound/levelup-16khz.wav" 5         # Small but has weird fuzz at the end
-XGM     FallenDown  "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
-WAV     lowFloweyLaugh "sound/lowFloweyLaugh.wav" 5     # Perfect (small and crispy)
-WAV     floweyVoice  "sound/snd_floweytalk1.wav" 5      # Perfect (small and crispy)
-XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1   # Perfect (small and crispy)   
-XGM     uwa         "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)
-WAV     moveMenu    "sound/movemenuSmall.wav" 5         # Perfect (small and crispy)
-WAV     torialTalk  "sound/txtTorialSmall.wav" 5        # Perfect (small and crispy)
-WAV     select      "sound/selectSmall.wav" 5           # Perfect (small and crispy)
-WAV     heartshot   "sound/heartshotSmall.wav" 5
-WAV     battlefall  "sound/battlefallSmall.wav" 5
-WAV     bell        "sound/bellSmall.wav" 5
-WAV     bomb        "sound/bombSmall.wav" 5
-WAV     damage      "sound/damageSmall.wav" 5
-WAV     fall        "sound/fallSmall.wav" 5
-WAV     switches    "sound/goodSwitchpull_nSmall.wav" 5
-WAV     lightSwitch "sound/lightswitchSmall.wav" 5
-WAV     phone       "sound/phoneSmall.wav" 5
-WAV     save        "sound/saveSmall.wav" 5
-WAV     screenShake "sound/screenshakeSmall.wav" 5
-WAV     sparkle     "sound/sparkle1Small.wav" 5
-WAV     switchPull  "sound/switchpullSmall.wav" 5
-WAV     textNoise   "sound/textnoiseSmall.wav" 5
+XGM     ruins           "sound/ruinsSmall.vgm" -1           # Small version
+WAV     sndLevelup      "sound/levelup-16khz.wav" 5         # Small but has weird fuzz at the end
+XGM     FallenDown      "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
+WAV     sndFloweyLaugh  "sound/lowFloweyLaugh.wav" 5        # Perfect (small and crispy)
+WAV     sndFloweyVoice  "sound/snd_floweytalk1.wav" 5       # Perfect (small and crispy)
+XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1       # Perfect (small and crispy)   
+XGM     uwa             "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)
+WAV     sndMoveMenu     "sound/movemenuSmall.wav" 5         # Perfect (small and crispy)
+WAV     sndTorialTalk   "sound/txtTorialSmall.wav" 5        # Perfect (small and crispy)
+WAV     sndSelect       "sound/selectSmall.wav" 5           # Perfect (small and crispy)
+WAV     sndHeartshot    "sound/heartshotSmall.wav" 5
+WAV     sndBattlefall   "sound/battlefallSmall.wav" 5
+WAV     sndBell         "sound/bellSmall.wav" 5
+WAV     sndBomb         "sound/bombSmall.wav" 5
+WAV     sndDamage       "sound/damageSmall.wav" 5
+WAV     sndFall         "sound/fallSmall.wav" 5
+WAV     sndSwitches     "sound/goodSwitchpull_nSmall.wav" 5
+WAV     sndLightSwitch  "sound/lightswitchSmall.wav" 5
+WAV     sndPhone        "sound/phoneSmall.wav" 5
+WAV     sndSave         "sound/saveSmall.wav" 5
+WAV     sndScreenShake  "sound/screenshakeSmall.wav" 5
+WAV     sndSparkle      "sound/sparkle1Small.wav" 5
+WAV     sndSwitchPull   "sound/switchpullSmall.wav" 5
+WAV     sndTextNoise    "sound/textnoiseSmall.wav" 5

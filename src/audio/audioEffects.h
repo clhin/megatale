@@ -22,19 +22,19 @@ void levelUpSound();
 void startFallenDown();
 
 // Flowey Laugh (Big)
-void startFloweyLaugh();
+void floweyLaughSound();
 
 // UWA
 void startUWA();
 
 // Flowey Talk beep noise
-void startFloweyTalk();
+void floweyTalkSound();
 
 // Move menu sound
-void sndmoveMenu();
+void moveMenuSound();
 
 // Torial talking sound
-void startTorialTalk();
+void torialTalkSound();
 
 // Select sound (for selecting options in menu)
 void selectSound();
