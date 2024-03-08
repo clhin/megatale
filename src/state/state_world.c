@@ -140,20 +140,19 @@ void world_update() {
                 SPR_setAnim(frisk, BACK);
         }
     }
-    
-    //TODO: these if statements suck, and when moving against a wall, if the player is no longer
-    // moving against the wall, the up button (for instance) will not push the player up into the
-    // newly valid space
+    //TODO: these if statements suck, and the animations are wrong when walking along a wall.
+
+    uint8_t flagxstop = 1;
+    uint8_t flagystop = 1;
     if (frisk_x + xvelocity < 0 || !startcollision[((frisk_y+16)/20)*34+((frisk_x + 2 + xvelocity)/20)] || !startcollision[((frisk_y+16)/20)*34+((frisk_x + 21 + xvelocity)/20)] || !startcollision[((frisk_y+28)/20)*34+((frisk_x + 2 + xvelocity)/20)] || !startcollision[((frisk_y+28)/20)*34+((frisk_x + 21 + xvelocity)/20)]){
-    	xvelocity = 0;
+    	flagxstop = 0;
     }
     if (frisk_y + yvelocity < 0 || !startcollision[((frisk_y+16+yvelocity)/20)*34+((frisk_x+2)/20)] || !startcollision[((frisk_y+16+yvelocity)/20)*34+((frisk_x+21)/20)] || !startcollision[((frisk_y+28+yvelocity)/20)*34+((frisk_x+2)/20)] || !startcollision[((frisk_y+28+yvelocity)/20)*34+((frisk_x+21)/20)]) {
-        yvelocity = 0;
+        flagystop = 0;
     }
-    frisk_x += xvelocity;
-    frisk_y += yvelocity;
+    frisk_x += (xvelocity * flagxstop);
+    frisk_y += (yvelocity * flagystop);
     SPR_setPosition(frisk, frisk_x, frisk_y);
-    
 }
 void world_clean() {
     VDP_clearSprites();
