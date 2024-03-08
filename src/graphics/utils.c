@@ -9,46 +9,46 @@ void strconvert(char* str) {
 	switch (*s) {
 	    case '0':
 		*s = 'O';
-		s++;
+		++s;
 		continue;
 	    case '1':
 		*s = ';';
-		s++;
+		++s;
 		continue;
 	    case '2':
 		*s = '<';
-		s++;
+		++s;
 		continue;
 	    case '3':
 		*s = '=';
-		s++;
+		++s;
 		continue;
 	    case '4':
 		*s = '>';
-		s++;
+		++s;
 		continue;
 	    case '5':
 		*s = 'S';
-		s++;
+		++s;
 		continue;
 	    case '6':
 		*s = '@';
-		s++;
+		++s;
 		continue;
 	    case '7':
 		*s = '^';
-		s++;
+		++s;
 		continue;
 	    case '8':
 		*s = 'B';
-		s++;
+		++s;
 		continue;
 	    case '9':
 		*s = '`';
-		s++;
+		++s;
 		continue;
 	    default:
-		s++;
+		++s;
 		continue;
 	}
     }

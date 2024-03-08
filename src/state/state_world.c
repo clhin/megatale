@@ -13,16 +13,14 @@
 #include "state_battle.h"
 #include "state_gamemenu.h"
 
-Sprite *heart_test;
-Sprite *enemy_heart;
+extern const u8 startcollision[408];
 
 Sprite *frisk;
 
-BoxCollision heart_bb;
-BoxCollision enemy_bb;
+BoxCollision frisk_bb;
 
-u16 frisk_x;
-u16 frisk_y;
+short frisk_x;
+short frisk_y;
 
 u8 xlimit;
 u8 ylimit;
@@ -33,54 +31,24 @@ int8_t yvelocity;
 u16 ind = TILE_USER_INDEX;
 
 Map *map;
-savedata_t *save;
-u16 counter = 0;
+savedata_t *savefile;
 
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
-#ifdef DEBUG
-    char buffer1[32];
-#endif
     PAL_setPalette(PAL0, ruinspal.data, DMA);
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
     ind += font_sheet.numTile;
     map = loadlevel(0, ind);
     MAP_scrollTo(map, 0, 0);
-#ifdef DEBUG
-    sprintf(buffer1, "font tiles: %d bg tiles: %d", font_sheet.numTile,
-            room_one.numTile);
-    VDP_drawText(buffer1, 1, 1);
-    textbox_init(TEXT_FLOWEY_MODE, FLOWEY_OFFSET,
-                 "Make sure there is\nroom in your pockets\nfor that.", TRUE,
-                 FALSE, FALSE);
-#endif
-    char buf2[32];
-    intToStr(MEM_getFree(), buf2, 1);
 
-    VDP_drawText(buf2, 1, 1);
+    frisk_x = 140;
+    frisk_y = 106;
+    frisk_bb.x = frisk_x;
+    frisk_bb.y = frisk_y;
+    frisk_bb.w = frisk_sprite.w;
+    frisk_bb.h = frisk_sprite.h;
 
-    frisk_x = 20;
-    frisk_y = 20;
-    // startHeartache();
-    heart_bb.x = frisk_x;
-    heart_bb.y = frisk_y;
-    heart_bb.w = frisk_sprite.w;
-    heart_bb.h = frisk_sprite.h;
-
-    enemy_bb.x = 80;
-    enemy_bb.y = 80;
-    enemy_bb.w = 8;
-    enemy_bb.h = 8;
-
-    /*
-        VDP_drawText(buf2, 1, 1);
-
-        heart = SPR_addSprite(&heart_sprite, heart_x, heart_y,
-                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-    */
-    enemy_heart = SPR_addSprite(&heart_sprite, 22, 88,
-                                TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     // where are we in a world init? Well, we started from the main
     // menu, and thus we have two options as to where we are: 1. we have
@@ -92,11 +60,8 @@ void world_init(state_parameters_t args) {
         // we assume that menu has taken care of the fade to white
         PAL_setPalette(PAL0, ruinspal.data, DMA);
         //		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
-        frisk = SPR_addSprite(&frisk_sprite, 80, 80,
+        frisk = SPR_addSprite(&frisk_sprite, 140, 106,
                               TILE_ATTR(PAL1, FALSE, FALSE, FALSE));
-        SPR_setPriority(frisk, FALSE);
-        heart_test = SPR_addSprite(&heart_sprite, 80, 80,
-                                   TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
     }
 }
 void world_input(u16 changed, u16 state) {
@@ -134,10 +99,19 @@ void world_input(u16 changed, u16 state) {
         state_push(state_info, args);
     }
 }
+char dispx[4],dispy[4],dispc[4], dispe[4];
 void world_update() {
+    sprintf(dispx, "%d", frisk_x);
+    sprintf(dispy, "%d", frisk_y);
+    sprintf(dispc, "%d", startcollision[(frisk_y/20)*34+(frisk_x+2/20)]);
+    sprintf(dispe, "%d", (frisk_y/20)*34+(frisk_x+2/20));
+    VDP_drawText(dispx,1, 1);
+    VDP_drawText(dispy,10,1);
+    VDP_drawText(dispc,20,1);
+    VDP_drawText(dispe,30,1);
     static uint8_t priority = 0;
-    heart_bb.x = frisk_x;
-    heart_bb.y = frisk_y;
+    frisk_bb.x = frisk_x;
+    frisk_bb.y = frisk_y;
     if (xvelocity != 0 && yvelocity == 0) {
         priority = 1;
     } else if (xvelocity == 0 && yvelocity != 0) {
@@ -166,37 +140,19 @@ void world_update() {
                 SPR_setAnim(frisk, BACK);
         }
     }
-    SPR_setPosition(frisk, frisk_x + xvelocity, frisk_y + yvelocity);
-    frisk_x += xvelocity;
-    frisk_y += yvelocity;
-    //    if (xvelocity) {
-    //	SPR_setAnim(frisk, 2);
-    //    }
-    if (collides(heart_bb, enemy_bb)) {
-        /*
-            Todo: Push battle transistion
-        */
+    //TODO: these if statements suck, and the animations are wrong when walking along a wall.
 
-        state_info_t state_info;
-        state_info.clean = battle_clean;
-        state_info.init = battle_init;
-        state_info.redraw = battle_redraw;
-        state_info.input = battle_input;
-        state_info.update = battle_update;
-        state_info.shutdown = battle_shutdown;
-
-        state_parameters_t args;
-        state_push(state_info, args);
+    uint8_t flagxstop = 1;
+    uint8_t flagystop = 1;
+    if (frisk_x + xvelocity < 0 || !startcollision[((frisk_y+16)/20)*34+((frisk_x + 2 + xvelocity)/20)] || !startcollision[((frisk_y+16)/20)*34+((frisk_x + 21 + xvelocity)/20)] || !startcollision[((frisk_y+28)/20)*34+((frisk_x + 2 + xvelocity)/20)] || !startcollision[((frisk_y+28)/20)*34+((frisk_x + 21 + xvelocity)/20)]){
+    	flagxstop = 0;
     }
-#ifdef DEBUG
-    counter++;
-
-    if (counter >= 10) {
-        if (textbox_tick())
-            textbox_flush("I'm repeating\nmyself", TRUE, FALSE, FALSE);
-        counter = 0;
+    if (frisk_y + yvelocity < 0 || !startcollision[((frisk_y+16+yvelocity)/20)*34+((frisk_x+2)/20)] || !startcollision[((frisk_y+16+yvelocity)/20)*34+((frisk_x+21)/20)] || !startcollision[((frisk_y+28+yvelocity)/20)*34+((frisk_x+2)/20)] || !startcollision[((frisk_y+28+yvelocity)/20)*34+((frisk_x+21)/20)]) {
+        flagystop = 0;
     }
-#endif
+    frisk_x += (xvelocity * flagxstop);
+    frisk_y += (yvelocity * flagystop);
+    SPR_setPosition(frisk, frisk_x, frisk_y);
 }
 void world_clean() {
     VDP_clearSprites();
