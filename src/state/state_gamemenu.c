@@ -31,9 +31,9 @@ void gamemenu_init(state_parameters_t args) {
     strconvert(lvbuf);
     strconvert(hpbuf);
     strconvert(gbuf);
-    for (u8 i = 0; data->name[i] != '\0'; i++) {
-        draw_letter(data->name[i], 2 + i, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
-    }
+    //for (u8 i = 0; data->name[i] != '\0'; i++) {
+    //    draw_letter(data->name[i], 2 + i, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
+    //}
 
     draw_lines(option_texts, data->cell != 0 ? 3 : 2, 5, 10, TILE_USER_INDEX,
                BG_A, PAL1);

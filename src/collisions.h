@@ -12,5 +12,8 @@
  * Note: x, y, w,h correspond to pixel-location and not 8x8 locations. If this
  * isn't good in the long run, optimizations can be done.
  */
+extern const u8 startcollision[408];
+extern const u8 maincollisions[336];
+
 u8 collides(BoxCollision lhs, BoxCollision rhs);
 #endif
