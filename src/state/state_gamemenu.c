@@ -41,9 +41,9 @@ void gamemenu_init(state_parameters_t args) {
     VDP_drawText(lvbuf, 2, 5);
     VDP_drawText(hpbuf, 2, 6);
     VDP_drawText(gbuf, 2, 7);
-    VDP_drawText(lvbuf, 2, 5);
-    VDP_drawText(hpbuf, 2, 6);
-    VDP_drawText(gbuf, 2, 7);
+//    VDP_drawText(lvbuf, 2, 5);
+  //  VDP_drawText(hpbuf, 2, 6);
+    //VDP_drawText(gbuf, 2, 7);
 }
 void gamemenu_input(u16 changed, u16 state) {
     if (changed & BUTTON_START && (state & BUTTON_START)) {

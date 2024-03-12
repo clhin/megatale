@@ -1,7 +1,11 @@
 #include "collisions.h"
 
-// Algorithm from:
-// https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+// These are out map collision grids
+// Key:
+// 0 = solid tile
+// 1 = normal, walkable tile
+// 2 = level transition
+// 3 = event trigger
 const u8 startcollision [408] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -16,7 +20,7 @@ const u8 startcollision [408] = {
 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-const u8 maincollisions [336] = {
+const u8 maincollision [336] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -39,6 +43,8 @@ const u8 maincollisions [336] = {
 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0};
 
+// Algorithm from:
+// https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
 u8 collides(BoxCollision lhs, BoxCollision rhs) {
     if (lhs.x < (rhs.x + rhs.w) && (lhs.x + lhs.w) > rhs.x &&
         lhs.y < (rhs.y + rhs.h) && (lhs.y + lhs.h) > rhs.y) {

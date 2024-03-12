@@ -13,7 +13,7 @@
  * isn't good in the long run, optimizations can be done.
  */
 extern const u8 startcollision[408];
-extern const u8 maincollisions[336];
+extern const u8 maincollision[336];
 
 u8 collides(BoxCollision lhs, BoxCollision rhs);
 #endif

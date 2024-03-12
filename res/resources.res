@@ -7,7 +7,7 @@ PALETTE ruinspal	"backgrounds/start.png"
 #Sprites
 SPRITE heart_sprite	"sprites/heart.png" 1 1 FAST NONE
 SPRITE battle_select	"sprites/battle_sheet.png" 7 3 FAST NONE 
-SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 15
+SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 10
 
 #Images
 IMAGE font		"fonts/8bitfonts.png" BEST NONE

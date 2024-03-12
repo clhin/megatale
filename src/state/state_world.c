@@ -13,13 +13,10 @@
 #include "state_battle.h"
 #include "state_gamemenu.h"
 
-#define RIGHT_LIMIT 153
-#define DOWN_LIMIT 116
-#define LEFT_LIMIT 152
-#define UP_LIMIT 115
-
 static void camera_move();
 static void handle_collision();
+static void handle_collision_helper(u8,u8,u8,u8*);
+static u8 map_collision_locator(u16 idx);
 
 Sprite *frisk;
 
@@ -30,6 +27,9 @@ int cur_cam_y;
 
 short frisk_x;
 short frisk_y;
+
+short levelxlimit;
+short levelylimit;
 
 u8 xlimit;
 u8 ylimit;
@@ -46,7 +46,6 @@ savedata_t *savefile;
 
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
-    PAL_setPalette(PAL0, ruinspal.data, DMA);
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
     ind += font_sheet.numTile;
@@ -55,8 +54,8 @@ void world_init(state_parameters_t args) {
     cur_cam_y = 0;
     MAP_scrollTo(map, cur_cam_x, cur_cam_y);
 
-    frisk_x = 140;
-    frisk_y = 106;
+    frisk_x = 141;
+    frisk_y = 108;
     frisk_bb.x = frisk_x;
     frisk_bb.y = frisk_y;
     frisk_bb.w = frisk_sprite.w;
@@ -66,14 +65,21 @@ void world_init(state_parameters_t args) {
     // menu, and thus we have two options as to where we are: 1. we have
     // a blank save (load from the beginning), or we have save data and
     // thus we load from our save state (not implemented yet)
-    if (args.parameter_data != NULL) {
+    if (SRAM_readByte(0) == SAVE_VALID) {
         // load save data
     } else {
+	savefile = args.parameter_data;
         // we assume that menu has taken care of the fade to white
-        PAL_setPalette(PAL0, ruinspal.data, DMA);
         //		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
         frisk = SPR_addSprite(&frisk_sprite, frisk_x, frisk_y,
 			      TILE_ATTR(PAL1, FALSE, FALSE, FALSE));
+	savefile->room = 0;
+	savefile->maxhp = 20;
+	savefile->hp = 20;
+	savefile->gold = 0;
+	savefile->love = 1;
+	levelxlimit = 680; //680
+	levelylimit = 240; //240
     }
 }
 void world_input(u16 changed, u16 state) {
@@ -91,6 +97,9 @@ void world_input(u16 changed, u16 state) {
     } else {
         yvelocity = 0;
     }
+    //if (state & BUTTON_C)
+//	frisk_x = 60;
+//	frisk_y = 60;
     if (state & BUTTON_START) {
         // Odd animations are taking a step, make sure we aren't animating
         // during a pause.
@@ -107,11 +116,11 @@ void world_input(u16 changed, u16 state) {
         state_info.shutdown = gamemenu_shutdown;
 
         state_parameters_t args;
+	args.parameter_data = savefile;
         state_push(state_info, args);
     }
 }
 void world_update() {
-//    priority = 0;
     frisk_bb.x = frisk_x;
     frisk_bb.y = frisk_y;
     if (xvelocity != 0 && yvelocity == 0) {
@@ -158,62 +167,83 @@ state_return_t world_shutdown() {
 }
 
 static void handle_collision() {
-    //TODO: these if statements suck
-    uint8_t flagxstop = 1;
-    uint8_t flagystop = 1;
-/*    if (frisk_x + xvelocity < 0 || 
-        !startcollision[((frisk_y+16)/20)*34+((frisk_x + 2 + xvelocity)/20)] ||
-        !startcollision[((frisk_y+16)/20)*34+((frisk_x + 21 + xvelocity)/20)] ||
-        !startcollision[((frisk_y+28)/20)*34+((frisk_x + 2 + xvelocity)/20)] ||
-        !startcollision[((frisk_y+28)/20)*34+((frisk_x + 21 + xvelocity)/20)]){
-	flagxstop = 0;
-	if(yvelocity != 0)
-	    priority = 0;
-    }
-    if (frisk_y + yvelocity < 0 ||
-        !startcollision[((frisk_y+16+yvelocity)/20)*34+((frisk_x+2)/20)] ||
-        !startcollision[((frisk_y+16+yvelocity)/20)*34+((frisk_x+21)/20)] ||
-        !startcollision[((frisk_y+28+yvelocity)/20)*34+((frisk_x+2)/20)] ||
-        !startcollision[((frisk_y+28+yvelocity)/20)*34+((frisk_x+21)/20)]) {
-        flagystop = 0;
-	if (xvelocity != 0)
-	    priority = 1;
-    }
-*/
+    u8 flagxstop = 1;
+    u8 flagystop = 1;
+
     if (xvelocity == 1){
-	if (!startcollision[((frisk_y + 16) / 20) * 34 + ((frisk_x + 21 + xvelocity) / 20)] ||
-	    !startcollision[((frisk_y + 28) / 20) * 34 + ((frisk_x + 21 + xvelocity) / 20)]) {
-	    flagxstop = 0;
-            if(yvelocity != 0)
-            	priority = 0;
-	}	
+	u8 xtopright = map_collision_locator(((frisk_y + 16) / 20) * (levelxlimit/20) + ((frisk_x + 21 + xvelocity) / 20));
+	u8 xbottomright = map_collision_locator(((frisk_y + 28) / 20) * (levelxlimit/20) + ((frisk_x + 21 + xvelocity) / 20));
+	handle_collision_helper(xtopright, xbottomright, TRUE, &flagxstop);
     } else if (xvelocity == -1) {
-	if (!startcollision[((frisk_y + 16) / 20) * 34 + ((frisk_x + 2 + xvelocity) / 20)] ||
-	    !startcollision[((frisk_y + 28) / 20) * 34 + ((frisk_x + 2 + xvelocity) / 20)] ){
-	    flagxstop = 0;
-            if(yvelocity != 0)
-                priority = 0;
-	}
+	u8 xtopleft = map_collision_locator(((frisk_y + 16) / 20) * (levelxlimit/20) + ((frisk_x + 2 + xvelocity) / 20));
+	u8 xbottomleft = map_collision_locator(((frisk_y + 28) / 20) * (levelxlimit/20) + ((frisk_x + 2 + xvelocity) / 20));
+	handle_collision_helper(xtopleft, xbottomleft, TRUE, &flagxstop);
     }
 
     if(yvelocity == 1){
-	if (!startcollision[((frisk_y + 16 + yvelocity) / 20) * 34 + ((frisk_x + 21) / 20)] ||
-	    !startcollision[((frisk_y + 28 + yvelocity) / 20) * 34 + ((frisk_x + 21) / 20)]) {
-	    flagystop = 0;
-            if (xvelocity != 0)
-                priority = 1;
-	}
+	u8 ybottomleft = map_collision_locator(((frisk_y + 28 + yvelocity) / 20) * (levelxlimit/20) + ((frisk_x + 2) / 20));
+	u8 ybottomright = map_collision_locator(((frisk_y + 28 + yvelocity) / 20) * (levelxlimit/20) + ((frisk_x + 21) / 20));
+	handle_collision_helper(ybottomleft, ybottomright, FALSE, &flagystop);
     } else if (yvelocity == -1) {
-	if (!startcollision[((frisk_y + 16 + yvelocity) / 20) * 34 + ((frisk_x + 2) / 20)] ||
-	    !startcollision[((frisk_y + 28 + yvelocity) / 20) * 34 + ((frisk_x + 2) / 20)]){
-	    flagystop = 0;
-            if (xvelocity != 0)
-                priority = 1;
-	}
+	u8 ytopleft = map_collision_locator(((frisk_y + 16 + yvelocity) / 20) * (levelxlimit/20) + ((frisk_x + 2) / 20));
+	u8 ytopright = map_collision_locator(((frisk_y + 16 + yvelocity) / 20) * (levelxlimit/20) + ((frisk_x + 21) / 20));
+	handle_collision_helper(ytopleft, ytopright, FALSE, &flagystop);
     }
 
     frisk_x += (xvelocity * flagxstop);
     frisk_y += (yvelocity * flagystop);
+}
+
+static u8 map_collision_locator(u16 idx) {
+    switch(savefile->room) {
+	case 0:
+	    return startcollision[idx];
+	case 1:
+	    return maincollision[idx];
+	default:
+	    //error, just assume it can't be walked in I guess
+	    return 0;
+    }
+    return 0;
+}
+
+void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
+    if (!corner1 || !corner2){
+	*flag = 0;
+	if (x){
+            if (yvelocity != 0)
+                priority = 0;
+        } else {
+            if (xvelocity != 0)
+                priority = 1;
+	}
+    } else if (corner1 == 2 || corner2 == 2) {
+        //do stuff
+	switch (savefile->room) {
+	    case 0:
+		PAL_fadeOutAll(30,FALSE);
+//		waitMs(2000);
+		VDP_clearTextAreaBG(BG_B, 0, 0, 80, 35);
+		MAP_release(map);
+		savefile->room++;
+		map = loadlevel(savefile->room, ind);
+//		MAP_scrollTo(map, 0, 0);
+//		SPR_setPosition(frisk, 0,0);
+		break;
+	    case 1:
+		VDP_drawText("where are we", 10,10);
+		PAL_fadeOutAll(30,FALSE);
+//              waitMs(2000);
+                VDP_clearTextAreaBG(BG_B, 0, 0, 40, 52);
+                MAP_release(map);
+                map = loadlevel(savefile->room - 1, ind);
+		--savefile->room;
+		break;
+	    default:
+		//do nothing
+		break;
+	}
+    }
 }
 
 // This function was heavily based of the following code: 
@@ -241,12 +271,12 @@ static void camera_move() {
     }
     if (new_cam_x < 0)
 	new_cam_x = 0;
-    else if (new_cam_x > 680-320)
-	new_cam_x = 680-320;
+    else if (new_cam_x > levelxlimit - 320)
+	new_cam_x = levelxlimit - 320;
     if (new_cam_y  < 0)
 	new_cam_y = 0;
-    else if (new_cam_y > 240 - 224)
-	new_cam_y = 240-224;
+    else if (new_cam_y > levelylimit - 224)
+	new_cam_y = levelylimit - 224;
     if ((new_cam_x != cur_cam_x) || (new_cam_y != cur_cam_y)){
 	cur_cam_x = new_cam_x;
 	cur_cam_y = new_cam_y;
