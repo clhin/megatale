@@ -31,11 +31,10 @@ short frisk_y;
 short levelxlimit;
 short levelylimit;
 
-u8 xlimit;
-u8 ylimit;
-
 int8_t xvelocity;
 int8_t yvelocity;
+int8_t interact;
+int8_t cancel;
 
 static u8 priority = 0;
 
@@ -49,13 +48,11 @@ void world_init(state_parameters_t args) {
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
     ind += font_sheet.numTile;
-    map = loadlevel(0, ind);
+    map = loadlevel(0,0, ind);
     cur_cam_x = 0;
     cur_cam_y = 0;
     MAP_scrollTo(map, cur_cam_x, cur_cam_y);
 
-    frisk_x = 141;
-    frisk_y = 108;
     frisk_bb.x = frisk_x;
     frisk_bb.y = frisk_y;
     frisk_bb.w = frisk_sprite.w;
@@ -97,9 +94,19 @@ void world_input(u16 changed, u16 state) {
     } else {
         yvelocity = 0;
     }
-    //if (state & BUTTON_C)
-//	frisk_x = 60;
-//	frisk_y = 60;
+    if (state & BUTTON_A)
+	interact = 1;
+    else
+	interact = 0;
+
+    if (state & BUTTON_B)
+	cancel = 1;
+    else
+	cancel = 0;
+
+    if (state & BUTTON_C)
+	PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
+
     if (state & BUTTON_START) {
         // Odd animations are taking a step, make sure we aren't animating
         // during a pause.
@@ -153,6 +160,9 @@ void world_update() {
     }
     handle_collision();
     camera_move();
+    char ypos[4];
+    sprintf(ypos, "%d", frisk_y);
+    VDP_drawText(ypos, 1,1);
 }
 void world_clean() {
     VDP_clearSprites();
@@ -170,6 +180,7 @@ static void handle_collision() {
     u8 flagxstop = 1;
     u8 flagystop = 1;
 
+    //TODO: lots of divides here, can we factor this out? maybe a double array would infact be better
     if (xvelocity == 1){
 	u8 xtopright = map_collision_locator(((frisk_y + 16) / 20) * (levelxlimit/20) + ((frisk_x + 21 + xvelocity) / 20));
 	u8 xbottomright = map_collision_locator(((frisk_y + 28) / 20) * (levelxlimit/20) + ((frisk_x + 21 + xvelocity) / 20));
@@ -200,6 +211,12 @@ static u8 map_collision_locator(u16 idx) {
 	    return startcollision[idx];
 	case 1:
 	    return maincollision[idx];
+	case 2:
+	    return ruins1_collision[idx];
+	case 3:
+	    return ruins2_collision[idx];
+	case 4:
+	    return ruins3_collision[idx];
 	default:
 	    //error, just assume it can't be walked in I guess
 	    return 0;
@@ -221,23 +238,52 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
         //do stuff
 	switch (savefile->room) {
 	    case 0:
-		PAL_fadeOutAll(30,FALSE);
-//		waitMs(2000);
+		PAL_fadeOutAll(15,FALSE);
 		VDP_clearTextAreaBG(BG_B, 0, 0, 80, 35);
 		MAP_release(map);
-		savefile->room++;
-		map = loadlevel(savefile->room, ind);
-//		MAP_scrollTo(map, 0, 0);
-//		SPR_setPosition(frisk, 0,0);
+		map = loadlevel(savefile->room, savefile->room + 1, ind);
+		++savefile->room;
 		break;
 	    case 1:
-		VDP_drawText("where are we", 10,10);
-		PAL_fadeOutAll(30,FALSE);
-//              waitMs(2000);
+		PAL_fadeOutAll(15,FALSE);
                 VDP_clearTextAreaBG(BG_B, 0, 0, 40, 52);
                 MAP_release(map);
-                map = loadlevel(savefile->room - 1, ind);
-		--savefile->room;
+		if (frisk_y >= 160) {
+                	map = loadlevel(savefile->room, savefile->room - 1, ind);
+			--savefile->room;
+		} else {
+			map = loadlevel(savefile->room, savefile->room + 1, ind);
+			++savefile->room;
+		}
+		PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
+		break;
+	    case 2:
+		PAL_fadeOutAll(15,FALSE);
+                VDP_clearTextAreaBG(BG_B, 0, 0, 40, 60);
+                MAP_release(map);
+		if (frisk_y >= 420) {
+                	map = loadlevel(savefile->room, savefile->room - 1, ind);
+			--savefile->room;
+		} else {
+			map = loadlevel(savefile->room, savefile->room + 1, ind);
+			++savefile->room;
+		}
+		//if (PAL_isDoingFade())
+		//	VDP_drawText("uh oh stinky", 10,10);
+		PAL_waitFadeCompletion();
+		PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
+		break;
+	    case 3:
+		PAL_fadeOutAll(15,FALSE);
+                VDP_clearTextAreaBG(BG_B, 0, 0, 40, 30);
+                MAP_release(map);
+		if (frisk_y >= 190) {
+                	map = loadlevel(savefile->room, savefile->room - 1, ind);
+			--savefile->room;
+		 } else {
+			map = loadlevel(savefile->room, savefile->room + 1, ind);
+			++savefile->room;
+		}
 		break;
 	    default:
 		//do nothing

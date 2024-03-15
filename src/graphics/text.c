@@ -48,7 +48,7 @@
 
 void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
                  u8 palette) {
-    u8 *arr = get_char_info(letter);
+    const u8 *arr = get_char_info(letter);
 
     // Handle the top of the letter base on character
     switch (above) {

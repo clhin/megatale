@@ -38,7 +38,7 @@ def image_to_array(image_path, tile_size=20):
     return result_array
 
 # Example usage
-image_path = "./backgrounds/mainroom.png"
+image_path = "./backgrounds/room_ruins3.png"
 result = image_to_array(image_path)
 
 # Print the resulting array
