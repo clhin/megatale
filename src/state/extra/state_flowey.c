@@ -8,7 +8,7 @@
 #include "../../battle/battle_data.h"
 #include "../../battle/battle_dialogue.h"
 #include "../../graphics/textbox.h"
-
+// https://github.com/Stephane-D/SGDK/blob/master/sample/game/sonic/src/entities.c
 /*
 https://nochocolate.tumblr.com/post/152434968515/the-flowey-collection
 https://imgur.com/a/722kQ
@@ -21,6 +21,20 @@ Sprite *flowey;
 // For circle, instead of individually checking each bb we could just imagine it
 // as two circles and track when j < i
 projectile_data_t **bullets;
+u16 **tile_index;
+
+void bullet_cascade(Sprite *master) {
+    u16 animInd = master->animInd;
+    u16 frameInd = master->frameInd;
+    // u16 tileIndex = master->attribut & TILE_INDEX_MASK;
+
+    char buf[2];
+    for (u8 i = 1; i < 32; ++i) {
+        Sprite *spr = bullets[i]->bullet;
+
+        SPR_setVRAMTileIndex(spr, tile_index[animInd][frameInd]);
+    }
+}
 
 u8 dialogue_x;
 u8 dialogue_y;
@@ -30,6 +44,9 @@ u16 c;
 
 u8 next_dialogue;
 u8 next_trigger;
+
+u16 vram_ind;
+u16 numTile;
 
 void flowey_init(state_parameters_t args) {
     /*
@@ -53,15 +70,29 @@ void flowey_init(state_parameters_t args) {
     box_draw(15, 15, 10, 9, PAL1);
 
     bullets = MEM_alloc(sizeof(projectile_data_t) * 32);
-
+    //  spr_setframe
+    // Sprite *test = SPR_addSpriteEx()
+    vram_ind = 100;
     for (u8 i = 0; i < 32; ++i) {
         s16 x = fix16ToInt(fix16Mul(cosFix16(i * 32), FIX16(40)));
         s16 y = fix16ToInt(fix16Mul(sinFix16(i * 32), FIX16(40)));
+        if (i == 0) {
+            bullets[0]->bullet = SPR_addSprite(
+                &flowey_bullet, (PIXEL_WIDTH / 2 - 4) + x, (19 * 8) + y,
+                TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
-        bullets[i]->bullet =
-            SPR_addSprite(&flowey_bullet, (PIXEL_WIDTH / 2 - 4) + x,
-                          (19 * 8) + y, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-        if (bullets[i] == NULL) SYS_reset();
+            SPR_setAutoTileUpload(bullets[0]->bullet, FALSE);
+            tile_index = SPR_loadAllFrames(bullets[0]->bullet->definition,
+                                           vram_ind, &numTile);
+
+            SPR_setDepth(bullets[0]->bullet, SPR_MIN_DEPTH);
+            SPR_setFrameChangeCallback(bullets[i]->bullet, bullet_cascade);
+        } else {
+            bullets[i]->bullet = SPR_addSpriteEx(
+                bullets[0]->bullet->definition, (PIXEL_WIDTH / 2 - 4) + x,
+                (19 * 8) + y, TILE_ATTR(PAL1, TRUE, FALSE, FALSE), 0);
+            SPR_setVRAMTileIndex(bullets[i]->bullet, 100);
+        }
         bullets[i]->x = (PIXEL_WIDTH / 2 - 4) + x;
         bullets[i]->y = (19 * 8) + y;
         bullets[i]->a_x = 0;
@@ -100,8 +131,7 @@ void flowey_update() {
             dialogue_y++;
         } else if (flowey_battle_dialogue[c] == '\0') {
             for (u8 i = 0; i < 32; ++i) {
-                SPR_setPosition(bullets[i]->bullet, bullets[i]->x + 10,
-                                bullets[i]->y);
+                SPR_setPosition(bullets[i]->bullet, 100, 100);
             }
 
             next_dialogue = TRUE;
