@@ -14,7 +14,7 @@ void state_push(state_info_t state, state_parameters_t args) {
     game_states[state_on] = state;
     game_states[state_on].init(args);
 
-    state_on++;
+    ++state_on;
 }
 
 void state_replace(state_info_t state, state_parameters_t args) {

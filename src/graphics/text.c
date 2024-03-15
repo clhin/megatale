@@ -46,52 +46,56 @@
 #define GET_BOTTOM(arr) (arr[2] & 0x7F)
 #define GET_BOTTOM_HFLIP(arr) (arr[2] >> 7)
 
-void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
-                 LetterTail tail) {
-    u8 *arr = get_char_info(c);
+void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
+                 u8 palette) {
+    u8 *arr = get_char_info(letter);
 
-    // Handle the top of the letter based on enum tail
-    switch (tail) {
-        case LETTER_TAIL_NONE:
+    // Handle the top of the letter base on character
+    switch (above) {
+        case 'g':
+        case 'j':
+        case 'y':
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, TRUE, 0, GET_TOP_HFLIP(arr),
+                               offset + GET_TOP_g_TAIL(arr)),
+                x, y);
+            break;
+        case 'p':
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, TRUE, 0, 0,
+                                            offset + GET_TOP_p_TAIL(arr)),
+                             x, y);
+            break;
+        case 'q':
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, TRUE, 0, GET_q_TAIL_HFLIP(arr),
+                               offset + GET_TOP_q_TAIL(arr)),
+                x, y);
+            break;
+        case 'Q':
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, TRUE, 0, 0,
+                                            offset + GET_TOP_Q_TAIL(arr)),
+                             x, y);
+            break;
+        case ',':
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, TRUE, 0, 0,
+                                            offset + GET_TOP_comma_TAIL(arr)),
+                             x, y);
+            break;
+
+        default:
             VDP_setTileMapXY(
                 plane,
                 TILE_ATTR_FULL(palette, 0, GET_TOP_VFLIP(arr),
                                GET_TOP_HFLIP(arr), offset + GET_TOP(arr)),
                 x, y);
             break;
-        case LETTER_TAIL_g:
-            VDP_setTileMapXY(plane,
-                             TILE_ATTR_FULL(palette, 0, 0, GET_TOP_HFLIP(arr),
-                                            offset + GET_TOP_g_TAIL(arr)),
-                             x, y);
-            break;
-        case LETTER_TAIL_p:
-            VDP_setTileMapXY(
-                plane,
-                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_p_TAIL(arr)),
-                x, y);
-            break;
-        case LETTER_TAIL_q:
-            VDP_setTileMapXY(
-                plane,
-                TILE_ATTR_FULL(palette, 0, 0, GET_q_TAIL_HFLIP(arr),
-                               offset + GET_TOP_q_TAIL(arr)),
-                x, y);
-            break;
-        case LETTER_TAIL_Q:
-            VDP_setTileMapXY(
-                plane,
-                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_Q_TAIL(arr)),
-                x, y);
-            break;
-        case LETTER_TAIL_comma:
-            VDP_setTileMapXY(plane,
-                             TILE_ATTR_FULL(palette, 0, 0, 0,
-                                            offset + GET_TOP_comma_TAIL(arr)),
-                             x, y);
-            break;
     }
-    // Middle of Letter
+
     VDP_setTileMapXY(plane,
                      TILE_ATTR_FULL(palette, 0, 0, GET_MIDDLE_HFLIP(arr),
                                     offset + GET_MIDDLE(arr)),
@@ -103,7 +107,23 @@ void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
                      x, y + 2);
 }
 
-u8 lookup_table[76][8] = {
+void draw_lines(const char lines[][MAX_LINE_LENGTH], u8 num, u8 x, u8 y,
+                u16 offset, u8 plane, u8 palette) {
+    for (u8 i = 0; i < num; ++i) {
+        u8 size = strlen(lines[i]);
+        // Size of line above
+        u8 size_above = (i > 0) ? strlen(lines[i - 1]) : 0;
+        for (u8 j = 0; j < size; ++j) {
+            // \0 e.g. nothing above.
+            char above = (j < size_above) ? lines[i - 1][j] : '\0';
+
+            draw_letter(lines[i][j], above, x + j, y + i * 2, offset, BG_A,
+                        PAL1);
+        }
+    }
+}
+
+const u8 lookup_table[76][8] = {
     {0x0, 0x5, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     // a
     {0x1, 0x6, 0x0, 0x52, 0x60, 0xe1, 0x77, 0x87},     // b
     {0x0, 0x7, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     // c
@@ -181,14 +201,14 @@ u8 lookup_table[76][8] = {
     {0x0, 0x0, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     //
     {0x81, 0x51, 0x0, 0x52, 0x61, 0xe0, 0x78, 0x88},   // /
 };
-/* Note: we are relying on the compiler to optimize this either by sorting it or
-   by sorting it into a lookup table.
+/* Note: we are relying on the compiler to optimize this either by sorting
+   it or by sorting it into a lookup table.
 
    (The least amount of optimization takes O(logn))
 
 
 */
-u8 *get_char_info(char c) {
+const u8 *get_char_info(char c) {
     switch (c) {
         case 'a':
             return lookup_table[0];

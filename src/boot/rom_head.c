@@ -9,9 +9,9 @@ const ROMHeader rom_header = {
 #else
     "SEGA MEGA DRIVE ",
 #endif
-    "(C)SGDK 2021    ",
-    "SEGATALE                                  ",
-    "SEGATALE                                  ",
+    "(C)CLH+KC+JD+CC",
+    "SEGATALE",
+    "SEGATALE",
     "GM 00000000-00",
     0x000,
     "JD              ",
@@ -28,6 +28,6 @@ const ROMHeader rom_header = {
     0x00200000,
     0x0020FFFF,
     "            ",
-    "DEMONSTRATION PROGRAM                   ",
+    "Undertale, for the sega genesis.",
     "JUE             "
 };

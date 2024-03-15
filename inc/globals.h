@@ -3,6 +3,9 @@
 */
 // #define TEST_MODE 1
 
+// uncomment if you need debugging symbols
+// #define DEBUG
+
 #define PIXEL_WIDTH 320
 #define PIXEL_HEIGHT 224
 
