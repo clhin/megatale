@@ -1,11 +1,12 @@
 #include "state_flowey.h"
 
 #include <genesis.h>
+#include <globals.h>
 #include <resources.h>
 
 #include "../../audio/audioEffects.h"
+#include "../../battle/battle_data.h"
 #include "../../battle/battle_dialogue.h"
-#include "../../globals.h"
 #include "../../graphics/textbox.h"
 
 /*
@@ -15,6 +16,11 @@ https://imgur.com/a/722kQ
 
 Sprite *heart;
 Sprite *flowey;
+
+// Making it dynamic because amount used is concerning.
+// For circle, instead of individually checking each bb we could just imagine it
+// as two circles and track when j < i
+projectile_data_t **bullets;
 
 u8 dialogue_x;
 u8 dialogue_y;
@@ -26,6 +32,13 @@ u8 next_dialogue;
 u8 next_trigger;
 
 void flowey_init(state_parameters_t args) {
+    /*
+        Should already be loaded in by state_world but we're using it until pull
+       request
+    */
+
+    VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+
     next_dialogue = FALSE;
     next_trigger = FALSE;
 
@@ -37,14 +50,33 @@ void flowey_init(state_parameters_t args) {
     c = DIALOGUE_FLOWEY1;
 
     SPR_init();
-    box_draw(15, 14, 10, 9, PAL1);
+    box_draw(15, 15, 10, 9, PAL1);
 
-    heart = SPR_addSprite(&heart_sprite, PIXEL_WIDTH / 2 - heart_sprite.w / 2,
-                          19 * 8, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    bullets = MEM_alloc(sizeof(projectile_data_t) * 32);
+
+    for (u8 i = 0; i < 32; ++i) {
+        s16 x = fix16ToInt(fix16Mul(cosFix16(i * 32), FIX16(40)));
+        s16 y = fix16ToInt(fix16Mul(sinFix16(i * 32), FIX16(40)));
+
+        bullets[i]->bullet =
+            SPR_addSprite(&flowey_bullet, (PIXEL_WIDTH / 2 - 4) + x,
+                          (19 * 8) + y, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+        if (bullets[i] == NULL) SYS_reset();
+        bullets[i]->x = (PIXEL_WIDTH / 2 - 4) + x;
+        bullets[i]->y = (19 * 8) + y;
+        bullets[i]->a_x = 0;
+        bullets[i]->a_y = 0;
+
+        bullets[i]->v_x = -x / 2;
+        bullets[i]->v_y = -y / 2;
+    }
+
+    heart = SPR_addSprite(&heart_sprite, PIXEL_WIDTH / 2 - 4, 19 * 8,
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     flowey =
         SPR_addSprite(&flowey_battle, PIXEL_WIDTH / 2 - flowey_battle.w / 2,
-                      8 * 8, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+                      8 * 7, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 }
 void flowey_input(u16 changed, u16 state) {
     if (state & BUTTON_A && next_dialogue) {
@@ -67,6 +99,11 @@ void flowey_update() {
             dialogue_x = 0;
             dialogue_y++;
         } else if (flowey_battle_dialogue[c] == '\0') {
+            for (u8 i = 0; i < 32; ++i) {
+                SPR_setPosition(bullets[i]->bullet, bullets[i]->x + 10,
+                                bullets[i]->y);
+            }
+
             next_dialogue = TRUE;
         } else {
             char buf[2];
