@@ -20,19 +20,22 @@ Sprite *flowey;
 // Making it dynamic because amount used is concerning.
 // For circle, instead of individually checking each bb we could just imagine it
 // as two circles and track when j < i
-projectile_data_t **bullets;
+projectile_data_t bullets[32];
 u16 **tile_index;
 
 void bullet_cascade(Sprite *master) {
-    u16 animInd = master->animInd;
+    /*u16 animInd = master->animInd;
     u16 frameInd = master->frameInd;
     // u16 tileIndex = master->attribut & TILE_INDEX_MASK;
 
     char buf[2];
-    for (u8 i = 1; i < 32; ++i) {
-        Sprite *spr = bullets[i]->bullet;
+    */
+    u16 tileIndex = tile_index[master->animInd][master->frameInd];
 
-        SPR_setVRAMTileIndex(spr, tile_index[animInd][frameInd]);
+    for (u8 i = 0; i < 32; ++i) {
+        Sprite *spr = bullets[i].spr;
+
+        SPR_setVRAMTileIndex(spr, tileIndex);
     }
 }
 
@@ -46,15 +49,12 @@ u8 next_dialogue;
 u8 next_trigger;
 
 u16 vram_ind;
-u16 numTile;
 
 void flowey_init(state_parameters_t args) {
     /*
         Should already be loaded in by state_world but we're using it until pull
        request
     */
-
-    VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
     next_dialogue = FALSE;
     next_trigger = FALSE;
@@ -67,47 +67,81 @@ void flowey_init(state_parameters_t args) {
     c = DIALOGUE_FLOWEY1;
 
     SPR_init();
-    box_draw(15, 15, 10, 9, PAL1);
+    TILE_FONT_INDEX - 420;
 
-    bullets = MEM_alloc(sizeof(projectile_data_t) * 32);
-    //  spr_setframe
-    // Sprite *test = SPR_addSpriteEx()
-    vram_ind = 100;
-    for (u8 i = 0; i < 32; ++i) {
-        s16 x = fix16ToInt(fix16Mul(cosFix16(i * 32), FIX16(40)));
-        s16 y = fix16ToInt(fix16Mul(sinFix16(i * 32), FIX16(40)));
-        if (i == 0) {
-            bullets[0]->bullet = SPR_addSprite(
-                &flowey_bullet, (PIXEL_WIDTH / 2 - 4) + x, (19 * 8) + y,
-                TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    vram_ind = TILE_USER_INDEX;
 
-            SPR_setAutoTileUpload(bullets[0]->bullet, FALSE);
-            tile_index = SPR_loadAllFrames(bullets[0]->bullet->definition,
-                                           vram_ind, &numTile);
+    bullets[0].spr = SPR_addSprite(&flowey_bullet, 10, 10,
+                                   TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    SPR_setAutoTileUpload(bullets[0].spr, FALSE);
+    SPR_setFrameChangeCallback(bullets[0].spr, bullet_cascade);
 
-            SPR_setDepth(bullets[0]->bullet, SPR_MIN_DEPTH);
-            SPR_setFrameChangeCallback(bullets[i]->bullet, bullet_cascade);
-        } else {
-            bullets[i]->bullet = SPR_addSpriteEx(
-                bullets[0]->bullet->definition, (PIXEL_WIDTH / 2 - 4) + x,
-                (19 * 8) + y, TILE_ATTR(PAL1, TRUE, FALSE, FALSE), 0);
-            SPR_setVRAMTileIndex(bullets[i]->bullet, 100);
-        }
-        bullets[i]->x = (PIXEL_WIDTH / 2 - 4) + x;
-        bullets[i]->y = (19 * 8) + y;
-        bullets[i]->a_x = 0;
-        bullets[i]->a_y = 0;
+    u16 numTiles;
 
-        bullets[i]->v_x = -x / 2;
-        bullets[i]->v_y = -y / 2;
+    tile_index =
+        SPR_loadAllFrames(bullets[0].spr->definition, vram_ind, &numTiles);
+    vram_ind += numTiles;
+
+    bullets[0].x = 10;
+    bullets[0].y = 10;
+    for (u8 i = 1; i < 32; ++i) {
+        bullets[i].spr =
+            SPR_addSpriteEx(bullets[0].spr->definition, 10, 10 + (8 * i),
+                            TILE_ATTR(PAL1, TRUE, FALSE, FALSE), 0);
+        SPR_setAutoTileUpload(bullets[0].spr, FALSE);
+
+        bullets[i].x = 10;
+        bullets[i].y = 10 + (8 * i);
     }
 
-    heart = SPR_addSprite(&heart_sprite, PIXEL_WIDTH / 2 - 4, 19 * 8,
-                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    // box_draw(15, 15, 10, 9, PAL1);
 
-    flowey =
-        SPR_addSprite(&flowey_battle, PIXEL_WIDTH / 2 - flowey_battle.w / 2,
-                      8 * 7, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    //  spr_setframe
+    // Sprite *test = SPR_addSpriteEx()
+    /* vram_ind = TILE_USER_INDEX;
+     for (u8 i = 0; i < 32; ++i) {
+         s16 x = fix16ToInt(fix16Mul(cosFix16(i * 32), FIX16(40)));
+         s16 y = fix16ToInt(fix16Mul(sinFix16(i * 32), FIX16(40)));
+         if (i == 0) {
+             bullets[0]->bullet = SPR_addSprite(
+                 &flowey_bullet, (PIXEL_WIDTH / 2 - 4) + x, (19 * 8) + y,
+                 TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+
+             SPR_setAutoTileUpload(bullets[0]->bullet, FALSE);
+             tile_index = SPR_loadAllFrames(bullets[0]->bullet->definition,
+                                            vram_ind, &numTile);
+
+             SPR_setVRAMTileIndex(bullets[0]->bullet, tile_index[0][0]);
+             SPR_setDepth(bullets[0]->bullet, SPR_MIN_DEPTH);
+             SPR_setFrameChangeCallback(bullets[i]->bullet, bullet_cascade);
+         } else {
+             bullets[i]->bullet = SPR_addSpriteEx(
+                 bullets[0]->bullet->definition, (PIXEL_WIDTH / 2 - 4) + x,
+                 (19 * 8) + y, TILE_ATTR(PAL1, TRUE, FALSE, FALSE), 0);
+
+             SPR_setDepth(bullets[i]->bullet, SPR_MIN_DEPTH);
+             SPR_setAutoTileUpload(bullets[i]->bullet, FALSE);
+             SPR_setVRAMTileIndex(bullets[i]->bullet, tile_index[0][0]);
+         }
+         bullets[i]->x = (PIXEL_WIDTH / 2 - 4) + x;
+         bullets[i]->y = (19 * 8) + y;
+         bullets[i]->a_x = 0;
+         bullets[i]->a_y = 0;
+
+         bullets[i]->v_x = -x / 2;
+         bullets[i]->v_y = -y / 2;
+     }*/
+    /*
+
+     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+        heart = SPR_addSprite(&heart_sprite, PIXEL_WIDTH / 2 - 4, 19 * 8,
+                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+
+        flowey =
+            SPR_addSprite(&flowey_battle, PIXEL_WIDTH / 2 - flowey_battle.w / 2,
+                          8 * 7, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+
+                          */
 }
 void flowey_input(u16 changed, u16 state) {
     if (state & BUTTON_A && next_dialogue) {
@@ -116,7 +150,16 @@ void flowey_input(u16 changed, u16 state) {
     }
 }
 void flowey_update() {
-    if (next_trigger) {
+    tick++;
+
+    if (tick % 10 == 0) {
+        for (u8 i = 0; i < 32; ++i) {
+            SPR_setPosition(bullets[i].spr, bullets[i].x + 1, bullets[i].y);
+            bullets[i].x++;
+        }
+        tick = 0;
+    }
+    /*if (next_trigger) {
         next_trigger = FALSE;
         dialogue_x = 0;
         dialogue_y = 0;
@@ -150,7 +193,7 @@ void flowey_update() {
         tick = 0;
         frame_tick = !frame_tick;
         SPR_setFrame(flowey, frame_tick);
-    }
+    }*/
 }
 void flowey_clean() { VDP_clearTextArea(0, 0, 40, 28); }
 void flowey_redraw(state_return_t ret) {}

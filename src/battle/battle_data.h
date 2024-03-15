@@ -8,7 +8,7 @@
 */
 
 typedef struct projectile_data {
-    Sprite *bullet;
+    Sprite *spr;
     s16 x, y;
     s8 v_x, v_y, a_x, a_y;
 } projectile_data_t;
