@@ -11,6 +11,7 @@ SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 10
 
 #Battle Sprites 
 SPRITE flowey_battle "battle/flowey.png" 6 5 FAST NONE 
+SPRITE flowey_bullet "battle/flowey_bullet.png" 1 1 FAST 5 
 
 #Images
 IMAGE font		"fonts/8bitfonts.png" BEST NONE
@@ -75,16 +76,6 @@ WAV     sndSparkle      "sound/sparkle1Small.wav" 5
 WAV     sndSwitchPull   "sound/switchpullSmall.wav" 5
 WAV     sndTextNoise    "sound/textnoiseSmall.wav" 5
 
-MAP room_1 		"backgrounds/start.png" room_one -1
-
 #Battle Dialogue 
 BIN flowey_battle_dialogue "battle/flowey.bin" 1 0 
 
-#Sound (Most of these are massive and need to be optimized)
-XGM     ruins       "sound/ruinsSmall.vgm" -1           # Small version
-WAV     levelup     "sound/levelup-16khz.wav" 5         # Small but has weird fuzz at the end
-XGM     FallenDown  "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
-WAV     lowFloweyLaugh "sound/lowFloweyLaugh.wav" 5     # Perfect (small and crispy)
-WAV     floweyVoice  "sound/snd_floweytalk1.wav" 5       # Perfect (small and crispy)
-XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1   # Perfect (small and crispy)   
-XGM     uwa         "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)

@@ -9,8 +9,16 @@
 
 typedef struct projectile_data {
     Sprite *spr;
-    s16 x, y;
-    s8 v_x, v_y, a_x, a_y;
+    f16 x, y;
 } projectile_data_t;
+
+/*
+    Move towards a target point at a given speed.
+
+    Uses floating point calculations in the back-end, so should be used
+   liberally.
+*/
+void projectile_interpolate(projectile_data_t *projectile, s16 start_x,
+                            s16 start_y, s16 end_x, s16 end_y, u16 speed);
 
 #endif
