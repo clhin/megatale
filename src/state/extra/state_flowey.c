@@ -20,6 +20,15 @@
 
 #define MAX_FLOWEY_PELLETS 32
 
+#define FLOWEY_CENTER_X (PIXEL_WIDTH / 2)
+#define FLOWEY_CENTER_Y (8 * 7 + 25)
+
+typedef enum {
+    S_FLOWEY_NOTHING,
+    S_FLOWEY_GEN_PELLETS,
+    S_FLOWEY_THROW_PELLETS
+} flowey_state_t;
+
 // https://github.com/Stephane-D/SGDK/blob/master/sample/game/sonic/src/entities.c
 /*
 https://nochocolate.tumblr.com/post/152434968515/the-flowey-collection
@@ -59,6 +68,8 @@ struct {
     u8 pellets_used;
     projectile_data_t *pellets;
     u16 **pellet_vram;
+    flowey_state_t state;
+
 } battle;
 
 void flowey_init(state_parameters_t args) {
@@ -81,6 +92,8 @@ void flowey_init(state_parameters_t args) {
     dialogue.face_frame = 0;
 
     dialogue.i = 0;
+
+    battle.state = S_FLOWEY_NOTHING;
 
     // Begin loading
 
@@ -119,6 +132,15 @@ void flowey_input(u16 changed, u16 state) {
 }
 void flowey_update() {
     tick++;
+
+    if (S_FLOWEY_GEN_PELLETS && tick % 5 == 0) {
+        for (u8 i = 0; i < 5; ++i) {
+            projectile_lerp(&battle.pellets[i], 16);
+            s16 x = fix16ToInt(battle.pellets[i].x);
+            s16 y = fix16ToInt(battle.pellets[i].y);
+            SPR_setPosition(battle.pellets[i].spr, x, y);
+        }
+    }
 
     if (dialogue.press) {
         dialogue.next = FALSE;
@@ -168,7 +190,7 @@ void pellet_animator(Sprite *master) {
 
     u16 tileIndex = battle.pellet_vram[master->animInd][master->frameInd];
 
-    for (u8 i = 0; i < 80; ++i) {
+    for (u8 i = 0; i < battle.pellets_used; ++i) {
         Sprite *spr = battle.pellets[i].spr;
 
         SPR_setVRAMTileIndex(spr, tileIndex);
@@ -195,33 +217,66 @@ void helper_dialogue_tick() {
 }
 
 void helper_scene_state() {
-    u16 x = PIXEL_WIDTH / 2 - 4;
-    u16 y = 8 * 3;
+    u16 x = FLOWEY_CENTER_X - 4;
+    u16 y = FLOWEY_CENTER_Y - 4;
+
+    u16 end_x[5] = {FLOWEY_CENTER_X - 4 - 50, FLOWEY_CENTER_X - 4 - 25,
+                    FLOWEY_CENTER_X - 4, FLOWEY_CENTER_X - 4 + 25,
+                    FLOWEY_CENTER_X - 4 + 50};
+
+    u16 end_y[5] = {FLOWEY_CENTER_Y - 25, FLOWEY_CENTER_Y - 45,
+                    FLOWEY_CENTER_Y - 55, FLOWEY_CENTER_Y - 45,
+                    FLOWEY_CENTER_Y - 25};
 
     /*
     Based on how far we are in the dialogue, we adjust accordingly.
 
     5: is "Down here, love is shared [...]" - 5 bullets come out from flowey
    and surrond him above in a circle.
+
+    If we look at the unit circle, we position them
+
 */
     switch (dialogue.i) {
         case 1:
+            battle.state = S_FLOWEY_GEN_PELLETS;
 
             battle.pellets_used = 5;
 
             for (u8 i = 1; i < 5; ++i) {
                 battle.pellets[i].spr =
-                    SPR_addSpriteEx(battle.pellets[0].spr->definition, x, y,
+                    SPR_addSpriteEx(battle.pellets[0].spr->definition, 0, 0,
                                     TILE_ATTR(PAL1, TRUE, FALSE, FALSE), 0);
             }
-
             for (u8 i = 0; i < 5; ++i) {
                 SPR_setPosition(battle.pellets[i].spr, x, y);
-                battle.pellets[i].x = x;
-                battle.pellets[i].y = y;
                 SPR_setVisibility(battle.pellets[i].spr, VISIBLE);
+
+                battle.pellets[i].x = intToFix16(x);
+                battle.pellets[i].y = intToFix16(y);
+
+                battle.pellets[i].start_x = x;
+                battle.pellets[i].start_y = y;
+
+                battle.pellets[i].end_x = end_x[i];
+                battle.pellets[i].end_y = end_y[i];
             }
 
+            break;
+
+        case 2:
+            // We set the telos of the pellets towards random parts of the
+            // bottom of the screen
+
+            for (u8 i = 0; i < 5; ++i) {
+                x = intToFix16(battle.pellets[i].x);
+                y = intToFix16(battle.pellets[i].y);
+                battle.pellets[i].start_x = x;
+                battle.pellets[i].start_y = y;
+
+                battle.pellets[i].end_x = 200;
+                battle.pellets[i].end_y = 200;
+            }
             break;
     }
 }
