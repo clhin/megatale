@@ -12,7 +12,6 @@ SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 10
 
 #Images
 IMAGE font		"fonts/8bitfonts.png" BEST NONE
-IMAGE intro_0_images "backgrounds/intro_0.png" NONE
 
 #Tilesets
 TILESET title_tiles		"backgrounds/titlescreen.png" AUTO 1
