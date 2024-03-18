@@ -11,14 +11,14 @@ void intro_init(state_parameters_t args) {
     s16 textPosX = 10;
     s16 textPosY = 20;
 
-    VDP_setPlaneSize(32,128,TRUE);
+
     VDP_setTextPlane(BG_A);
 
     VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
     VDP_loadTileSet(intro_0_images.tileset, 1, DMA);
     PAL_setPalette(PAL1, intro_0_images.palette->data, DMA);
-    VDP_setTileMapEx(BG_B, intro_0_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),0,0,0,0,32,18,DMA);
+    VDP_setTileMapEx(BG_B, intro_0_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),1,0,0,0,32,18,DMA);
 
 
     VDP_drawText("Long ago, two races", textPosX, textPosY);
