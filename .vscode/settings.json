@@ -6,7 +6,11 @@
     "resources.h": "c",
     "chrono": "c",
     "locale": "c",
-    "string": "c"
+    "string": "c",
+    "textbox.h": "c",
+    "utils.h": "c",
+    "state_battle.h": "c",
+    "state_gamemenu.h": "c"
   },
   "C_Cpp.clang_format_style": "{BasedOnStyle: Google, IndentWidth: 4}"
 }

@@ -1,0 +1,19 @@
+C:/cs222/group-project-team-67_1/sgkd190/src/xgm.o: \
+ C:/cs222/group-project-team-67_1/sgkd190/src/xgm.c \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/config.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/types.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/xgm.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/z80_ctrl.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/smp_null.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/sys.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/mapper.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/config.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/types.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/vdp.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/bmp.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/maths.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/vdp.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/pal.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/dma.h \
+ C:/cs222/group-project-team-67_1/sgkd190/inc/vdp_tile.h \
+ C:/cs222/group-project-team-67_1/sgkd190/res/libres.h
