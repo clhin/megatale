@@ -13,6 +13,8 @@
 #include "state_battle.h"
 #include "state_gamemenu.h"
 
+#include "audio/audioEffects.h"
+
 static void animate_frisk();
 static void camera_move();
 static void handle_collision();
