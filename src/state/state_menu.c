@@ -7,6 +7,8 @@
 #include "savedata.h"
 #include "state_world.h"
 
+#include "audio/audioEffects.h"
+
 #define MENU_START 0
 #define MENU_QUIT 1
 
@@ -44,6 +46,9 @@ void menu_input(u16 changed, u16 state) {
     }
 
     if (changed & BUTTON_A && (state & BUTTON_A)) {
+        // Play Select Sound When Pressing A
+        selectSound();
+        
         state_parameters_t args;
 	SYS_disableInts();
 	savedata_t *p = malloc(sizeof(savedata_t));
