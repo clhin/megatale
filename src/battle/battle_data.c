@@ -1,27 +1,25 @@
 #include "battle_data.h"
 
-void projectile_lerp(projectile_data_t *p, u8 speed) {
+void projectile_lerp(projectile_data_t *p, u8 slowdown) {
     /*
         Note that this could probably be optimized.
     */
 
-    if (fix16ToInt(p->x) == p->end_x && fix16ToInt(p->y) == p->end_y) return;
+    if (p->x == p->end_x && p->y == p->end_y) return;
+    s16 d_x = (p->end_x - p->start_x) / slowdown;
+    s16 d_y = (p->end_y - p->start_y) / slowdown;
 
-    u16 d_x = p->end_x - p->start_x;
-    u16 d_y = p->end_y - p->start_y;
+    if ((p->x + d_x > p->end_x && d_x > 0) ||
+        (p->x + d_x < p->end_x && d_x < 0)) {
+        p->x = p->end_x;
+    } else {
+        p->x += d_x;
+    }
 
-    fix16 shift_x;
-    fix16 shift_y;
-
-    shift_x = intToFix16(d_x);
-    shift_y = intToFix16(d_y);
-
-    fix16 rate = intToFix16(speed);
-    rate = fix16Div(rate, FIX16(256.0));
-
-    shift_x = fix16Mul(shift_x, rate);
-    shift_y = fix16Mul(shift_y, rate);
-
-    p->x = fix16Add(p->x, shift_x);
-    p->y = fix16Add(p->y, shift_y);
+    if ((p->y + d_y > p->end_y && d_y > 0) ||
+        (p->y + d_y < p->end_y && d_y < 0)) {
+        p->y = p->end_y;
+    } else {
+        p->y += d_y;
+    }
 }

@@ -133,13 +133,18 @@ void flowey_input(u16 changed, u16 state) {
 void flowey_update() {
     tick++;
 
-    if (S_FLOWEY_GEN_PELLETS && tick % 5 == 0) {
+    if (battle.state == S_FLOWEY_GEN_PELLETS && tick % 5 == 0) {
         for (u8 i = 0; i < 5; ++i) {
-            projectile_lerp(&battle.pellets[i], 16);
-            s16 x = fix16ToInt(battle.pellets[i].x);
-            s16 y = fix16ToInt(battle.pellets[i].y);
+            projectile_lerp(&battle.pellets[i], 11);
+            s16 x = battle.pellets[i].x;
+            s16 y = battle.pellets[i].y;
             SPR_setPosition(battle.pellets[i].spr, x, y);
         }
+    } else if (battle.state == S_FLOWEY_THROW_PELLETS && tick % 2 == 0) {
+        // battle.pellets[0].x += battle.pellets[0].v_x;
+        // battle.pellets[0].y += battle.pellets[0].v_y;
+        // SPR_setPosition(battle.pellets[0].spr, battle.pellets[0].x ,
+        // battle.pellets[0].y);
     }
 
     if (dialogue.press) {
@@ -224,9 +229,9 @@ void helper_scene_state() {
                     FLOWEY_CENTER_X - 4, FLOWEY_CENTER_X - 4 + 25,
                     FLOWEY_CENTER_X - 4 + 50};
 
-    u16 end_y[5] = {FLOWEY_CENTER_Y - 25, FLOWEY_CENTER_Y - 45,
-                    FLOWEY_CENTER_Y - 55, FLOWEY_CENTER_Y - 45,
-                    FLOWEY_CENTER_Y - 25};
+    u16 end_y[5] = {FLOWEY_CENTER_Y - 21, FLOWEY_CENTER_Y - 41,
+                    FLOWEY_CENTER_Y - 51, FLOWEY_CENTER_Y - 41,
+                    FLOWEY_CENTER_Y - 21};
 
     /*
     Based on how far we are in the dialogue, we adjust accordingly.
@@ -252,9 +257,8 @@ void helper_scene_state() {
                 SPR_setPosition(battle.pellets[i].spr, x, y);
                 SPR_setVisibility(battle.pellets[i].spr, VISIBLE);
 
-                battle.pellets[i].x = intToFix16(x);
-                battle.pellets[i].y = intToFix16(y);
-
+                battle.pellets[i].x = x;
+                battle.pellets[i].y = y;
                 battle.pellets[i].start_x = x;
                 battle.pellets[i].start_y = y;
 
@@ -264,19 +268,19 @@ void helper_scene_state() {
 
             break;
 
-        case 2:
+        case 3:
+            battle.state = S_FLOWEY_THROW_PELLETS;
+
+            s16 end_x = heart->x + 4;
+            s16 end_y = heart->y + 4;
+
+            s16 d_x = end_x - battle.pellets[0].x;
+            s16 d_y = end_y = battle.pellets[0].y;
+
+            battle.pellets[0].v_x = d_x / 10;
+            battle.pellets[0].v_y = d_y / 10;
             // We set the telos of the pellets towards random parts of the
             // bottom of the screen
-
-            for (u8 i = 0; i < 5; ++i) {
-                x = intToFix16(battle.pellets[i].x);
-                y = intToFix16(battle.pellets[i].y);
-                battle.pellets[i].start_x = x;
-                battle.pellets[i].start_y = y;
-
-                battle.pellets[i].end_x = 200;
-                battle.pellets[i].end_y = 200;
-            }
             break;
     }
 }

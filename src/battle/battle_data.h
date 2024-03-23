@@ -8,7 +8,8 @@
 */
 typedef struct projectile_data {
     Sprite *spr;
-    f16 x, y;
+    s16 x, y;
+    s16 v_x, v_y;
     s16 start_x, start_y;
     s16 end_x, end_y;
 } projectile_data_t;
@@ -19,6 +20,6 @@ typedef struct projectile_data {
     Uses floating point calculations in the back-end, so should be used
    liberally.
 */
-void projectile_lerp(projectile_data_t *projectile, u8 speed);
+void projectile_lerp(projectile_data_t *projectile, u8 slowdown);
 
 #endif
