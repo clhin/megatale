@@ -1,7 +1,6 @@
 #include <genesis.h>
 #include <resources.h>
 
-// Only define this if you want the game to go directly into testing
 #include "globals.h"
 
 #ifdef TEST_MODE
@@ -26,8 +25,6 @@ int main() {
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
     VDP_setTextPalette(PAL1);
     state_info_t state_info;
-    
-
 
 #ifndef TEST_MODE
     state_info.clean = intro_clean;

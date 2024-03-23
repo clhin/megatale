@@ -30,15 +30,9 @@ u8 counter;
 void test_textbox1_init() {
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-    text_info.lines_used = 3;
-    text_info.asterisks[0] = 1;
-    text_info.asterisks[1] = 1;
-    text_info.asterisks[2] = 1;
-    sprintf(text_info.lines[0], "gjpQ,pgjpQ,p");
-    sprintf(text_info.lines[1], "abcdefghijk");
-    sprintf(text_info.lines[2], "012345[/-]");
 
-    textbox_show(TEXT_DIALOGUE_MODE);
+    textbox_init(TEXT_DIALOGUE_MODE, DIALOGUE_OFFSET,
+                 "gjpQ,pgjpQ,p\nabcdefghijk\n012345[/-]", TRUE, TRUE, TRUE);
 
     counter = 0;
 }
@@ -46,15 +40,8 @@ void test_textbox1_init() {
 void test_textbox2_init() {
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
     u8 res = VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-    text_info.lines_used = 3;
-    text_info.asterisks[0] = 0;
-    text_info.asterisks[1] = 0;
-    text_info.asterisks[2] = 0;
-    sprintf(text_info.lines[0], "gjpQ,pgjpQ,p");
-    sprintf(text_info.lines[1], "abcdefghijk");
-    sprintf(text_info.lines[2], "012345[/-]");
-
-    textbox_show(TEXT_DIALOGUE_MODE);
+    textbox_init(TEXT_DIALOGUE_MODE, DIALOGUE_OFFSET,
+                 "gjpQ,pgjpQ,p\nabcdefghijk\n012345[/-]", FALSE, FALSE, FALSE);
 
     counter = 0;
 }
