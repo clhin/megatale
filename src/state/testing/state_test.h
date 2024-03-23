@@ -1,4 +1,4 @@
-#include "../../globals.h"
+#include "globals.h"
 #if !defined(STATE_TEST_H_) && defined(TEST_MODE)
 #define STATE_TEST_H_
 #include "../state_manager.h"

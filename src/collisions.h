@@ -12,11 +12,11 @@
  * Note: x, y, w,h correspond to pixel-location and not 8x8 locations. If this
  * isn't good in the long run, optimizations can be done.
  */
-typedef struct box {
-    u16 x, y;
-    u8 w, h;
-} box_t;
+extern const u8 startcollision[408];
+extern const u8 maincollision[336];
+extern const u8 ruins1_collision[384];
+extern const u8 ruins2_collision [192];
+extern const u8 ruins3_collision[432];
 
-u8 collides(box_t lhs, box_t rhs);
-
+u8 collides(BoxCollision lhs, BoxCollision rhs);
 #endif

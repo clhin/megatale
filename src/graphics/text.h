@@ -19,30 +19,50 @@
 
 // Used by draw_letter(). When we draw a letter, is there a character above it
 // that is tailed?
-typedef enum {
-    LETTER_TAIL_NONE,
-    LETTER_TAIL_g,
-    LETTER_TAIL_p,
-    LETTER_TAIL_q,
-    LETTER_TAIL_Q,
-    LETTER_TAIL_comma
-} LetterTail;
+
+#define MAX_LINE_LENGTH 33
 
 /* draw_letter(...)
 
     Basically draws a letter onto screen with the specified parameters.
 
-    - c: which ascii character to draw (doesn't account for all, only ones
+    - letter: Which ascii character to draw (doesn't account for all, only ones
    undertale takes account of)
-   - x: head-tile position
-   - y: head-tile position
-   - offset: Where into the tilemap vram is the tilemap starting?
-   - plane: What plane to draw it on? Default is BG_A
-   - palette: Which palette to use?
-   - tail: Whether or not letter above it is tailed, if so what tail is it?
+    - above: Which ascii character is above this one. This is for tails. Put
+   '\0' if none are above.
+    - x: head-tile position
+    - y: head-tile position
+    - offset: Where into the tileset vram is the font tileset starting?
+    - plane: What plane to draw it on? Default should be BG_A
+    - palette: Which palette to use?
 */
-void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
-                 LetterTail tail);
+void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
+                 u8 palette);
+
+/*
+    Abstraction for draw_letter that draws multiple lines of at max 32
+   characters (33 including \0) and handles having to deal with letters above.
+
+    Note that this does not handle cleaning, this has to be done by the user.
+
+    - lines: An array of n-size supporting 33-size buf character arrays.
+
+   Example input:
+
+   char str[2][MAX_LINE_LENGTH] = {"Hello World!", "This is SGDK."};
+
+    - nums: The amount of lines used in variable "lines."
+    - x: The top-left location starting from head-position of first
+   letter/whitespace.
+    - y: ^
+    - offset: Where into the tileset vram is the font tileset starting?
+    - plane: What plane to draw it on? Default should be BG_A
+    - palette: Which palette to use?
+
+
+*/
+void draw_lines(const char lines[][MAX_LINE_LENGTH], u8 num, u8 x, u8 y,
+                u16 offset, u8 plane, u8 palette);
 
 /* get_char_info(...)
 
@@ -51,6 +71,6 @@ void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
 
     - c: which ascii character to draw
 */
-u8 *get_char_info(char c);
+const u8 *get_char_info(char c);
 
 #endif

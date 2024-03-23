@@ -46,52 +46,56 @@
 #define GET_BOTTOM(arr) (arr[2] & 0x7F)
 #define GET_BOTTOM_HFLIP(arr) (arr[2] >> 7)
 
-void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
-                 LetterTail tail) {
-    u8 *arr = get_char_info(c);
+void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
+                 u8 palette) {
+    const u8 *arr = get_char_info(letter);
 
-    // Handle the top of the letter based on enum tail
-    switch (tail) {
-        case LETTER_TAIL_NONE:
+    // Handle the top of the letter base on character
+    switch (above) {
+        case 'g':
+        case 'j':
+        case 'y':
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, TRUE, 0, GET_TOP_HFLIP(arr),
+                               offset + GET_TOP_g_TAIL(arr)),
+                x, y);
+            break;
+        case 'p':
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, TRUE, 0, 0,
+                                            offset + GET_TOP_p_TAIL(arr)),
+                             x, y);
+            break;
+        case 'q':
+            VDP_setTileMapXY(
+                plane,
+                TILE_ATTR_FULL(palette, TRUE, 0, GET_q_TAIL_HFLIP(arr),
+                               offset + GET_TOP_q_TAIL(arr)),
+                x, y);
+            break;
+        case 'Q':
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, TRUE, 0, 0,
+                                            offset + GET_TOP_Q_TAIL(arr)),
+                             x, y);
+            break;
+        case ',':
+            VDP_setTileMapXY(plane,
+                             TILE_ATTR_FULL(palette, TRUE, 0, 0,
+                                            offset + GET_TOP_comma_TAIL(arr)),
+                             x, y);
+            break;
+
+        default:
             VDP_setTileMapXY(
                 plane,
                 TILE_ATTR_FULL(palette, 0, GET_TOP_VFLIP(arr),
                                GET_TOP_HFLIP(arr), offset + GET_TOP(arr)),
                 x, y);
             break;
-        case LETTER_TAIL_g:
-            VDP_setTileMapXY(plane,
-                             TILE_ATTR_FULL(palette, 0, 0, GET_TOP_HFLIP(arr),
-                                            offset + GET_TOP_g_TAIL(arr)),
-                             x, y);
-            break;
-        case LETTER_TAIL_p:
-            VDP_setTileMapXY(
-                plane,
-                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_p_TAIL(arr)),
-                x, y);
-            break;
-        case LETTER_TAIL_q:
-            VDP_setTileMapXY(
-                plane,
-                TILE_ATTR_FULL(palette, 0, 0, GET_q_TAIL_HFLIP(arr),
-                               offset + GET_TOP_q_TAIL(arr)),
-                x, y);
-            break;
-        case LETTER_TAIL_Q:
-            VDP_setTileMapXY(
-                plane,
-                TILE_ATTR_FULL(palette, 0, 0, 0, offset + GET_TOP_Q_TAIL(arr)),
-                x, y);
-            break;
-        case LETTER_TAIL_comma:
-            VDP_setTileMapXY(plane,
-                             TILE_ATTR_FULL(palette, 0, 0, 0,
-                                            offset + GET_TOP_comma_TAIL(arr)),
-                             x, y);
-            break;
     }
-    // Middle of Letter
+
     VDP_setTileMapXY(plane,
                      TILE_ATTR_FULL(palette, 0, 0, GET_MIDDLE_HFLIP(arr),
                                     offset + GET_MIDDLE(arr)),
@@ -103,7 +107,23 @@ void draw_letter(char c, u8 x, u8 y, u16 offset, u8 plane, u8 palette,
                      x, y + 2);
 }
 
-u8 lookup_table[76][8] = {
+void draw_lines(const char lines[][MAX_LINE_LENGTH], u8 num, u8 x, u8 y,
+                u16 offset, u8 plane, u8 palette) {
+    for (u8 i = 0; i < num; ++i) {
+        u8 size = strlen(lines[i]);
+        // Size of line above
+        u8 size_above = (i > 0) ? strlen(lines[i - 1]) : 0;
+        for (u8 j = 0; j < size; ++j) {
+            // \0 e.g. nothing above.
+            char above = (j < size_above) ? lines[i - 1][j] : '\0';
+
+            draw_letter(lines[i][j], above, x + j, y + i * 2, offset, BG_A,
+                        PAL1);
+        }
+    }
+}
+
+const u8 lookup_table[76][8] = {
     {0x0, 0x5, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     // a
     {0x1, 0x6, 0x0, 0x52, 0x60, 0xe1, 0x77, 0x87},     // b
     {0x0, 0x7, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     // c
@@ -181,241 +201,241 @@ u8 lookup_table[76][8] = {
     {0x0, 0x0, 0x0, 0x1d, 0x1e, 0x9e, 0x3b, 0x4d},     //
     {0x81, 0x51, 0x0, 0x52, 0x61, 0xe0, 0x78, 0x88},   // /
 };
-/* Note: we are relying on the compiler to optimize this either by sorting it or
-   by sorting it into a lookup table.
+/* Note: we are relying on the compiler to optimize this either by sorting
+   it or by sorting it into a lookup table.
 
    (The least amount of optimization takes O(logn))
 
 
 */
-u8 *get_char_info(char c) {
+const u8 *get_char_info(char c) {
     switch (c) {
-        case 97:
+        case 'a':
             return lookup_table[0];
             break;
-        case 98:
+        case 'b':
             return lookup_table[1];
             break;
-        case 99:
+        case 'c':
             return lookup_table[2];
             break;
-        case 100:
+        case 'd':
             return lookup_table[3];
             break;
-        case 101:
+        case 'e':
             return lookup_table[4];
             break;
-        case 102:
+        case 'f':
             return lookup_table[5];
             break;
-        case 103:
+        case 'g':
             return lookup_table[6];
             break;
-        case 104:
+        case 'h':
             return lookup_table[7];
             break;
-        case 105:
+        case 'i':
             return lookup_table[8];
             break;
-        case 106:
+        case 'j':
             return lookup_table[9];
             break;
-        case 107:
+        case 'k':
             return lookup_table[10];
             break;
-        case 108:
+        case 'l':
             return lookup_table[11];
             break;
-        case 109:
+        case 'm':
             return lookup_table[12];
             break;
-        case 110:
+        case 'n':
             return lookup_table[13];
             break;
-        case 111:
+        case 'o':
             return lookup_table[14];
             break;
-        case 112:
+        case 'p':
             return lookup_table[15];
             break;
-        case 113:
+        case 'q':
             return lookup_table[16];
             break;
-        case 114:
+        case 'r':
             return lookup_table[17];
             break;
-        case 115:
+        case 's':
             return lookup_table[18];
             break;
-        case 116:
+        case 't':
             return lookup_table[19];
             break;
-        case 117:
+        case 'u':
             return lookup_table[20];
             break;
-        case 118:
+        case 'v':
             return lookup_table[21];
             break;
-        case 119:
+        case 'w':
             return lookup_table[22];
             break;
-        case 120:
+        case 'x':
             return lookup_table[23];
             break;
-        case 121:
+        case 'y':
             return lookup_table[24];
             break;
-        case 122:
+        case 'z':
             return lookup_table[25];
             break;
-        case 65:
+        case 'A':
             return lookup_table[26];
             break;
-        case 66:
+        case 'B':
             return lookup_table[27];
             break;
-        case 67:
+        case 'C':
             return lookup_table[28];
             break;
-        case 68:
+        case 'D':
             return lookup_table[29];
             break;
-        case 69:
+        case 'E':
             return lookup_table[30];
             break;
-        case 70:
+        case 'F':
             return lookup_table[31];
             break;
-        case 71:
+        case 'G':
             return lookup_table[32];
             break;
-        case 72:
+        case 'H':
             return lookup_table[33];
             break;
-        case 73:
+        case 'I':
             return lookup_table[34];
             break;
-        case 74:
+        case 'J':
             return lookup_table[35];
             break;
-        case 75:
+        case 'K':
             return lookup_table[36];
             break;
-        case 76:
+        case 'L':
             return lookup_table[37];
             break;
-        case 77:
+        case 'M':
             return lookup_table[38];
             break;
-        case 78:
+        case 'N':
             return lookup_table[39];
             break;
-        case 79:
+        case 'O':
             return lookup_table[40];
             break;
-        case 80:
+        case 'P':
             return lookup_table[41];
             break;
-        case 81:
+        case 'Q':
             return lookup_table[42];
             break;
-        case 82:
+        case 'R':
             return lookup_table[43];
             break;
-        case 83:
+        case 'S':
             return lookup_table[44];
             break;
-        case 84:
+        case 'T':
             return lookup_table[45];
             break;
-        case 85:
+        case 'U':
             return lookup_table[46];
             break;
-        case 86:
+        case 'V':
             return lookup_table[47];
             break;
-        case 87:
+        case 'W':
             return lookup_table[48];
             break;
-        case 88:
+        case 'X':
             return lookup_table[49];
             break;
-        case 89:
+        case 'Y':
             return lookup_table[50];
             break;
-        case 90:
+        case 'Z':
             return lookup_table[51];
             break;
-        case 48:
+        case '0':
             return lookup_table[52];
             break;
-        case 49:
+        case '1':
             return lookup_table[53];
             break;
-        case 50:
+        case '2':
             return lookup_table[54];
             break;
-        case 51:
+        case '3':
             return lookup_table[55];
             break;
-        case 52:
+        case '4':
             return lookup_table[56];
             break;
-        case 53:
+        case '5':
             return lookup_table[57];
             break;
-        case 54:
+        case '6':
             return lookup_table[58];
             break;
-        case 55:
+        case '7':
             return lookup_table[59];
             break;
-        case 56:
+        case '8':
             return lookup_table[60];
             break;
-        case 57:
+        case '9':
             return lookup_table[61];
             break;
-        case 46:
+        case '.':
             return lookup_table[62];
             break;
-        case 44:
+        case ',':
             return lookup_table[63];
             break;
-        case 40:
+        case '(':
             return lookup_table[64];
             break;
-        case 41:
+        case ')':
             return lookup_table[65];
             break;
-        case 58:
+        case ':':
             return lookup_table[66];
             break;
-        case 33:
+        case '!':
             return lookup_table[67];
             break;
-        case 63:
+        case '?':
             return lookup_table[68];
             break;
-        case 39:
+        case '\'':
             return lookup_table[69];
             break;
-        case 34:
+        case '"':
             return lookup_table[70];
             break;
-        case 45:
+        case '-':
             return lookup_table[71];
             break;
-        case 91:
+        case '[':
             return lookup_table[72];
             break;
-        case 93:
+        case ']':
             return lookup_table[73];
             break;
-        case 32:
+        case ' ':
             return lookup_table[74];
             break;
-        case 47:
+        case '/':
             return lookup_table[75];
             break;
         default:

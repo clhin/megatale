@@ -25,7 +25,7 @@ tbl = pd.read_excel("misc/lookup_table.xlsx")
 switch = []
 
 
-print("u8 lookup_table[" + str(tbl.shape[0]) + "][8] = {")
+print("const u8 lookup_table[" + str(tbl.shape[0]) + "][8] = {")
 for i, row in tbl.iterrows(): 
     print("{")
     
@@ -64,7 +64,7 @@ print("};")
 
 print("switch(c){")
 for i,v in enumerate(switch):
-    print("case {0}:".format(v))
+    print("case '{0}':".format(chr(v)))
     print("\t return lookup_table[{0}];".format(i)) 
     print("\t break;")
 print("default:")
