@@ -12,8 +12,8 @@ void intro_init(state_parameters_t args) {
     s16 textPosX = 10;
     s16 textPosY = 20;
 
-
     /*
+    VDP_loadTileSet(&font_sheet, 1, DMA);
     const char lines[3][33] = {
     "Long ago, two races",
     "ruled over Earth:",
@@ -24,7 +24,7 @@ void intro_init(state_parameters_t args) {
     u8 textPosY1 = 20;
     u16 offset = 1;
     // Use textbox_init function to draw the text
-    VDP_loadTileSet(font.tileset, 1, DMA);
+    VDP_loadTileSet(&font_sheet, 1, DMA);
     PAL_setPalette(PAL0, font.palette->data, DMA);
     VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
     draw_lines(lines, 3, textPosX1, textPosY1, offset, BG_A, PAL0);
