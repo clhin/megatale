@@ -14,6 +14,9 @@
  */
 extern const u8 startcollision[408];
 extern const u8 maincollision[336];
+extern const u8 ruins1_collision[384];
+extern const u8 ruins2_collision [192];
+extern const u8 ruins3_collision[432];
 
 u8 collides(BoxCollision lhs, BoxCollision rhs);
 #endif
