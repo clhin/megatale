@@ -23,3 +23,13 @@ void projectile_lerp(projectile_data_t *p, u8 slowdown) {
         p->y += d_y;
     }
 }
+
+u8 circles_collide(s16 l_x, s16 l_y, s16 l_r, s16 r_x, s16 r_y, s16 r_r) {
+    s16 d_x = r_x - l_x;
+    s16 d_y = r_y - l_y;
+
+    s16 limit = r_r + l_r;
+
+    if ((d_x * d_x) + (d_y * d_y) < (limit * limit)) return 1;
+    return 0;
+}
