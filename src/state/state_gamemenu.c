@@ -7,6 +7,9 @@
 #include "graphics/utils.h"
 #include "savedata.h"
 #include "state_menu.h"
+
+#include "audio/audioEffects.h"
+
 savedata_t *data;
 Sprite * heart; 
 u8 current_selection;
@@ -73,6 +76,8 @@ VDP_setTileMapXY(
     VDP_drawText(gbuf, 2, 7);
 }
 void gamemenu_input(u16 changed, u16 state) {
+    // Select Sound to Open Menu
+    selectSound();
     if (changed & BUTTON_START && (state & BUTTON_START)) {
         state_pop();
     }
