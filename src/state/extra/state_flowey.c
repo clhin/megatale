@@ -51,7 +51,7 @@ void helper_battle_tick();
 void helper_scene_state();
 
 // Local variables
-const u8 faces[18] = {0, 0, 0, 0, 0, 1, 2, 0, 0, 6, 6, 6, 5, 3, 3, 4, 5, 5};
+const u8 faces[19] = {0, 0, 0, 0, 0, 1, 2, 0, 0, 6, 6, 6, 5, 3, 3, 4, 0, 5, 5};
 
 Sprite *heart;
 Sprite *flowey;
@@ -74,7 +74,7 @@ struct {
     u8 i;
 
     u8 face_frame;
-
+    u8 blocking;
 } dialogue;
 
 struct {
@@ -106,11 +106,12 @@ void flowey_init(state_parameters_t args) {
     dialogue.x = 0;
     dialogue.y = 0;
 
-    dialogue.c = DIALOGUE_FLOWEY0;
+    dialogue.c = D_FLOWEY_TALK0;
 
     dialogue.face_frame = 0;
 
     dialogue.i = 0;
+    dialogue.blocking = 0;
 
     battle.state = S_FLOWEY_NOTHING;
 
@@ -200,7 +201,7 @@ void flowey_update() {
 #endif
     }
     // add tick % 5
-    if (!dialogue.next) {
+    if (!dialogue.next && !dialogue.blocking) {
         SPR_setAnim(flowey, faces[dialogue.i]);
         helper_dialogue_tick();
 
@@ -318,13 +319,47 @@ void helper_battle_tick() {
             battle.heart_collide = 0;
             dialogue.press = TRUE;
             battle.dodge_count++;
+            return;
         }
     }
 }
 void helper_scene_state() {
     // If scene was previously pellets being thrown
-    if (dialogue.i == 8) {
-        dialogue.i = (battle.heart_collide) ? 9 : 13;
+    if (dialogue.i == I_FLOWEY_TALK8 && battle.heart_collide) {
+        dialogue.i = I_FLOWEY_HIT1;
+        dialogue.c = D_FLOWEY_HIT1;
+    } else if (dialogue.i == I_FLOWEY_TALK8 && !battle.heart_collide) {
+        /*
+        1: "Let's try that again"
+        2: "Are you braindead?"
+        3: Angry
+        */
+        switch (battle.dodge_count) {
+            case 1:
+                dialogue.i = I_FLOWEY_DODGE0_0;
+                dialogue.c = D_FLOWEY_DODGE0_0;
+                break;
+            case 2:
+                dialogue.i = I_FLOWEY_DODGE1_0;
+                dialogue.c = D_FLOWEY_DODGE1_0;
+                break;
+            case 3:
+                dialogue.i = I_FLOWEY_DODGE2_0;
+                dialogue.c = D_FLOWEY_DODGE2_0;
+                break;
+        }
+        dialogue.blocking = FALSE;
+    } else if (dialogue.i == I_FLOWEY_DODGE0_1 ||
+               dialogue.i ==
+                   I_FLOWEY_DODGE1_1) {  // Second or third flowey attempt
+        dialogue.i = I_FLOWEY_TALK8;
+        dialogue.c = 0;  // Placeholder
+        dialogue.blocking = TRUE;
+        // Give him default face (note that it does that in intro)
+        SPR_setAnim(flowey, 0);
+    } else if (dialogue.i == I_FLOWEY_DODGE2_1) {
+        dialogue.i = I_FLOWEY_DIE;
+        dialogue.c = D_FLOWEY_DIE;
     } else {
         dialogue.i++;
     }
@@ -344,17 +379,17 @@ void helper_scene_state() {
     Based on how far we are in the dialogue, we adjust accordingly.
 
     5: is "Down here, love is shared [...]" - 5 bullets come out from flowey
-   and surrond him above in a circle.
+    and surrond him above in a circle.
 
     If we look at the unit circle, we position them
 
-*/
+    */
     switch (dialogue.i) {
         /*
         "Down here, love is shared [...]" - 5 bullets come out from flowey
-   and surrond him above in a circle.
+    and surrond him above in a circle.
         */
-        case 5:
+        case I_FLOWEY_TALK5:
             battle.state = S_FLOWEY_GEN_PELLETS;
 
             battle.pellets_used = 5;
@@ -382,7 +417,19 @@ void helper_scene_state() {
                 The pellets then chase after the player and disappear at the
                bottom. Different response if player dodges or collides.
             */
-        case 8:
+        case I_FLOWEY_TALK8:
+            // Flowey attempts to hit you numerous times, past the first one,
+            // they spawn at where they moved to instead of moving there, so we
+            // need to keep this in mind.
+            if (battle.dodge_count > 0) {
+                for (u8 i = 0; i < 5; ++i) {
+                    SPR_setPosition(battle.pellets[i].spr, end_x[i], end_y[i]);
+                    SPR_setVisibility(battle.pellets[i].spr, VISIBLE);
+
+                    battle.pellets[i].x = end_x[i];
+                    battle.pellets[i].y = end_y[i];
+                }
+            }
 
             battle.state = S_FLOWEY_THROW_PELLETS;
 
@@ -397,7 +444,7 @@ void helper_scene_state() {
                 battle.pellets[i].v_y = d_y / 30;
             }
             break;
-        case 9:
+        case I_FLOWEY_HIT1:
             battle.state = S_FLOWEY_HIT;
 
             for (u8 i = 0; i < 5; ++i) {
@@ -408,12 +455,14 @@ void helper_scene_state() {
             /*
             Die!
             */
-        case 12:
+        case I_FLOWEY_DIE:
             battle.state = S_FLOWEY_DIE;
             break;
-        case 13:
+        case I_FLOWEY_DODGE0_0:
+        case I_FLOWEY_DODGE1_0:
             battle.state = S_FLOWEY_DODGE1;
-
             break;
+        case I_FLOWEY_DODGE2_0:
+            battle.state = S_FLOWEY_NOTHING;
     }
 }

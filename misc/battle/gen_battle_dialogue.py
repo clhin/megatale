@@ -45,7 +45,8 @@ with open("battle_dialogue.json", "r") as dialogue:
                 sum += len(obj[j]["text"]) + 1
 
 
-            precomp_defs.append("#define {0} {1}".format(obj[i]["tag"], sum))
+            precomp_defs.append("#define D_{0} {1}".format(obj[i]["tag"], sum))
+            precomp_defs.append("#define I_{0} {1}".format(obj[i]["tag"], i))
     
     header_dump = open(data["export"], "w")
     
