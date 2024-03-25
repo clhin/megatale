@@ -87,8 +87,15 @@ struct {
     s16 heart_y;
     s16 heart_vx;
     s16 heart_vy;
+    u8 heart_blocking;
     u8 heart_collide;
     u8 dodge_count;
+
+    // Battle box [15, 15, 10, 9]
+    u8 box_x;
+    u8 box_y;
+    u8 box_w;
+    u8 box_h;
 } battle;
 
 void flowey_init(state_parameters_t args) {
@@ -116,6 +123,12 @@ void flowey_init(state_parameters_t args) {
     battle.state = S_FLOWEY_NOTHING;
 
     battle.dodge_count = 0;
+
+    // Proportions of box
+    battle.box_x = 15;
+    battle.box_y = 15;
+    battle.box_w = 10;
+    battle.box_h = 9;
     // Begin loading
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
@@ -138,7 +151,7 @@ void flowey_init(state_parameters_t args) {
                                            vram_ind, &num_tiles);
     vram_ind += num_tiles;
 
-    box_draw(15, 15, 10, 9, PAL1);
+    box_draw(battle.box_x, battle.box_y, battle.box_w, battle.box_h, PAL1);
 
     heart = SPR_addSprite(&heart_sprite, HEART_CENTER_X - 4, HEART_CENTER_Y,
                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
@@ -148,6 +161,7 @@ void flowey_init(state_parameters_t args) {
     battle.heart_vx = 0;
     battle.heart_vy = 0;
     battle.heart_collide = 0;
+    battle.heart_blocking = 0;
     flowey =
         SPR_addSprite(&flowey_battle, PIXEL_WIDTH / 2 - flowey_battle.w / 2,
                       8 * 7, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
@@ -257,8 +271,7 @@ void helper_dialogue_tick() {
 }
 
 void helper_heart_tick() {
-    // box_draw(15, 15, 10, 9, PAL1);
-
+    if (battle.heart_blocking) return;
     s16 temp_x = battle.heart_x + battle.heart_vx;
     s16 temp_y = battle.heart_y + battle.heart_vy;
 
@@ -271,8 +284,10 @@ void helper_heart_tick() {
        That means, the top bound is at tile edge
        of tile 16, bottom bound is at edge of tile 22 (15 + 9 - 2)
     */
-    temp_x = clamp(temp_x, 16 * 8, 23 * 8);
-    temp_y = clamp(temp_y, 16 * 8, 22 * 8);
+    temp_x = clamp(temp_x, (battle.box_x + 1) * 8,
+                   (battle.box_x + battle.box_w - 2) * 8);
+    temp_y = clamp(temp_y, (battle.box_x + 1) * 8,
+                   (battle.box_x + battle.box_h - 2) * 8);
 
     battle.heart_x = temp_x;
     battle.heart_y = temp_y;
@@ -321,6 +336,14 @@ void helper_battle_tick() {
             battle.dodge_count++;
             return;
         }
+    } else if (battle.state == S_FLOWEY_DIE && tick % 3 == 0) {
+        if (battle.pellets_used < MAX_FLOWEY_PELLETS) {
+            SPR_setVisibility(battle.pellets[battle.pellets_used].spr, VISIBLE);
+            battle.pellets_used++;
+        } else {
+            battle.heart_blocking = FALSE;
+            dialogue.blocking = FALSE;
+        }
     }
 }
 void helper_scene_state() {
@@ -364,16 +387,16 @@ void helper_scene_state() {
         dialogue.i++;
     }
 
-    u16 x = FLOWEY_CENTER_X - 4;
-    u16 y = FLOWEY_CENTER_Y - 4;
+    const u16 x = FLOWEY_CENTER_X - 4;
+    const u16 y = FLOWEY_CENTER_Y - 4;
 
-    u16 end_x[5] = {FLOWEY_CENTER_X - 4 - 50, FLOWEY_CENTER_X - 4 - 25,
-                    FLOWEY_CENTER_X - 4, FLOWEY_CENTER_X - 4 + 25,
-                    FLOWEY_CENTER_X - 4 + 50};
+    const u16 end_x[5] = {FLOWEY_CENTER_X - 4 - 50, FLOWEY_CENTER_X - 4 - 25,
+                          FLOWEY_CENTER_X - 4, FLOWEY_CENTER_X - 4 + 25,
+                          FLOWEY_CENTER_X - 4 + 50};
 
-    u16 end_y[5] = {FLOWEY_CENTER_Y - 21, FLOWEY_CENTER_Y - 41,
-                    FLOWEY_CENTER_Y - 51, FLOWEY_CENTER_Y - 41,
-                    FLOWEY_CENTER_Y - 21};
+    const u16 end_y[5] = {FLOWEY_CENTER_Y - 21, FLOWEY_CENTER_Y - 41,
+                          FLOWEY_CENTER_Y - 51, FLOWEY_CENTER_Y - 41,
+                          FLOWEY_CENTER_Y - 21};
 
     /*
     Based on how far we are in the dialogue, we adjust accordingly.
@@ -457,6 +480,60 @@ void helper_scene_state() {
             */
         case I_FLOWEY_DIE:
             battle.state = S_FLOWEY_DIE;
+
+            // Why do we block? We need a circle of bullets to be created around
+            // the player, after which flowey then says die.
+            dialogue.blocking = TRUE;
+            battle.heart_blocking = TRUE;
+
+            SPR_setAnim(flowey, 5);
+
+            // Resize the box (I don't know, it does this for some reason?)
+            // Heart being put in it is handled by clamp() in update sequence.
+
+            VDP_clearTileMapRect(BG_A, battle.box_x, battle.box_y, battle.box_w,
+                                 battle.box_h);
+
+            battle.box_x += 2;
+            battle.box_y += 2;
+            battle.box_w -= 4;
+            battle.box_h -= 3;
+            box_draw(battle.box_x, battle.box_y, battle.box_w, battle.box_h,
+                     PAL1);
+
+            battle.heart_x = clamp(battle.heart_x, (battle.box_x + 1) * 8,
+                                   (battle.box_x + battle.box_w - 2) * 8);
+            battle.heart_y = clamp(battle.heart_y, (battle.box_x + 1) * 8,
+                                   (battle.box_x + battle.box_h - 2) * 8);
+
+            SPR_setPosition(heart, battle.heart_x, battle.heart_y);
+
+            // We already have 5 bullets loaded, we have 32 in total. We load
+            // the other 27.
+
+            // We go ahead and set positions but make them all invisible.
+
+            battle.pellets_used = 0;
+
+            for (u8 i = 0; i < MAX_FLOWEY_PELLETS; ++i) {
+                if (i >= 5) {
+                    battle.pellets[i].spr =
+                        SPR_addSpriteEx(battle.pellets[0].spr->definition, 0, 0,
+                                        TILE_ATTR(PAL1, TRUE, FALSE, FALSE), 0);
+                }
+
+                SPR_setVisibility(battle.pellets[i].spr, HIDDEN);
+
+                f16 x_adj = fix16Mul(cosFix16(i * 32), FIX16(32.0));
+                f16 y_adj = fix16Mul(sinFix16(i * 32), FIX16(32.0));
+
+                battle.pellets[i].x = battle.heart_x + fix16ToInt(x_adj);
+                battle.pellets[i].y = battle.heart_y + fix16ToInt(y_adj);
+
+                SPR_setPosition(battle.pellets[i].spr, battle.pellets[i].x,
+                                battle.pellets[i].y);
+            }
+
             break;
         case I_FLOWEY_DODGE0_0:
         case I_FLOWEY_DODGE1_0:
