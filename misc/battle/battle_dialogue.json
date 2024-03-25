@@ -4,75 +4,93 @@
     "flowey": [
         {
             "tag": "DIALOGUE_FLOWEY0",
-            "text": "See that heart?\nThat is your SOUL.\nthe very culmination\nof your being!"
+            "text": "See that heart?\nThat is your SOUL.\nthe very culmination\nof your being!",
+            "face": 0
         },
         {
             "tag": "DIALOGUE_FLOWEY1",
-            "text": "Your SOUL starts off\nweak, but can grow\nstrong if you gain\na lot of LV."
+            "text": "Your SOUL starts off\nweak, but can grow\nstrong if you gain\na lot of LV.",
+            "face": 0
         },
         {
             "tag": "DIALOGUE_FLOWEY2",
-            "text": "What's LV stand for?\nWhy, LOVE, of course!"
+            "text": "What's LV stand for?\nWhy, LOVE, of course!",
+            "face": 0
         },
         {
             "tag": "DIALOGUE_FLOWEY3",
-            "text": "You want some\nLOVE, don't you?"
+            "text": "You want some\nLOVE, don't you?",
+            "face": 0
         },
         {
             "tag": "DIALOGUE_FLOWEY4",
-            "text": "Don't worry,\nI'll share some\nwith you!"
+            "text": "Don't worry,\nI'll share some\nwith you!",
+            "face": 0
         },
         {
             "tag": "DIALOGUE_FLOWEY5",
-            "text": "Down here, LOVE is\nshared through..."
+            "text": "Down here, LOVE is\nshared through...",
+            "face": 1
         },
         {
             "tag": "DIALOGUE_FLOWEY6",
-            "text": "Little white...\n\"friendliness\npellets.\""
+            "text": "Little white...\n\"friendliness\npellets.\"",
+            "face": 2
         },
         {
             "tag": "DIALOGUE_FLOWEY7",
-            "text": "Are you ready?"
+            "text": "Are you ready?",
+            "face": 0
         },
         {
             "tag": "DIALOGUE_FLOWEY8",
-            "text": "Move around!\nGet as many as\nyou can!"
+            "text": "Move around!\nGet as many as\nyou can!",
+            "face": 0
         },
         {
             "tag": "DIALOGUE_FLOWEY9",
-            "text": "You idiot."
+            "text": "You idiot.",
+            "face": 6
         },
         {
             "tag": "DIALOGUE_FLOWEY10",
-            "text": "In this world, it's\nkill or BE killed."
+            "text": "In this world, it's\nkill or BE killed.",
+            "face": 6
         },
         {
             "tag": "DIALOGUE_FLOWEY11",
-            "text": "Why would ANYONE pass\nup an oppurtunity\nlike this!?"
+            "text": "Why would ANYONE pass\nup an oppurtunity\nlike this!?",
+            "face": 6
         },
         {
             "tag": "DIALOGUE_FLOWEY12",
-            "text": "Die."
+            "text": "Die.",
+            "face": 5
         },
         {
             "tag": "DODGE_FLOWEY1",
-            "text": "Hey buddy,\nyou missed them."
+            "text": "Hey buddy,\nyou missed them.",
+            "face": 3
         },
         {
             "tag": "DODGE_FLOWEY2",
-            "text": "Let's try again,\nokay?"
+            "text": "Let's try again,\nokay?",
+            "face": 3
         },
         {
             "tag": "DODGE_FLOWEY3",
-            "text": "Is this a joke?\nAre you braindead?\nRUN. INTO. THE.\nfriendliness pellets"
+            "text": "Is this a joke?\nAre you braindead?\nRUN. INTO. THE.\nfriendliness pellets",
+            "face": 4
         },
         {
             "tag": "DODGE_FLOWEY4",
-            "text": "You know what's\ngoing on here,\ndon't you?"
+            "text": "You know what's\ngoing on here,\ndon't you?",
+            "face": 5
         },
         {
             "tag": "DODGE_FLOWEY5",
-            "text": "You just wanted to\nsee me suffer."
+            "text": "You just wanted to\nsee me suffer.",
+            "face": 5
         }
     ]
 }

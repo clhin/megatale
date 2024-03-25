@@ -31,6 +31,7 @@ typedef enum {
     S_FLOWEY_GEN_PELLETS,
     S_FLOWEY_THROW_PELLETS,
     S_FLOWEY_HIT,
+    S_FLOWEY_DIE,
     S_FLOWEY_DODGE1,
     S_FLOWEY_DODGE2,
     S_FLOWEY_DODGE3
@@ -48,6 +49,9 @@ void helper_dialogue_tick();
 void helper_heart_tick();
 void helper_battle_tick();
 void helper_scene_state();
+
+// Local variables
+const u8 faces[18] = {0, 0, 0, 0, 0, 1, 2, 0, 0, 6, 6, 6, 5, 3, 3, 4, 5, 5};
 
 Sprite *heart;
 Sprite *flowey;
@@ -84,7 +88,7 @@ struct {
     s16 heart_vx;
     s16 heart_vy;
     u8 heart_collide;
-
+    u8 dodge_count;
 } battle;
 
 void flowey_init(state_parameters_t args) {
@@ -102,7 +106,7 @@ void flowey_init(state_parameters_t args) {
     dialogue.x = 0;
     dialogue.y = 0;
 
-    dialogue.c = DIALOGUE_FLOWEY3;
+    dialogue.c = DIALOGUE_FLOWEY0;
 
     dialogue.face_frame = 0;
 
@@ -110,6 +114,7 @@ void flowey_init(state_parameters_t args) {
 
     battle.state = S_FLOWEY_NOTHING;
 
+    battle.dodge_count = 0;
     // Begin loading
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
@@ -148,7 +153,8 @@ void flowey_init(state_parameters_t args) {
 }
 void flowey_input(u16 changed, u16 state) {
     if (dialogue.next && (state & BUTTON_A) &&
-        battle.state != S_FLOWEY_THROW_PELLETS) {
+        battle.state != S_FLOWEY_THROW_PELLETS &&
+        battle.state != S_FLOWEY_DIE) {
         dialogue.press = TRUE;
     }
 
@@ -185,7 +191,6 @@ void flowey_update() {
 
         // Move towards next dialogue, call helper function if there's a
         // transistion.
-        dialogue.i++;
         helper_scene_state();
 
 #ifdef DEBUG
@@ -194,8 +199,9 @@ void flowey_update() {
         VDP_drawText(buf, 30, 0);
 #endif
     }
-
-    if (tick % 5 == 0 && !dialogue.next) {
+    // add tick % 5
+    if (!dialogue.next) {
+        SPR_setAnim(flowey, faces[dialogue.i]);
         helper_dialogue_tick();
 
         /*
@@ -280,7 +286,7 @@ void helper_battle_tick() {
             s16 y = battle.pellets[i].y;
             SPR_setPosition(battle.pellets[i].spr, x, y);
         }
-    } else if (battle.state == S_FLOWEY_THROW_PELLETS && tick % 2 == 0) {
+    } else if (battle.state == S_FLOWEY_THROW_PELLETS && tick % 3 == 0) {
         u8 not_clear = 0;
         for (u8 i = 0; i < 5; ++i) {
             if (SPR_getVisibility(battle.pellets[i].spr) != VISIBLE) continue;
@@ -294,8 +300,10 @@ void helper_battle_tick() {
 
             if (circles_collide(battle.pellets[i].x, battle.pellets[i].y, 4,
                                 battle.heart_x, battle.heart_y, 4)) {
-                dialogue.c = DIALOGUE_FLOWEY9;
-                dialogue.i = 8;         // i increments to 9
+                // dialogue.c = DIALOGUE_FLOWEY9;
+                // dialogue.i = 8;         // i increments to 9
+
+                battle.heart_collide = 1;
                 dialogue.press = TRUE;  // Emualate it being pressed.
                 return;
             }
@@ -305,13 +313,22 @@ void helper_battle_tick() {
         }
 
         if (!not_clear) {
-            dialogue.c = DODGE_FLOWEY1;
-            dialogue.i = 12;
+            //  dialogue.c = DODGE_FLOWEY1;
+            //    dialogue.i = 12;
+            battle.heart_collide = 0;
             dialogue.press = TRUE;
+            battle.dodge_count++;
         }
     }
 }
 void helper_scene_state() {
+    // If scene was previously pellets being thrown
+    if (dialogue.i == 8) {
+        dialogue.i = (battle.heart_collide) ? 9 : 13;
+    } else {
+        dialogue.i++;
+    }
+
     u16 x = FLOWEY_CENTER_X - 4;
     u16 y = FLOWEY_CENTER_Y - 4;
 
@@ -337,7 +354,7 @@ void helper_scene_state() {
         "Down here, love is shared [...]" - 5 bullets come out from flowey
    and surrond him above in a circle.
         */
-        case 1:
+        case 5:
             battle.state = S_FLOWEY_GEN_PELLETS;
 
             battle.pellets_used = 5;
@@ -365,7 +382,7 @@ void helper_scene_state() {
                 The pellets then chase after the player and disappear at the
                bottom. Different response if player dodges or collides.
             */
-        case 3:
+        case 8:
 
             battle.state = S_FLOWEY_THROW_PELLETS;
 
@@ -382,9 +399,21 @@ void helper_scene_state() {
             break;
         case 9:
             battle.state = S_FLOWEY_HIT;
+
+            for (u8 i = 0; i < 5; ++i) {
+                battle.pellets_used = 0;
+                SPR_setVisibility(battle.pellets[i].spr, HIDDEN);
+            }
+            break;
+            /*
+            Die!
+            */
+        case 12:
+            battle.state = S_FLOWEY_DIE;
             break;
         case 13:
             battle.state = S_FLOWEY_DODGE1;
+
             break;
     }
 }

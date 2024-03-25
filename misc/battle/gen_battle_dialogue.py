@@ -6,8 +6,11 @@ nullchr = b'\x00'
 def dump(name, obj): 
     bin_dump = open("{0}.bin".format(name), "wb")
 
+
+    faces = [] 
     for pair in obj:
         text = pair["text"].encode('utf-8')
+        faces.append(pair["face"])
         bin_dump.write(text)
         bin_dump.write(nullchr)
 
@@ -15,7 +18,15 @@ def dump(name, obj):
 
     print("{0} dialogue exported to {0}.bin".format(name))
 
-   
+    print("Add this to your source code:")
+    print("const u8 faces[{0}] = ".format(len(faces)), end = None)
+    print("{")
+    for face in faces:
+        print("{0}, ".format(face), end = None)
+
+    print("};")
+
+
     
 with open("battle_dialogue.json", "r") as dialogue:
     precomp_defs = [] 
@@ -32,6 +43,7 @@ with open("battle_dialogue.json", "r") as dialogue:
             sum = 0 
             for j in range(i): 
                 sum += len(obj[j]["text"]) + 1
+
 
             precomp_defs.append("#define {0} {1}".format(obj[i]["tag"], sum))
     
