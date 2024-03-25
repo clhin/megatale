@@ -5,6 +5,14 @@
 #include "text.h"
 
 /*
+    Local variables
+*/
+
+// Note: if you change MAX_LINE_SIZE, change this
+const char empty_block[MAX_LINE_SIZE + 1] =
+    "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+
+/*
     Local function headers that are defined lower in the file - help with DRY
    principles
 */
@@ -255,12 +263,10 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
     /*
         Why do we wipe the lines? Helps us down the road and prevents buggy
        string-arithmetic.
+
+       We do this instead of a for-loop to help save possibly rom size.
     */
 
-    char empty_block[MAX_LINE_SIZE + 1];
-    for (u8 i = 0; i < MAX_LINE_SIZE + 1; ++i) {
-        empty_block[i] = '\0';
-    }
     memcpy(text_info.lines[0], empty_block, MAX_LINE_SIZE + 1);
     memcpy(text_info.lines[1], empty_block, MAX_LINE_SIZE + 1);
     memcpy(text_info.lines[2], empty_block, MAX_LINE_SIZE + 1);
