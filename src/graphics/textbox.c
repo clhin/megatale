@@ -5,6 +5,14 @@
 #include "text.h"
 
 /*
+    Local variables
+*/
+
+// Note: if you change MAX_LINE_SIZE, change this
+const char empty_block[MAX_LINE_SIZE + 1] =
+    "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+
+/*
     Local function headers that are defined lower in the file - help with DRY
    principles
 */
@@ -191,8 +199,8 @@ u8 textbox_tick() {
 
 void textbox_flush(const char *text, u8 asterisk_one, u8 asterisk_two,
                    u8 asterisk_three) {
-    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, TRUE, 0, 0, TILE_USER_INDEX), 4,
-                        text_info.y_off, 32, 7);
+    VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, TRUE, 0, 0, TILE_USER_INDEX),
+                        4, text_info.y_off, 32, 7);
 
     set_dialogue(text, asterisk_one, asterisk_two, asterisk_three);
 
@@ -221,10 +229,10 @@ void textbox_close() {
 void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
     // If we're not on the first line and the position is in the string above,
     // we check for tails. With the tail we then draw the letter.
-    char above_c = '\0';
-    if (line > 0 && position < strlen(text_info.lines[line - 1])) {
-        char above_c = text_info.lines[line - 1][position];
-    }
+    // we emptied the lines with \0 beforehand, so no garbage should be
+    // possible.
+    char above_c = text_info.lines[line - 1][position];
+
     draw_letter(c, above_c, x, y, TILE_USER_INDEX, BG_A, PAL1);
     // draw_letter(c, x, y, TILE_USER_INDEX, BG_A, PAL1, tail);
 }
@@ -236,8 +244,9 @@ void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
 
 void tile_set(u8 vflip, u8 hflip, u16 tile_id, u16 x, u16 y) {
     VDP_setTileMapXY(
-        BG_A, TILE_ATTR_FULL(PAL1, TRUE, vflip, hflip, TILE_USER_INDEX + tile_id),
-        x, y);
+        BG_A,
+        TILE_ATTR_FULL(PAL1, TRUE, vflip, hflip, TILE_USER_INDEX + tile_id), x,
+        y);
 }
 
 // Given an asterisk number, we just need to write it in its specified position.
@@ -250,6 +259,17 @@ void asterisk_show(u8 asterisk_num) {
 void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
                   u8 asterisk_three) {
     u8 line = 0;
+
+    /*
+        Why do we wipe the lines? Helps us down the road and prevents buggy
+       string-arithmetic.
+
+       We do this instead of a for-loop to help save possibly rom size.
+    */
+
+    memcpy(text_info.lines[0], empty_block, MAX_LINE_SIZE + 1);
+    memcpy(text_info.lines[1], empty_block, MAX_LINE_SIZE + 1);
+    memcpy(text_info.lines[2], empty_block, MAX_LINE_SIZE + 1);
 
     const char *src = text;
     char *dst = text_info.lines[line];
