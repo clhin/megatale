@@ -49,11 +49,33 @@ void helper_dialogue_tick();
 void helper_heart_tick();
 void helper_battle_tick();
 void helper_scene_state();
+void helper_flowey_throw();
 
 // Local variables
 
 // Flowey faces corresponding to dialogues.
 const u8 faces[19] = {0, 0, 0, 0, 0, 1, 2, 0, 0, 6, 6, 6, 5, 3, 3, 4, 0, 5, 5};
+
+// Flowey face animations and "timer" intervals to use for when he goes "wut"
+// and gets thrown.
+
+#define THROWN_FRAMES 9
+
+// correspond to "timer" ticks
+const u8 throw_anim_t[THROWN_FRAMES] = {60, 70, 73, 76, 79, 82, 86, 91, 97};
+
+// MSB correspond to anim frame (y) and LSB correspond to frame (x)
+const u16 throw_anim_f[THROWN_FRAMES] = {
+    0x40,  // Angry
+    0x80,  // Confused look for a few frames
+    0x81,  // Cry
+    0x90,  // Cry -15deg
+    0x91,  // Cry -30deg
+    0xA0,  // Cry -45deg
+    0xA1,  // Cry -60deg
+    0xB0,  // Cry -75deg
+    0xB1   // Cry -90deg
+};
 
 /*
 Precomputed velocities for when circle surrounds player. We split it into 8
@@ -97,7 +119,10 @@ const s8 circle_vy[MAX_FLOWEY_PELLETS] = {
 Sprite *heart;
 Sprite *flowey;
 
+u8 flowey_thrown_i;
+
 u8 tick;
+u16 timer;  // Only used for flowey portion
 
 u16 vram_ind;
 
@@ -128,6 +153,10 @@ struct {
     s16 heart_y;
     s16 heart_vx;
     s16 heart_vy;
+
+    s16 flowey_x;
+    s16 flowey_y;
+
     u8 heart_blocking;
     u8 heart_collide;
     u8 dodge_count;
@@ -164,6 +193,8 @@ void flowey_init(state_parameters_t args) {
     battle.state = S_FLOWEY_NOTHING;
 
     battle.dodge_count = 0;
+
+    flowey_thrown_i = 0;
 
     // Proportions of box
     battle.box_x = 15;
@@ -203,9 +234,12 @@ void flowey_init(state_parameters_t args) {
     battle.heart_vy = 0;
     battle.heart_collide = 0;
     battle.heart_blocking = 0;
-    flowey =
-        SPR_addSprite(&flowey_battle, PIXEL_WIDTH / 2 - flowey_battle.w / 2,
-                      8 * 7, TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+
+    battle.flowey_x = PIXEL_WIDTH / 2 - flowey_battle.w / 2;
+    battle.flowey_y = 8 * 7;
+
+    flowey = SPR_addSprite(&flowey_battle, battle.flowey_x, battle.flowey_y,
+                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 }
 void flowey_input(u16 changed, u16 state) {
     if (dialogue.next && (state & BUTTON_A) &&
@@ -236,6 +270,8 @@ void flowey_update() {
 
     helper_heart_tick();
     helper_battle_tick();
+    if (battle.state == S_FLOWEY_DIE && battle.heart_collide)
+        helper_flowey_throw();
 
     if (dialogue.press) {
         dialogue.next = FALSE;
@@ -375,13 +411,8 @@ void helper_battle_tick() {
             battle.dodge_count++;
             return;
         }
-    } else if (battle.state == S_FLOWEY_DIE && tick % 3 == 0) {
-        // If the player hit the hearts, then we're in the next part where he
-        // gets flown away.
-        if (battle.heart_collide) {
-            return;
-        }
-
+    } else if (battle.state == S_FLOWEY_DIE && tick % 3 == 0 &&
+               !battle.heart_collide) {
         if (battle.pellets_used < MAX_FLOWEY_PELLETS) {
             SPR_setVisibility(battle.pellets[battle.pellets_used].spr, VISIBLE);
             battle.pellets_used++;
@@ -616,5 +647,25 @@ void helper_scene_state() {
             break;
         case I_FLOWEY_DODGE2_0:
             battle.state = S_FLOWEY_NOTHING;
+    }
+}
+
+void helper_flowey_throw() {
+    timer++;
+
+    if (flowey_thrown_i >= THROWN_FRAMES) {
+        return;
+    }
+
+    if (flowey_thrown_i > 2) {
+        battle.flowey_x -= 8;
+        battle.flowey_y -= 2;
+        SPR_setPosition(flowey, battle.flowey_x, battle.flowey_y);
+    }
+
+    if (timer >= throw_anim_t[flowey_thrown_i]) {
+        SPR_setAnim(flowey, throw_anim_f[flowey_thrown_i] >> 4);
+        SPR_setFrame(flowey, throw_anim_f[flowey_thrown_i] & 0x0F);
+        flowey_thrown_i++;
     }
 }
