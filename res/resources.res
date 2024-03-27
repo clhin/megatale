@@ -1,20 +1,20 @@
 #Palettes
-PALETTE intropal	"backgrounds/intro_1.png"
-PALETTE ruinspal	"backgrounds/start.png"
+PALETTE intropal	    "backgrounds/intro_1.png"
+PALETTE ruinspal	    "backgrounds/start.png"
 #PALETTE ruinsmodified	"palettes/ruinsmodified.png"
 
 #text
 
 #Sprites
-SPRITE heart_sprite	"sprites/heart.png" 1 1 FAST NONE
+SPRITE heart_sprite	    "sprites/heart.png" 1 1 FAST NONE
 SPRITE battle_select	"sprites/battle_sheet.png" 7 3 FAST NONE 
-SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 10
+SPRITE frisk_sprite	    "sprites/frisk.png" 3 4 FAST 10
 
 #Images
-IMAGE font		"fonts/8bitfonts.png" BEST NONE
+IMAGE font		        "fonts/8bitfonts.png" BEST NONE
 
 #Tilesets
-TILESET title_tiles		"backgrounds/titlescreen.png" AUTO 1
+TILESET title_tiles		    "backgrounds/titlescreen.png" AUTO 1
 TILESET intro_0_tiles		"backgrounds/intro_0.png" AUTO 1
 TILESET intro_1_tiles		"backgrounds/intro_1.png" AUTO 1
 TILESET intro_2_tiles		"backgrounds/intro_2.png" AUTO 1
@@ -29,27 +29,29 @@ TILESET room_1_tiles 		"backgrounds/start.png" AUTO 1
 TILESET room_main_tiles 	"backgrounds/mainroom.png" AUTO 1
 TILESET room_ruins1_tiles	"backgrounds/room_ruins1.png" AUTO 1
 TILESET room_ruins2_tiles	"backgrounds/room_ruins2.png" AUTO 1
-TILESET font_sheet 		"fonts/font_sheet.png" AUTO 1
+TILESET font_sheet 		    "fonts/font_sheet.png" AUTO 1
+TILESET main_menu1_tiles    "backgrounds/main_menu1.png" AUTO 1
 
 #Portraits (Tilesets)
-SPRITE portrait_flowey "portrait/flowey.png" 6 5 FAST NONE
+SPRITE portrait_flowey  "portrait/flowey.png" 6 5 FAST NONE
 
 #Maps
-MAP titlescreen		"backgrounds/titlescreen.png" title_tiles -1
-MAP intro_0		"backgrounds/intro_0.png" intro_0_tiles -1
-MAP intro_1		"backgrounds/intro_1.png" intro_1_tiles -1
-MAP intro_2		"backgrounds/intro_2.png" intro_2_tiles -1
-MAP intro_3		"backgrounds/intro_3.png" intro_3_tiles -1
-MAP intro_5		"backgrounds/intro_5.png" intro_5_tiles -1
-MAP intro_6		"backgrounds/intro_6.png" intro_6_tiles -1
-MAP intro_7		"backgrounds/intro_7.png" intro_7_tiles -1
-MAP intro_8		"backgrounds/intro_8.png" intro_8_tiles -1
-MAP intro_9		"backgrounds/intro_9.png" intro_9_tiles -1
-MAP intro_last		"backgrounds/intro_last.png" intro_last_tiles -1
-MAP room_1 		"backgrounds/start.png" room_1_tiles -1
-MAP room_main		"backgrounds/mainroom.png" room_main_tiles -1
-MAP room_ruins1		"backgrounds/room_ruins1.png" room_ruins1_tiles -1
-MAP room_ruins2		"backgrounds/room_ruins2.png" room_ruins2_tiles -1
+MAP titlescreen		    "backgrounds/titlescreen.png" title_tiles -1
+MAP intro_0		        "backgrounds/intro_0.png" intro_0_tiles -1
+MAP intro_1		        "backgrounds/intro_1.png" intro_1_tiles -1
+MAP intro_2		        "backgrounds/intro_2.png" intro_2_tiles -1
+MAP intro_3		        "backgrounds/intro_3.png" intro_3_tiles -1
+MAP intro_5		        "backgrounds/intro_5.png" intro_5_tiles -1
+MAP intro_6		        "backgrounds/intro_6.png" intro_6_tiles -1
+MAP intro_7		        "backgrounds/intro_7.png" intro_7_tiles -1
+MAP intro_8		        "backgrounds/intro_8.png" intro_8_tiles -1
+MAP intro_9		        "backgrounds/intro_9.png" intro_9_tiles -1
+MAP intro_last		    "backgrounds/intro_last.png" intro_last_tiles -1
+MAP room_1 		        "backgrounds/start.png" room_1_tiles -1
+MAP room_main		    "backgrounds/mainroom.png" room_main_tiles -1
+MAP room_ruins1		    "backgrounds/room_ruins1.png" room_ruins1_tiles -1
+MAP room_ruins2		    "backgrounds/room_ruins2.png" room_ruins2_tiles -1
+MAP main_menu1          "backgrounds/main_menu1.png" main_menu1_tiles -1
 
 #Sounds (background music and sound effects)
 XGM     ruins           "sound/ruinsSmall.vgm" -1           # Small version

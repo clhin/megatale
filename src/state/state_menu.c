@@ -14,9 +14,13 @@
 
 Sprite *heart;
 u8 heart_pos = MENU_START;
+u16 ind = TILE_USER_INDEX;
 
 void menu_init(state_parameters_t args) {
     SPR_init();
+
+    // Working towards putting image in the background on main menu
+    VDP_loadTileSet(&main_menu1_tiles, ind, DMA);
 
     char buf2[32];
 
