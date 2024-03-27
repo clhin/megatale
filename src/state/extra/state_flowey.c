@@ -51,7 +51,48 @@ void helper_battle_tick();
 void helper_scene_state();
 
 // Local variables
+
+// Flowey faces corresponding to dialogues.
 const u8 faces[19] = {0, 0, 0, 0, 0, 1, 2, 0, 0, 6, 6, 6, 5, 3, 3, 4, 0, 5, 5};
+
+/*
+Precomputed velocities for when circle surrounds player. We split it into 8
+sections for every cardinal and ordinal direction, diagonals move a bit
+faster due to constraints of size and not using floating point.
+
+i = 0, 1, 30, 31   -> Move to left
+i = 2, 3, 4, 5     -> Move to bottom-left
+i = 6, 7, 8, 9     -> Move to bottom
+i = 10, 11, 12, 13 -> Move to bottom-right
+i = 14, 15, 16, 17 -> Move to right
+i = 18, 19, 20, 21 -> Move to top-right
+i = 22, 23, 24, 25 -> Move to top
+i = 26, 27, 28, 29 -> Move to top-left
+*/
+
+const s8 circle_vx[MAX_FLOWEY_PELLETS] = {
+    -1, -1,          // {0}
+    -1, -1, -1, -1,  // {1}
+    0,  0,  0,  0,   // {2}
+    1,  1,  1,  1,   // {3}
+    1,  1,  1,  1,   // {4}
+    1,  1,  1,  1,   // {5}
+    0,  0,  0,  0,   // {6}
+    -1, -1, -1, -1,  // {7}
+    -1, -1,          // {0}
+};
+
+const s8 circle_vy[MAX_FLOWEY_PELLETS] = {
+    0,  0,           // {0}
+    -1, -1, -1, -1,  // {1}
+    -1, -1, -1, -1,  // {2}
+    -1, -1, -1, -1,  // {3}
+    0,  0,  0,  0,   // {4}
+    1,  1,  1,  1,   // {5}
+    1,  1,  1,  1,   // {6}
+    1,  1,  1,  1,   // {7}
+    0,  0            // {8}
+};
 
 Sprite *heart;
 Sprite *flowey;
@@ -316,11 +357,9 @@ void helper_battle_tick() {
 
             if (circles_collide(battle.pellets[i].x, battle.pellets[i].y, 4,
                                 battle.heart_x, battle.heart_y, 4)) {
-                // dialogue.c = DIALOGUE_FLOWEY9;
-                // dialogue.i = 8;         // i increments to 9
-
                 battle.heart_collide = 1;
                 dialogue.press = TRUE;  // Emualate it being pressed.
+
                 return;
             }
 
@@ -337,12 +376,46 @@ void helper_battle_tick() {
             return;
         }
     } else if (battle.state == S_FLOWEY_DIE && tick % 3 == 0) {
+        // If the player hit the hearts, then we're in the next part where he
+        // gets flown away.
+        if (battle.heart_collide) {
+            return;
+        }
+
         if (battle.pellets_used < MAX_FLOWEY_PELLETS) {
             SPR_setVisibility(battle.pellets[battle.pellets_used].spr, VISIBLE);
             battle.pellets_used++;
-        } else {
-            battle.heart_blocking = FALSE;
-            dialogue.blocking = FALSE;
+
+            // Due to limitations of size, we split circle into 8 sections with
+            // 4 members each.
+
+            // Once all loaded in, we begin the move-in sequence
+            if (battle.pellets_used == MAX_FLOWEY_PELLETS) {
+                battle.heart_blocking = FALSE;
+                dialogue.blocking = FALSE;
+            }
+        } else if (tick % 9 == 0) {
+            for (u8 i = 0; i < MAX_FLOWEY_PELLETS; ++i) {
+                battle.pellets[i].x += circle_vx[i];
+                battle.pellets[i].y += circle_vy[i];
+                SPR_setPosition(battle.pellets[i].spr, battle.pellets[i].x,
+                                battle.pellets[i].y);
+
+                // If hit, go ahead and disappear all bullets, infact - we can
+                // just free them.
+                if (circles_collide(battle.pellets[i].x, battle.pellets[i].y, 4,
+                                    battle.heart_x, battle.heart_y, 4)) {
+                    battle.heart_collide = TRUE;
+                    battle.pellets_used = 0;
+
+                    for (u8 j = 0; j < MAX_FLOWEY_PELLETS; ++j) {
+                        SPR_releaseSprite(battle.pellets[j].spr);
+                    }
+                    MEM_free(battle.pellets);
+
+                    return;
+                }
+            }
         }
     }
 }
@@ -351,6 +424,7 @@ void helper_scene_state() {
     if (dialogue.i == I_FLOWEY_TALK8 && battle.heart_collide) {
         dialogue.i = I_FLOWEY_HIT1;
         dialogue.c = D_FLOWEY_HIT1;
+        dialogue.blocking = FALSE;
     } else if (dialogue.i == I_FLOWEY_TALK8 && !battle.heart_collide) {
         /*
         1: "Let's try that again"
@@ -452,6 +526,7 @@ void helper_scene_state() {
                     battle.pellets[i].x = end_x[i];
                     battle.pellets[i].y = end_y[i];
                 }
+                battle.pellets_used = 5;
             }
 
             battle.state = S_FLOWEY_THROW_PELLETS;
@@ -470,8 +545,8 @@ void helper_scene_state() {
         case I_FLOWEY_HIT1:
             battle.state = S_FLOWEY_HIT;
 
+            battle.pellets_used = 0;
             for (u8 i = 0; i < 5; ++i) {
-                battle.pellets_used = 0;
                 SPR_setVisibility(battle.pellets[i].spr, HIDDEN);
             }
             break;
@@ -480,11 +555,11 @@ void helper_scene_state() {
             */
         case I_FLOWEY_DIE:
             battle.state = S_FLOWEY_DIE;
-
-            // Why do we block? We need a circle of bullets to be created around
-            // the player, after which flowey then says die.
+            // Why do we block? We need a circle of bullets to be created
+            // around the player, after which flowey then says die.
             dialogue.blocking = TRUE;
             battle.heart_blocking = TRUE;
+            battle.heart_collide = FALSE;
 
             SPR_setAnim(flowey, 5);
 
