@@ -11,102 +11,117 @@
 void intro_init(state_parameters_t args) {
     s16 textPosX = 10;
     s16 textPosY = 20;
+    VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-    /*
-    VDP_loadTileSet(&font_sheet, 1, DMA);
     const char lines[3][33] = {
     "Long ago, two races",
     "ruled over Earth:",
     "HUMANS and MONSTERS"
     };
-    u8 numLines = 3;
+
     u8 textPosX1 = 10;
     u8 textPosY1 = 20;
-    u16 offset = 1;
-    // Use textbox_init function to draw the text
-    VDP_loadTileSet(&font_sheet, 1, DMA);
-    PAL_setPalette(PAL0, font.palette->data, DMA);
-    VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
-    draw_lines(lines, 3, textPosX1, textPosY1, offset, BG_A, PAL0);
-    */
-    VDP_loadTileSet(intro_0_images.tileset, 1, DMA);
-    PAL_setPalette(PAL1, intro_0_images.palette->data, DMA);
-    VDP_setTileMapEx(BG_B, intro_0_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),1,0,0,0,32,18,DMA);
-    VDP_drawText("Long ago, two races", textPosX, textPosY);
-    VDP_drawText("ruled over Earth:", textPosX, textPosY+1);
-    VDP_drawText("HUMANS and MONSTERS", textPosX, textPosY+2);
+    u16 index = TILE_USER_INDEX + font_sheet.numTile;
+    PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+    draw_lines(lines, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+
+
+    VDP_loadTileSet(intro_0_images.tileset, index, DMA);
+    PAL_setPalette(PAL2, intro_0_images.palette->data, DMA);
+    VDP_setTileMapEx(BG_B, intro_0_images.tilemap ,TILE_ATTR_FULL(PAL2,0,FALSE,FALSE,index),1,0,0,0,32,18,DMA);
 
     waitMs	(5000);
         intro_clean();
-        VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
-        VDP_loadTileSet(intro_1_images.tileset, 1, DMA);
-        PAL_setPalette(PAL1, intro_1_images.palette->data, DMA);
-        VDP_setTileMapEx(BG_B, intro_1_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),1,0,0,0,32,18,DMA);
+            const char lines1[3][33] = {
+            "One day, war broke",
+            "out between two",
+            "races"
+            };
 
-        VDP_drawText("One day, war broke", textPosX, textPosY);
-        VDP_drawText("out between two", textPosX, textPosY+1);
-        VDP_drawText("races", textPosX, textPosY+2);
+    PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+    draw_lines(lines1, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
+    VDP_loadTileSet(intro_1_images.tileset, index, DMA);
+    PAL_setPalette(PAL2, intro_1_images.palette->data, DMA);
+    VDP_setTileMapEx(BG_B, intro_1_images.tilemap ,TILE_ATTR_FULL(PAL2,0,FALSE,FALSE,index),1,0,0,0,32,18,DMA);
 
-        waitMs	(5000);
+    waitMs	(5000);
         intro_clean();
-        VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
+        
+        const char lines2[3][33] = {
+            "After a long battle",
+            "the humans were",
+            "victorious."
+        };
 
-        VDP_loadTileSet(intro_2_images.tileset, 1, DMA);
-        PAL_setPalette(PAL1, intro_2_images.palette->data, DMA);
-        VDP_setTileMapEx(BG_B, intro_2_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),1,0,0,0,32,18,DMA);
+    PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+    draw_lines(lines2, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
-        VDP_drawText("After a long battle,", textPosX, textPosY);
-        VDP_drawText("the humans were", textPosX, textPosY+1);
-        VDP_drawText("victorious", textPosX, textPosY+2);
+    VDP_loadTileSet(intro_2_images.tileset, index, DMA);
+    PAL_setPalette(PAL2, intro_2_images.palette->data, DMA);
+    VDP_setTileMapEx(BG_B, intro_2_images.tilemap ,TILE_ATTR_FULL(PAL2,0,FALSE,FALSE,index),1,0,0,0,32,18,DMA);
 
-        waitMs	(5000);
+    waitMs	(5000);
         intro_clean();
-        VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
-        VDP_loadTileSet(intro_3_images.tileset, 1, DMA);
-        PAL_setPalette(PAL1, intro_3_images.palette->data, DMA);
-        VDP_setTileMapEx(BG_B, intro_3_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),1,0,0,0,32,18,DMA);
+        const char lines3[3][33] = {
+            "They sealed the monsters",
+            "underground with a magic",
+            "spell."
+        };
 
-        VDP_drawText("They sealed the monsters", textPosX, textPosY);
-        VDP_drawText("underground with a magic", textPosX, textPosY+1);
-        VDP_drawText("spell/", textPosX, textPosY+2);
+    PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+    draw_lines(lines3, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
-        waitMs	(5000);
+    VDP_loadTileSet(intro_3_images.tileset, index, DMA);
+    PAL_setPalette(PAL2, intro_3_images.palette->data, DMA);
+    VDP_setTileMapEx(BG_B, intro_3_images.tilemap ,TILE_ATTR_FULL(PAL2,0,FALSE,FALSE,index),1,0,0,0,32,18,DMA);
+        
+    waitMs	(5000);
         intro_clean();
-        VDP_drawText("Many years later...", textPosX, textPosY);
+       const char lines4[1][33] = {
+            "Many years later..."
+        };
 
-        waitMs	(5000);
+    PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+    draw_lines(lines4, 1, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+
+    waitMs	(5000);
         intro_clean();
-        VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
+        const char lines5[2][33] = {
+            "MT. EBOTT",
+            "201X"
+        };
 
-        VDP_loadTileSet(intro_5_images.tileset, 1, DMA);
-        PAL_setPalette(PAL1, intro_5_images.palette->data, DMA);
-        VDP_setTileMapEx(BG_B, intro_5_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),1,0,0,0,32,18,DMA);
+    PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+    draw_lines(lines5, 2, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
-        VDP_drawText("MT. EBOTT", textPosX, textPosY);
-        VDP_drawText("201X", textPosX, textPosY+1);
+    VDP_loadTileSet(intro_5_images.tileset, index, DMA);
+    PAL_setPalette(PAL2, intro_5_images.palette->data, DMA);
+    VDP_setTileMapEx(BG_B, intro_5_images.tilemap ,TILE_ATTR_FULL(PAL2,0,FALSE,FALSE,index),1,0,0,0,32,18,DMA);
 
-        waitMs	(5000);
+
+    waitMs	(5000);
         intro_clean();
-        VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
-        VDP_loadTileSet(intro_6_images.tileset, 1, DMA);
-        PAL_setPalette(PAL1, intro_6_images.palette->data, DMA);
-        VDP_setTileMapEx(BG_B, intro_6_images.tilemap ,TILE_ATTR_FULL(PAL1,0,FALSE,FALSE,1),1,0,0,0,32,18,DMA);
+        const char lines6[3][33] = {
+            "Legends say that those",
+            "who climb the mountain",
+            "never returns"
+        };
 
-        VDP_drawText("Legends say that those", textPosX, textPosY);
-        VDP_drawText("who climb the mountain", textPosX, textPosY+1);
-        VDP_drawText("never returns", textPosX, textPosY+2);
+
+    PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+    draw_lines(lines6, 2, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+
+    VDP_loadTileSet(intro_6_images.tileset, index, DMA);
+    PAL_setPalette(PAL2, intro_6_images.palette->data, DMA);
+    VDP_setTileMapEx(BG_B, intro_6_images.tilemap ,TILE_ATTR_FULL(PAL2,0,FALSE,FALSE,index),1,0,0,0,32,18,DMA);
+
 
         
-        waitMs	(5000);
+    waitMs	(5000);
         intro_clean();
         VDP_setTextPlane(BG_A);
         VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));

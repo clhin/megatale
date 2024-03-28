@@ -22,6 +22,7 @@ IMAGE intro_7_images "backgrounds/intro_7.png" NONE
 IMAGE intro_8_images "backgrounds/intro_8.png" NONE
 IMAGE intro_9_images "backgrounds/intro_9.png" NONE
 IMAGE intro_last_images "backgrounds/intro_last.png" NONE
+IMAGE font_sheet_image	 "fonts/font_sheet.png" NONE
 
 #Tilesets
 TILESET title_tiles		"backgrounds/titlescreen.png" AUTO 1
