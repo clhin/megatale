@@ -13,6 +13,9 @@
 #include "state_battle.h"
 #include "state_gamemenu.h"
 
+#include "audio/audioEffects.h"
+
+static void animate_frisk();
 static void camera_move();
 static void handle_collision();
 static void handle_collision_helper(u8,u8,u8,u8*);
@@ -48,10 +51,6 @@ void world_init(state_parameters_t args) {
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
     ind += font_sheet.numTile;
-    map = loadlevel(0,0, ind);
-    cur_cam_x = 0;
-    cur_cam_y = 0;
-    MAP_scrollTo(map, cur_cam_x, cur_cam_y);
 
     frisk_bb.x = frisk_x;
     frisk_bb.y = frisk_y;
@@ -65,6 +64,11 @@ void world_init(state_parameters_t args) {
     if (SRAM_readByte(0) == SAVE_VALID) {
         // load save data
     } else {
+	map = loadlevel(0,0, ind);
+    	cur_cam_x = 0;
+    	cur_cam_y = 0;
+    	MAP_scrollTo(map, cur_cam_x, cur_cam_y);
+
 	savefile = args.parameter_data;
         // we assume that menu has taken care of the fade to white
         //		PAL_setPalette(PAL1, frisk_sprite.palette->data, DMA);
@@ -73,10 +77,11 @@ void world_init(state_parameters_t args) {
 	savefile->room = 0;
 	savefile->maxhp = 20;
 	savefile->hp = 20;
+	savefile->at = 0;
+	savefile->def = 0;
 	savefile->gold = 0;
 	savefile->love = 1;
-	levelxlimit = 680; //680
-	levelylimit = 240; //240
+	savefile->exp = 0;
     }
 }
 void world_input(u16 changed, u16 state) {
@@ -103,7 +108,7 @@ void world_input(u16 changed, u16 state) {
 	cancel = 1;
     else
 	cancel = 0;
-
+    // use as a debug button for now, later it will be the same as the start button
     if (state & BUTTON_C)
 	PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
 
@@ -128,6 +133,28 @@ void world_input(u16 changed, u16 state) {
     }
 }
 void world_update() {
+    animate_frisk();
+    handle_collision();
+    camera_move();
+#ifdef DEBUG
+    char ypos[4];
+    sprintf(ypos, "%d", frisk_y);
+    VDP_drawText(ypos, 1,1);
+#endif
+}
+void world_clean() {
+    VDP_clearSprites();
+
+    VDP_clearTextArea(0, 0, 40, 28);
+}
+void world_redraw(state_return_t ret) {}
+state_return_t world_shutdown() {
+    world_clean();
+    state_return_t ret;
+    return ret;
+}
+
+static void animate_frisk() {
     frisk_bb.x = frisk_x;
     frisk_bb.y = frisk_y;
     if (xvelocity != 0 && yvelocity == 0) {
@@ -158,22 +185,6 @@ void world_update() {
                 SPR_setAnim(frisk, BACK);
         }
     }
-    handle_collision();
-    camera_move();
-    char ypos[4];
-    sprintf(ypos, "%d", frisk_y);
-    VDP_drawText(ypos, 1,1);
-}
-void world_clean() {
-    VDP_clearSprites();
-
-    VDP_clearTextArea(0, 0, 40, 28);
-}
-void world_redraw(state_return_t ret) {}
-state_return_t world_shutdown() {
-    world_clean();
-    state_return_t ret;
-    return ret;
 }
 
 static void handle_collision() {
@@ -230,12 +241,11 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
 	if (x){
             if (yvelocity != 0)
                 priority = 0;
-        } else {
+        } else /* if y, the only other option */ {
             if (xvelocity != 0)
                 priority = 1;
 	}
     } else if (corner1 == 2 || corner2 == 2) {
-        //do stuff
 	switch (savefile->room) {
 	    case 0:
 		PAL_fadeOutAll(15,FALSE);
@@ -255,7 +265,6 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
 			map = loadlevel(savefile->room, savefile->room + 1, ind);
 			++savefile->room;
 		}
-		PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
 		break;
 	    case 2:
 		PAL_fadeOutAll(15,FALSE);
@@ -268,10 +277,6 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
 			map = loadlevel(savefile->room, savefile->room + 1, ind);
 			++savefile->room;
 		}
-		//if (PAL_isDoingFade())
-		//	VDP_drawText("uh oh stinky", 10,10);
-		PAL_waitFadeCompletion();
-		PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
 		break;
 	    case 3:
 		PAL_fadeOutAll(15,FALSE);

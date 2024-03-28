@@ -7,6 +7,8 @@
 #include "savedata.h"
 #include "state_world.h"
 
+#include "audio/audioEffects.h"
+
 #define MENU_START 0
 #define MENU_QUIT 1
 
@@ -23,6 +25,7 @@ void menu_init(state_parameters_t args) {
     VDP_drawText(buf2, 1, 1);
 
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
+    PAL_setPalette(PAL2, intropal.data, DMA);
 
     heart = SPR_addSprite(&heart_sprite, 9 * 8, 13 * 8,
                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
@@ -43,6 +46,9 @@ void menu_input(u16 changed, u16 state) {
     }
 
     if (changed & BUTTON_A && (state & BUTTON_A)) {
+        // Play Select Sound When Pressing A
+        selectSound();
+
         state_parameters_t args;
 	SYS_disableInts();
 	savedata_t *p = malloc(sizeof(savedata_t));
@@ -74,4 +80,8 @@ void menu_redraw(state_return_t ret) {
     menu_init(p);
 }
 
-state_return_t menu_shutdown() {}
+state_return_t menu_shutdown() {
+    menu_clean();
+    state_return_t ret;
+    return ret;
+}
