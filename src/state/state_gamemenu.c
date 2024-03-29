@@ -4,7 +4,7 @@
 #include <resources.h>
 #include "graphics/text.h"
 #include "graphics/textbox.h"
-#include "graphics/utils.h"
+#include "graphics/strutils.h"
 #include "savedata.h"
 #include "state_menu.h"
 
@@ -21,6 +21,7 @@ u8 current_selection;
 const char option_texts[3][MAX_LINE_LENGTH] = {"ITEM", "STAT", "CELL"};
 
 void gamemenu_init(state_parameters_t args) {
+    selectSound();
     char lvbuf[6], hpbuf[9], gbuf[9];
     PAL_setPalette(PAL2, intropal.data, DMA);
     heart = SPR_addSprite(&heart_sprite, 3 * 8, data->item[0] ? 11 *  8 - 1 : 13 * 8 - 1,
@@ -76,8 +77,6 @@ VDP_setTileMapXY(
     VDP_drawText(gbuf, 2, 7);
 }
 void gamemenu_input(u16 changed, u16 state) {
-    // Select Sound to Open Menu
-    selectSound();
     if (changed & BUTTON_START && (state & BUTTON_START)) {
         state_pop();
     }
@@ -85,29 +84,38 @@ void gamemenu_input(u16 changed, u16 state) {
 	if (current_selection == ITEM) {
 	} else if (current_selection == STAT) {
 	    box_draw(11, 1, 24, 27, PAL1);
-	    char stats[12][33], exp[2][33];
+	    char stats[12][33];
 	    //stats[0][0] = '\0';
 	    //sprintf(stats[0], " ");
-	    sprintf(stats[0], "\"CHARA\""); //replace with data->name when main menu is done
-	    sprintf(stats[1], " ");
+	    strcpy(stats[0], "\"CHARA\""); //replace with data->name when main menu is done
+	    strcpy(stats[1], " ");
 	    sprintf(stats[2], "LV %d", data->love);
 	    sprintf(stats[3], "HP %d/%d", data->hp, data->maxhp);
 	    sprintf(stats[4], " ");
-	    sprintf(stats[5], "AT %d(%d)", data->at, data->at);
-	    sprintf(stats[6], "DF %d(%d)", data->def, data->def);
-	    sprintf(stats[7], " ");
-	    sprintf(stats[8], "WEAPON: Worn Dagger");
-	    sprintf(stats[9], "ARMOR: Heart Locket");
-	    sprintf(stats[10], " ");
-	    sprintf(stats[11], "GOLD: %d", data->gold);
+	    sprintf(stats[5], "AT %d(%d)     ", data->at, data->at);
+	    sprintf(stats[6], "DF %d(%d)     ", data->def, data->def);
+	    sprintf(stats[5]+10, "EXP:%d", data->exp);
+	    sprintf(stats[6]+10, "NEXT:65535");//, data->exp);
+	    
+	    strcpy(stats[7], " ");
+	    sprintf(stats[8], "WEAPON:%s", getitemname(data->weapon)); //replace with item to name translated
+	    sprintf(stats[9], "ARMOR:%s", getitemname(data->armor));
+	    strcpy(stats[10], " ");
+	    sprintf(stats[11], "GOLD: %d    ", data->gold);
+	    if (data->kills > 0)
+		sprintf(stats[11]+10, "KILLS:%d", data->kills);
 	    draw_lines(stats, 12, 13, 2,
                 TILE_USER_INDEX, BG_A, PAL1);
 
-	    sprintf(exp[0], "EXP:%d", data->exp);
-	    sprintf(exp[1], "NEXT:65535");//, data->exp);
-	    draw_lines(exp, 2, 23, 12, TILE_USER_INDEX, BG_A, PAL1);
-	} else {
-	    
+	   //draw_lines(exp, 2, 23, 12, TILE_USER_INDEX, BG_A, PAL1);
+	} else { // cell phone
+	    box_draw(11, 1, 24, 18, PAL1);
+	    char selections [1][33];
+	    // this will need to be adjusted later for other callers
+	    // for now we can just use toriel
+	    strcpy(selections[0], "Toriel's Phone");
+	    draw_lines(selections, 1, 16, 2,
+                TILE_USER_INDEX, BG_A, PAL1);
 	}
     }
     if (state & BUTTON_B) {}
@@ -140,7 +148,7 @@ void gamemenu_input(u16 changed, u16 state) {
         } else if (current_selection == STAT) {
            if (data->cell != 0) {
 		current_selection = CELL;
-		SPR_setPosition(heart, 3 * 8, 13 * 8 - 1);
+		SPR_setPosition(heart, 3 * 8, 15 * 8 - 1);
 	   } else if (data->item[0] != 0){
 		current_selection = ITEM;
 		SPR_setPosition(heart, 3 * 8, 11 * 8 - 1);
