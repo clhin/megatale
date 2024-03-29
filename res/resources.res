@@ -12,7 +12,9 @@ SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 10
 
 #Battle Sprites 
 SPRITE flowey_battle "battle/flowey.png" 6 5 FAST NONE 
-SPRITE flowey_bullet "battle/flowey_bullet.png" 1 1 FAST 5 
+SPRITE flowey_bullet "battle/flowey_bullet.png" 1 1 FAST 5
+SPRITE flowey_toriel "battle/flowey_toriel.png" 9 13 FAST NONE  
+SPRITE toriel_fireball "battle/toriel_fireball.png" 4 4 FAST 5 
 
 #Images
 IMAGE font		"fonts/8bitfonts.png" BEST NONE
