@@ -8,8 +8,9 @@
 #include "../graphics/level.h"
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
-#include "../graphics/utils.h"
+#include "../graphics/strutils.h"
 #include "savedata.h"
+#include "../save/save.h"
 #include "state_battle.h"
 #include "state_gamemenu.h"
 
@@ -82,6 +83,9 @@ void world_init(state_parameters_t args) {
 	savefile->gold = 0;
 	savefile->love = 1;
 	savefile->exp = 0;
+	savefile->kills = 0;
+	savefile->weapon = 3;
+	savefile->armor = 4;
     }
 }
 void world_input(u16 changed, u16 state) {
@@ -110,8 +114,7 @@ void world_input(u16 changed, u16 state) {
 	cancel = 0;
     // use as a debug button for now, later it will be the same as the start button
     if (state & BUTTON_C)
-	PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
-
+	savefile->cell = 1;
     if (state & BUTTON_START) {
         // Odd animations are taking a step, make sure we aren't animating
         // during a pause.
@@ -293,6 +296,10 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
 	    default:
 		//do nothing
 		break;
+	}
+    } else if (corner1 == 3 || corner2 == 3) {
+	if (savefile->room == 1 && !SRAM_readByte(FLOWEY_DEFEATED)) {
+	    //VDP_disp	
 	}
     }
 }
