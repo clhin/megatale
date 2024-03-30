@@ -22,7 +22,7 @@ const char option_texts[3][MAX_LINE_LENGTH] = {"ITEM", "STAT", "CELL"};
 
 void gamemenu_init(state_parameters_t args) {
     selectSound();
-    char lvbuf[6], hpbuf[9], gbuf[9];
+    char buf[9];
     PAL_setPalette(PAL2, intropal.data, DMA);
     heart = SPR_addSprite(&heart_sprite, 3 * 8, data->item[0] ? 11 *  8 - 1 : 13 * 8 - 1,
 			  TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
@@ -39,12 +39,15 @@ void gamemenu_init(state_parameters_t args) {
     VDP_fillTileMapRect(
         BG_A, TILE_ATTR_FULL(PAL1, TRUE, FALSE, FALSE, TILE_USER_INDEX + 156),
         2, 8, 8, 1);
-    sprintf(lvbuf, "LV %d", data->love);
-    sprintf(hpbuf, "HP %d\\%d", data->hp, data->maxhp);
-    sprintf(gbuf, "G  %d", data->gold);
-    strconvert(lvbuf);
-    strconvert(hpbuf);
-    strconvert(gbuf);
+    sprintf(buf, "LV %d", data->love);
+    strconvert(buf);
+    VDP_drawText(buf, 2, 5);
+    sprintf(buf, "HP %d\\%d", data->hp, data->maxhp);
+    strconvert(buf);
+    VDP_drawText(buf, 2, 6);
+    sprintf(buf, "G  %d", data->gold);
+    strconvert(buf);
+    VDP_drawText(buf, 2, 7);
     //for (u8 i = 0; data->name[i] != '\0'; i++) {
     //    draw_letter(data->name[i], 2 + i, 2, TILE_USER_INDEX, BG_A, PAL1, 0);
     //}
@@ -71,10 +74,6 @@ VDP_setTileMapXY(
         8, 12);
 	current_selection = 1;
     }
-
-    VDP_drawText(lvbuf, 2, 5);
-    VDP_drawText(hpbuf, 2, 6);
-    VDP_drawText(gbuf, 2, 7);
 }
 void gamemenu_input(u16 changed, u16 state) {
     if (changed & BUTTON_START && (state & BUTTON_START)) {
@@ -82,6 +81,15 @@ void gamemenu_input(u16 changed, u16 state) {
     }
     if (state & BUTTON_A) {
 	if (current_selection == ITEM) {
+	    char items[8][33];
+	    box_draw(11, 1, 24, 27, PAL1);
+	    for (u8 i = 0; i < 8; i++) {
+		if(data->item[i] == 0)
+		    break;
+		strcpy(items[i], getitemname(data->item[i]));
+	    }
+	    draw_lines(items, 8, 13, 2,
+                TILE_USER_INDEX, BG_A, PAL1);
 	} else if (current_selection == STAT) {
 	    box_draw(11, 1, 24, 27, PAL1);
 	    char stats[12][33];
@@ -102,7 +110,7 @@ void gamemenu_input(u16 changed, u16 state) {
 	    sprintf(stats[9], "ARMOR:%s", getitemname(data->armor));
 	    strcpy(stats[10], " ");
 	    sprintf(stats[11], "GOLD: %d    ", data->gold);
-	    if (data->kills > 0)
+	    if (data->kills > 20)
 		sprintf(stats[11]+10, "KILLS:%d", data->kills);
 	    draw_lines(stats, 12, 13, 2,
                 TILE_USER_INDEX, BG_A, PAL1);
@@ -118,7 +126,9 @@ void gamemenu_input(u16 changed, u16 state) {
                 TILE_USER_INDEX, BG_A, PAL1);
 	}
     }
-    if (state & BUTTON_B) {}
+    if (state & BUTTON_B) {
+	    VDP_clearTextArea(11, 0, 40, 28);
+    }
     if (state & BUTTON_UP) {
 	if (current_selection == ITEM) {
 	    if (data->cell != 0) {
