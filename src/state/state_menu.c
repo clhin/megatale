@@ -3,7 +3,7 @@
 #include <genesis.h>
 #include <resources.h>
 
-#include "utils/save.h"
+#include "save/save.h"
 #include "savedata.h"
 #include "state_world.h"
 

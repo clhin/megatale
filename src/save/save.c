@@ -48,7 +48,6 @@ void readsave(savedata_t *save) {
     save->box[18] = SRAM_readByte(BOX2_9);
     save->box[19] = SRAM_readByte(BOX2_10);
     save->cell = SRAM_readByte(CELL);
-    save->extra = SRAM_readByte(EXTRA);
     save->gold = SRAM_readWord(GOLD);
     save->exp = SRAM_readWord(EXP);
     save->time = SRAM_readLong(TIME);
@@ -101,7 +100,6 @@ void writesave(savedata_t *save) {
     SRAM_writeByte(BOX2_9,save->box[18]);
     SRAM_writeByte(BOX2_10,save->box[19]);
     SRAM_writeByte(CELL,save->cell);
-    SRAM_writeByte(EXTRA,save->extra);
     SRAM_writeWord(GOLD,save->gold);
     SRAM_writeWord(EXP,save->exp);
     SRAM_writeLong(TIME,save->time);

@@ -6,8 +6,10 @@
 /* Our save file, as defined in SGDK, is basically a very long 1D
    array in 2MB, here is the following structure of our data:
    Byte 0: Validation bit (make sure save isn't corrupt/garbage)
-   Bytes 1-50: Save data for character
-   Bytes 54-??: Game save variables (have you visited a certain room?
+   Bytes 1-99: Save data for character, we will have some extra bytes
+	       unused as we want to future proof, and we get 2 entire
+	       megs of SRAM so we'll be fine.
+   Bytes 100-??: Game save variables (have you visited a certain room?
 		What dialog options have you picked?
 		Genocide or pacifist? etc.
 */
@@ -56,12 +58,12 @@
 #define BOX2_9 42
 #define BOX2_10 43
 #define CELL 44
-#define EXTRA 45
-#define GOLD 46
-#define EXP 48
-#define TIME 50
+#define GOLD 45
+#define EXP 47
+#define TIME 49
 
-#define FLOWEY_DEFEATED 54
+#define FUN 100
+#define FLOWEY_1ST_ENCOUNTER 101
 
 void readsave(savedata_t *);
 void writesave(savedata_t *);

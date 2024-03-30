@@ -8,20 +8,19 @@
 // get to the right places?
 typedef struct savedata {
     char name[7];
-    u8 love;
-    u8 hp;
-    u8 maxhp;
+    u8 love:5;
+    u8 hp:6;
+    u8 maxhp:6;
     u8 room;
-    u8 at;
-    u8 def;
+    u8 at:6;
+    u8 def:5;
     u8 kills;
-    u8 weapon;
-    u8 armor;
+    u8 weapon:6;
+    u8 armor:6;
     u8 item[8];
     u8 box[20];
-    u8 cell;
-    u8 extra;
-    u16 gold;
+    u8 cell:4; // uses flags not a traditional uint_8
+    u16 gold:14;
     u16 exp;
     u32 time;
 } savedata_t;

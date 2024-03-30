@@ -64,125 +64,113 @@ const char * getitemname(u8 itemcode) {
 	case 1:
 	    return "Monster Candy";
 	case 2:
-	    return "Croquet Roll";
-	case 3:
 	    return "Stick";
-	case 4:
+	case 3:
 	    return "Bandage";
-	case 5:
-	    return "Rock Candy";
-	case 6:
-	    return "Pumpkin Rings";
-	case 7:
+	case 4:
 	    return "Spider Donut";
-	case 8:
-	    return "Stoic Onion";
-	case 9:
-	    return "Ghost Fruit";
-	case 10:
+	case 5:
 	    return "Spider Cider";
-	case 11:
+	case 6:
 	    return "Butterscotch Pie";
-	case 12:    
+	case 7:    
 	    return "Faded Ribbon";
-	case 13:
+	case 8:
 	    return "Toy Knife";
-	case 14:
+	case 9:
 	    return "Tough Glove";
-	case 15:
+	case 10:
 	    return "Manly Bandanna";
-	case 16:
+	case 11:
 	    return "Snowman Piece";
-	case 17:
+	case 12:
 	    return "Nice Cream";
-	case 18:
-	    return "Puppydough Icecream";
-	case 19:
+	case 13:
 	    return "Bisicle";
-	case 20:
+	case 14:
 	    return "Unisicle";
-	case 21:
+	case 15:
 	    return "Cinnamon Bun";
-	case 22:
+	case 16:
 	    return "Temmie Flakes";
-	case 23:
+	case 17:
 	    return "Abandoned Quiche";
-	case 24:
+	case 18:
 	    return "Old Tutu";
-	case 25:
+	case 19:
 	    return "Ballet Shoes";
-	case 26:
+	case 20:
 	    return "Punch Card";
-	case 27:
+	case 21:
 	    return "Annoying Dog";
-	case 28:
+	case 22:
 	    return "Dog Salad";
-	case 29:
-	case 30:
-	case 31:
-	case 32:
-	case 33:
-	case 34:
+	case 23:
+	case 24:
+	case 25:
+	case 26:
+	case 27:
+	case 28:
 	    return "Dog Residue";
-	case 35:
+	case 29:
 	    return "Astronaut Food";
-	case 36:
+	case 30:
 	    return "Instant Noodles";
-	case 37:
+	case 31:
 	    return "Crab Apple";
-	case 38:
+	case 32:
 	    return "Hot Dog...?";
-	case 39:
+	case 33:
 	    return "Hot Cat";
-	case 40:
+	case 34:
 	    return "Glamburger";
-	case 41:
+	case 35:
 	    return "Sea Tea";
-	case 42:
+	case 36:
 	    return "Starfait";
-	case 43:
+	case 37:
 	    return "Legendary Hero";
-	case 44:
+	case 38:
 	    return "Butty Glasses";
-	case 45:
+	case 39:
 	    return "Torn Notebook";
-	case 46:
+	case 40:
 	    return "Stained Apron";
-	case 47:
+	case 41:
 	    return "Burnt Pan";
-	case 48:
+	case 42:
 	    return "Cowboy Hat";
-	case 49:
+	case 43:
 	    return "Empty Gun";
-	case 50:
+	case 44:
 	    return "Heart Locket";
-	case 51:
+	case 45:
 	    return "Worn Dagger";
-	case 52:
+	case 46:
 	    return "Real Knife";
-	case 53:
+	case 47:
 	    return "The Locket";
-	case 54:
+	case 48:
 	    return "Bad Memory";
-	case 55:
+	case 49:
 	    return "Dream";
-	case 56:
+	case 50:
 	    return "Undyne's Letter";
-	case 57:
+	case 51:
 	   return "Undyne's Letter EX";
-	case 58:
+	case 52:
 	    return "Popato Chisps";
-	case 59:
+	case 53:
 	    return "Junk Food";
-	case 60:
+	case 54:
 	    return "Mystery Key";
-	case 61:
+	case 55:
 	    return "Face Steak";
-	case 62:
+	case 56:
 	    return "Hush Puppy";
-	case 63:
+	case 57:
 	    return "Snail Pie";
-	case 64:
+	case 58:
 	    return "temy armor";
     }
     return NULL;
