@@ -18,12 +18,17 @@ u8 heart_pos = MENU_START;
 //u16 ind = TILE_USER_INDEX;
 
 void menu_init(state_parameters_t args) {
-    u16 tmp = TILE_USER_INDEX + room_main_tiles.numTile;
+    //u16 tmp = TILE_USER_INDEX + room_main_tiles.numTile;
     SPR_init();
     
+    u16 ind = TILE_USER_INDEX + font_sheet.numTile;
+    u16 tmp = ind;
+
+    menu_background = loadlevel();
+
     // Working towards putting image in the background on main menu
-    VDP_loadTileSet(&room_main_tiles, tmp, DMA);
-    menu_background = MAP_create(&room_main, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
+    // VDP_loadTileSet(&start_menu_tiles, ind, DMA);
+    // menu_background = MAP_create(&start_menu, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
 
     char buf2[32];
 
@@ -39,6 +44,8 @@ void menu_init(state_parameters_t args) {
 
     VDP_drawText("Start", 10, 13);
     VDP_drawText("Quit", 10, 15);
+    // Trying to display background still
+    MAP_release(menu_background);
 }
 
 void menu_input(u16 changed, u16 state) {
