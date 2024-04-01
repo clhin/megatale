@@ -13,14 +13,17 @@
 #define MENU_QUIT 1
 
 Sprite *heart;
+Map * menu_background;
 u8 heart_pos = MENU_START;
-u16 ind = TILE_USER_INDEX;
+//u16 ind = TILE_USER_INDEX;
 
 void menu_init(state_parameters_t args) {
+    u16 tmp = TILE_USER_INDEX + room_main_tiles.numTile;
     SPR_init();
-
+    
     // Working towards putting image in the background on main menu
-    VDP_loadTileSet(&main_menu1_tiles, ind, DMA);
+    VDP_loadTileSet(&room_main_tiles, tmp, DMA);
+    menu_background = MAP_create(&room_main, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
 
     char buf2[32];
 

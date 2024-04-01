@@ -30,7 +30,7 @@ TILESET room_main_tiles 	"backgrounds/mainroom.png" AUTO 1
 TILESET room_ruins1_tiles	"backgrounds/room_ruins1.png" AUTO 1
 TILESET room_ruins2_tiles	"backgrounds/room_ruins2.png" AUTO 1
 TILESET font_sheet 		    "fonts/font_sheet.png" AUTO 1
-TILESET main_menu1_tiles    "backgrounds/main_menu1.png" AUTO 1
+#TILESET main_menu1_tiles    "backgrounds/main_menu1.png" AUTO 1
 
 #Portraits (Tilesets)
 SPRITE portrait_flowey  "portrait/flowey.png" 6 5 FAST NONE
@@ -51,7 +51,7 @@ MAP room_1 		        "backgrounds/start.png" room_1_tiles -1
 MAP room_main		    "backgrounds/mainroom.png" room_main_tiles -1
 MAP room_ruins1		    "backgrounds/room_ruins1.png" room_ruins1_tiles -1
 MAP room_ruins2		    "backgrounds/room_ruins2.png" room_ruins2_tiles -1
-MAP main_menu1          "backgrounds/main_menu1.png" main_menu1_tiles -1
+#MAP main_menu1          "backgrounds/main_menu1.png" main_menu1_tiles -1
 
 #Sounds (background music and sound effects)
 XGM     ruins           "sound/ruinsSmall.vgm" -1           # Small version
