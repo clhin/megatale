@@ -17,10 +17,8 @@
 Sprite *heart;
 Map * menu_background;
 u8 heart_pos = MENU_START;
-//u16 ind = TILE_USER_INDEX;
 
 void menu_init(state_parameters_t args) {
-    //u16 tmp = TILE_USER_INDEX + room_main_tiles.numTile;
     SPR_init();
     
     u16 ind = TILE_USER_INDEX + font_sheet.numTile;
@@ -40,9 +38,9 @@ void menu_init(state_parameters_t args) {
 
     heart = SPR_addSprite(&heart_sprite, 9 * 8, 13 * 8,
                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-
-    VDP_drawText("Start", 10, 13);
-    VDP_drawText("Quit", 10, 15);
+    
+    VDP_drawText("Start", 11, 10);
+    VDP_drawText("Quit", 25, 10);
 }
 
 void menu_input(u16 changed, u16 state) {
