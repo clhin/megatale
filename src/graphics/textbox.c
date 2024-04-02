@@ -70,9 +70,9 @@ void textbox_init(TextBoxMode mode, u8 y_off, const char *text, u8 asterisk_one,
 
     // If we're in portrait mode, we ignore the lines_used done by
     // set_dialogue() and set it to 3.
-    //if (mode == TEXT_FLOWEY_MODE) text_info.lines_used = 3;
+    if (mode == TEXT_FLOWEY_MODE) text_info.lines_used = 3;
 
-    //textbox_show(mode);
+    textbox_show(mode);
 }
 
 void textbox_show(TextBoxMode mode) {
