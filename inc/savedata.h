@@ -4,8 +4,8 @@
 #define SAVE_VALID 0x42
 
 // TODO: We should try to figure out how to bitpack this in the future,
-// problem is, SRAM reads in bytes at minimum, how do we make sure the values
-// get to the right places?
+// problem is all the elements are too big to combine together into one
+// byte...
 typedef struct savedata {
     char name[7];
     u8 love:5;
@@ -14,7 +14,7 @@ typedef struct savedata {
     u8 room;
     u8 at:6;
     u8 def:5;
-    u8 kills;
+    u8 kills:7;
     u8 weapon:6;
     u8 armor:6;
     u8 item[8];
