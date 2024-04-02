@@ -5,4 +5,4 @@ const char *floweyintro[] = {
     "Someone ought to teach\nyou how things work\naround here!"
     "I guess little old me\nwill have to do",
     "Ready?\nHere we go!"
-}
+};
