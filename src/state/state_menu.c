@@ -9,6 +9,8 @@
 
 #include "audio/audioEffects.h"
 
+#include "graphics/level.h"
+
 #define MENU_START 0
 #define MENU_QUIT 1
 
@@ -24,11 +26,8 @@ void menu_init(state_parameters_t args) {
     u16 ind = TILE_USER_INDEX + font_sheet.numTile;
     u16 tmp = ind;
 
-    menu_background = loadlevel();
-
-    // Working towards putting image in the background on main menu
-    // VDP_loadTileSet(&start_menu_tiles, ind, DMA);
-    // menu_background = MAP_create(&start_menu, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
+    menu_background = loadlevel(0, 1, tmp);
+    MAP_scrollTo(menu_background, 0, 125);
 
     char buf2[32];
 
@@ -44,8 +43,6 @@ void menu_init(state_parameters_t args) {
 
     VDP_drawText("Start", 10, 13);
     VDP_drawText("Quit", 10, 15);
-    // Trying to display background still
-    MAP_release(menu_background);
 }
 
 void menu_input(u16 changed, u16 state) {
