@@ -9,6 +9,10 @@
    us time from having to hackishly split up the battle into flowey mode (which
    happens once) and normal mode.
 
+   ~/misc/battle/gen_battle_dialogue.py generates .bin file for dialogue, header
+   and face locations. We need to move them to ~/res/battle and ~/src/battle and
+   write the face const into state_flowey.c accordingly.
+
 */
 
 void flowey_init(state_parameters_t args);

@@ -9,23 +9,25 @@
 #include "../../battle/battle_dialogue.h"
 #include "../../graphics/textbox.h"
 
-/*
-
-5 - "Down here, love is shared through.." incidentally 5 particles.
-
-*/
-
-// Remove this when PRing
+// Uncomment this to see what index the dialogue is on
 #define DEBUG
 
+// How much pellets we need allocated in total. 64 is the full circle in the
+// original game, but to account for half the screen size we give 32.
 #define MAX_FLOWEY_PELLETS 32
 
+// Original top-left positions of flowey and the heart (not accounting for
+// half-size shift).
 #define FLOWEY_X (PIXEL_WIDTH / 2)
 #define FLOWEY_Y (8 * 7 + 25)
-
 #define HEART_X (PIXEL_WIDTH / 2)
 #define HEART_Y (19 * 8)
 
+// How many sprite-changes flowey has of being flung
+#define THROWN_FRAMES 9
+
+// Various states of the entire scene for logic keeping, we split up what to do
+// across them.
 typedef enum {
     S_FLOWEY_NOTHING,
     S_FLOWEY_GEN_PELLETS,
@@ -39,13 +41,15 @@ typedef enum {
     S_TORIEL_ENTER
 } flowey_state_t;
 
-// https://github.com/Stephane-D/SGDK/blob/master/sample/game/sonic/src/entities.c
 /*
+
+Good resource on double checking what the state should be like:
+
 https://nochocolate.tumblr.com/post/152434968515/the-flowey-collection
 https://imgur.com/a/722kQ
 */
 
-// Local functions
+// Local functions (defined at bottom)
 void pellet_animator(Sprite *master);
 void helper_dialogue_tick();
 void helper_heart_tick();
@@ -53,21 +57,30 @@ void helper_battle_tick();
 void helper_scene_state();
 void helper_flowey_throw();
 
-// Local variables
+// ---------------------------- *
+//        LOCAL CONSTANTS       |
+// ---------------------------- *
 
-// Flowey faces corresponding to dialogues.
+// Flowey faces corresponding to dialogues: generated from
+// misc/battle/gen_battle_dialogue.py
 const u8 faces[25] = {0, 0, 0, 0, 0, 1, 2, 0, 0, 6, 6, 6, 5,
                       3, 3, 4, 0, 5, 5, 1, 0, 0, 0, 0, 0};
 
 // Flowey face animations and "timer" intervals to use for when he goes "wut"
 // and gets thrown.
 
-#define THROWN_FRAMES 9
-
-// correspond to "timer" ticks
+// correspond to "timer" ticks, when it's equal to that amount it passes it.
 const u8 throw_anim_t[THROWN_FRAMES] = {60, 70, 76, 79, 82, 86, 91, 97, 101};
 
+/*
+    In order to account for flowey's rotation, we have pre-computed rotaated
+   frames in his spritesheet. When he is flung by a fireball he rotates until
+   its a full 90 degrees.
+
+*/
+
 // MSB correspond to anim frame (y) and LSB correspond to frame (x)
+// -- this is extracted out for setAnim and setFrame
 const u16 throw_anim_f[THROWN_FRAMES] = {
     0x40,  // Angry
     0x80,  // Confused look for a few frames
@@ -83,7 +96,8 @@ const u16 throw_anim_f[THROWN_FRAMES] = {
 /*
 Precomputed velocities for when circle surrounds player. We split it into 8
 sections for every cardinal and ordinal direction, diagonals move a bit
-faster due to constraints of size and not using floating point.
+faster due to constraints of size and not using floating point. It looks a bit
+janky but less laggy and less convoluted than floating points.
 
 i = 0, 1, 30, 31   -> Move to left
 i = 2, 3, 4, 5     -> Move to bottom-left
@@ -119,19 +133,43 @@ const s8 circle_vy[MAX_FLOWEY_PELLETS] = {
     0,  0            // {8}
 };
 
+/*
+    When flowey creates bullets, they move from him to 5 places above him, we
+   precompute those places and interpolate betweem flowey's original position
+   and them with these constants.
+
+*/
+const u16 end_x[5] = {FLOWEY_X - 4 - 50, FLOWEY_X - 4 - 25, FLOWEY_X - 4,
+                      FLOWEY_X - 4 + 25, FLOWEY_X - 4 + 50};
+
+const u16 end_y[5] = {FLOWEY_Y - 21, FLOWEY_Y - 41, FLOWEY_Y - 51,
+                      FLOWEY_Y - 41, FLOWEY_Y - 21};
+
+// ---------------------------- *
+//        LOCAL VARIABLES       |
+// ---------------------------- *
+
 Sprite *heart;
 Sprite *flowey;
 Sprite *toriel;
 Sprite *fireball;
 
+// At what part of sprite change is flowey when he's being
+// flung
 u8 flowey_thrown_i;
 
-u8 tick;
+u8 tick;    // General tick used across dialogue
 u16 timer;  // Only used for flowey portion
 
-u16 vram_ind;
+u16 vram_ind;  // Useful for when there's extra tiles loaded other than textbox,
+               // we don't want to make assumptions (this could be passed as a
+               // parameter by the world state?). Similar functionality can be
+               // see in the sample/sonic game.
 
 struct {
+    /*
+        Which character in bin-char buffer and where to draw it.
+    */
     u8 x;
     u8 y;
     u16 c;
@@ -145,8 +183,14 @@ struct {
     u8 i;
 
     u8 face_frame;
+    // Prevent dialogue from being written. Useful for when we're waiting for
+    // bullets to reach bottom of screen or for anything to finish before
+    // continuing.
     u8 blocking;
+    // If true we exit out of this.
     u8 done;
+
+    u8 speed;
 } dialogue;
 
 struct {
@@ -169,11 +213,15 @@ struct {
     s16 toriel_x;
     s16 toriel_y;
 
+    /*
+
+
+    */
     u8 heart_blocking;
     u8 heart_collide;
     u8 dodge_count;
 
-    // Battle box [15, 15, 10, 9]
+    // Battle box default [15, 15, 10, 9] -- when flowey gloats it decreases.
     u8 box_x;
     u8 box_y;
     u8 box_w;
@@ -181,14 +229,16 @@ struct {
 } battle;
 
 void flowey_init(state_parameters_t args) {
+    /*
+        Give everything initial values.
+    */
+
     heart = NULL;
     flowey = NULL;
     toriel = NULL;
 
     tick = 0;
     timer = 0;
-
-    vram_ind = TILE_USER_INDEX;
 
     dialogue.next = FALSE;
     dialogue.press = FALSE;
@@ -205,6 +255,12 @@ void flowey_init(state_parameters_t args) {
 
     dialogue.done = FALSE;
 
+#ifdef DEBUG
+    dialogue.speed = 1;
+#else
+    dialogue.speed = 5;
+#endif
+
     battle.state = S_FLOWEY_NOTHING;
 
     battle.dodge_count = 0;
@@ -216,31 +272,53 @@ void flowey_init(state_parameters_t args) {
     battle.box_y = 15;
     battle.box_w = 10;
     battle.box_h = 9;
-    // Begin loading
 
     /*
-        Should already be loaded in by state_world but we're using it until pull
-       request
+        For now we load in the font sheet and we set the vram_index after it. In
+       the case of this being integrated by world, this would be done much
+       differently.
+
     */
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
+    vram_ind = TILE_USER_INDEX;
     vram_ind += font_sheet.numTile;
 
     SPR_init();
 
     battle.pellets = MEM_alloc(sizeof(projectile_data_t) * MAX_FLOWEY_PELLETS);
 
+    /*
+        Allocate one bullet, throughout the entire duration bullets are used we
+       keep it. It serves as the "base" bullet that all others are batched from.
+       This is done so that we can have 32 animated sprites at once.
+
+       All other sprites are made with the addSpriteEx
+    */
     battle.pellets[0].spr = SPR_addSprite(&flowey_bullet, 0, 0,
                                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
+    /*
+        We make it hidden, since it's only relevant when they appear, we set
+       auto-tile upload to false and give it its own animation callback because
+       we want to batch animate all of them.
+    */
     SPR_setVisibility(battle.pellets[0].spr, HIDDEN);
     SPR_setAutoTileUpload(battle.pellets[0].spr, FALSE);
     SPR_setFrameChangeCallback(battle.pellets[0].spr, pellet_animator);
 
+    /*
+        We load all the possible frames of the pellet where the vram index is
+       at, based off of the base sprite's definition and we save number of tiles
+       to increment vram index, just incase anything is loaded after this.
+    */
     u16 num_tiles;
-
     battle.pellet_vram = SPR_loadAllFrames(battle.pellets[0].spr->definition,
                                            vram_ind, &num_tiles);
     vram_ind += num_tiles;
+
+    /*
+        Go ahead and set up flowey, heart and box that surronds the heart.
+    */
 
     box_draw(battle.box_x, battle.box_y, battle.box_w, battle.box_h, PAL1);
 
@@ -261,12 +339,21 @@ void flowey_init(state_parameters_t args) {
                            TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 }
 void flowey_input(u16 changed, u16 state) {
+    /*
+        If we are waiting for user to continue to next dialogue, A is pressed
+       and state isn't in a position where it has to "finish" itself, then it's
+       'pressed,' which clears text and moves onto next string in bin segment.
+     */
     if (dialogue.next && (state & BUTTON_A) &&
         battle.state != S_FLOWEY_THROW_PELLETS &&
         battle.state != S_FLOWEY_DIE && battle.state != S_FLOWEY_CONFUSED) {
         dialogue.press = TRUE;
     }
 
+    /*
+        We set the heart velocity here instead of moving, the collision
+       detection with the box and moving is handled in update sequence.
+    */
     if (state & BUTTON_RIGHT) {
         battle.heart_vx = 1;
     } else if (state & BUTTON_LEFT) {
@@ -292,6 +379,8 @@ void flowey_update() {
 
     tick++;
 
+    // Extra helper functions in update seqnece so flowey_update() doesn't get
+    // bloated: flowey being 'thrown' only happens in confused state.
     helper_heart_tick();
     helper_battle_tick();
     if (battle.state == S_FLOWEY_CONFUSED) helper_flowey_throw();
@@ -304,8 +393,8 @@ void flowey_update() {
         dialogue.x = 0;
         dialogue.y = 0;
 
-        // Move towards next dialogue, call helper function if there's a
-        // transistion.
+        // Move towards next dialogue, if there's a transition with extra things
+        // that need to be accounted for, we need to handle it here.
         helper_scene_state();
 
 #ifdef DEBUG
@@ -314,9 +403,9 @@ void flowey_update() {
         VDP_drawText(buf, 30, 0);
 #endif
     }
-    // add tick % 5
-
-    if (!dialogue.next && !dialogue.blocking) {
+    if (!dialogue.next && !dialogue.blocking &&
+        (dialogue.speed == 1 || tick % dialogue.speed)) {
+        // Only one will be on screen at a time
         Sprite *focus = (flowey) ? flowey : toriel;
 
         SPR_setAnim(focus, faces[dialogue.i]);
@@ -340,12 +429,26 @@ state_return_t flowey_shutdown() {
     VDP_clearPlane(BG_A, TRUE);
     SPR_clear();
 
+    // Potentially prevent any dangling pointers
+    flowey = NULL;
+    toriel = NULL;
+    fireball = NULL;
+    heart = NULL;
+    battle.pellets = NULL;
+
     state_return_t ret;
     return ret;
 }
 
 void pellet_animator(Sprite *master) {
-    // If no pellets we ignore this.
+    /*
+        Callback function for animation batching. Dependent on amount of bellets
+       used. We get the tileindex from the pellet vram and go through how many
+       are being used, pointing it to those tiles in vram. Only called for the
+       "base" sprite, instead of all 32 potentially being called at once, so
+       prevents lag massively.
+    */
+
     if (SPR_getVisibility(master) == HIDDEN) return;
 
     u16 tileIndex = battle.pellet_vram[master->animInd][master->frameInd];
@@ -366,7 +469,7 @@ void helper_dialogue_tick() {
     } else if (flowey_battle_dialogue[dialogue.c] == '\0') {
         dialogue.next = TRUE;
     } else {
-        // Very basic way of having one character load at a time
+        // Very primitive way of having one character load at a time
         char buf[2];
         buf[0] = flowey_battle_dialogue[dialogue.c];
         buf[1] = '\0';
@@ -384,8 +487,8 @@ void helper_heart_tick() {
     /*
         Box has boundaries of 10x9 at 15,15.
 
-        That means, the left bound is at tile edge of tile 16, right bound is at
-       edge of tile 23 (15 + 10 - 2)
+        That means, the left bound is at tile edge of tile 16, right bound is
+       at edge of tile 23 (15 + 10 - 2)
 
        That means, the top bound is at tile edge
        of tile 16, bottom bound is at edge of tile 22 (15 + 9 - 2)
@@ -401,102 +504,139 @@ void helper_heart_tick() {
 }
 
 void helper_battle_tick() {
-    if (battle.state == S_FLOWEY_GEN_PELLETS && tick % 3 == 0) {
-        for (u8 i = 0; i < 5; ++i) {
-            projectile_lerp(&battle.pellets[i], 14);
-            s16 x = battle.pellets[i].x;
-            s16 y = battle.pellets[i].y;
-            SPR_setPosition(battle.pellets[i].spr, x, y);
-        }
-    } else if (battle.state == S_FLOWEY_THROW_PELLETS && tick % 3 == 0) {
-        u8 not_clear = 0;
-        for (u8 i = 0; i < 5; ++i) {
-            if (SPR_getVisibility(battle.pellets[i].spr) != VISIBLE) continue;
+    // Only 'move' bullets every 3 ticks since their velocities can make them go
+    // fast otherwise.
 
-            not_clear |= (1 << i);
+    if (tick % 3 != 0) return;
 
-            battle.pellets[i].x += battle.pellets[i].v_x;
-            battle.pellets[i].y += battle.pellets[i].v_y;
-            SPR_setPosition(battle.pellets[i].spr, battle.pellets[i].x,
-                            battle.pellets[i].y);
+    switch (battle.state) {
+        // What's up with ':;' -- C standard doesn't allow labels infront of
+        // variable declarations. This is only fixed in C23
+        case S_FLOWEY_GEN_PELLETS:;
 
-            if (circles_collide(battle.pellets[i].x, battle.pellets[i].y, 4,
-                                battle.heart_x, battle.heart_y, 4)) {
-                battle.heart_collide = 1;
-                dialogue.press = TRUE;  // Emualate it being pressed.
+            //    Pellets come from flowey and go towards the positions they're
+            //   set at
 
-                return;
+            for (u8 i = 0; i < 5; ++i) {
+                projectile_lerp(&battle.pellets[i], 14);
+                s16 x = battle.pellets[i].x;
+                s16 y = battle.pellets[i].y;
+                SPR_setPosition(battle.pellets[i].spr, x, y);
             }
+            break;
+        case S_FLOWEY_THROW_PELLETS:;
 
-            if (battle.pellets[i].y >= PIXEL_HEIGHT)
-                SPR_setVisibility(battle.pellets[i].spr, HIDDEN);
-        }
+            //    Pellets go from where they were resting at the player (OR THEY
+            //   ARE SPAWNED THERE WHEN HE SHOOTS AT THE PLAYER MULTIPLE TIMES).
 
-        if (!not_clear) {
-            //  dialogue.c = DODGE_FLOWEY1;
-            //    dialogue.i = 12;
-            battle.heart_collide = 0;
-            dialogue.press = TRUE;
-            battle.dodge_count++;
-            return;
-        }
-    } else if (battle.state == S_FLOWEY_DIE && tick % 3 == 0 &&
-               !battle.heart_collide) {
-        if (battle.pellets_used < MAX_FLOWEY_PELLETS) {
-            SPR_setVisibility(battle.pellets[battle.pellets_used].spr, VISIBLE);
-            battle.pellets_used++;
+            // In the case that the player dodges all the bullets, this would be
+            // zero, since otherwise it would be ORed for any bullet on screen.
+            u8 not_clear = 0;
+            for (u8 i = 0; i < 5; ++i) {
+                if (SPR_getVisibility(battle.pellets[i].spr) != VISIBLE)
+                    continue;
 
-            // Due to limitations of size, we split circle into 8 sections with
-            // 4 members each.
+                not_clear |= (1 << i);
 
-            // Once all loaded in, we begin the move-in sequence
-            if (battle.pellets_used == MAX_FLOWEY_PELLETS) {
-                battle.heart_blocking = FALSE;
-                dialogue.blocking = FALSE;
-            }
-        } else if (tick % 9 == 0) {
-            for (u8 i = 0; i < MAX_FLOWEY_PELLETS; ++i) {
-                battle.pellets[i].x += circle_vx[i];
-                battle.pellets[i].y += circle_vy[i];
+                battle.pellets[i].x += battle.pellets[i].v_x;
+                battle.pellets[i].y += battle.pellets[i].v_y;
                 SPR_setPosition(battle.pellets[i].spr, battle.pellets[i].x,
                                 battle.pellets[i].y);
 
-                // If hit, go ahead and disappear all bullets, infact - we can
-                // just free them.
                 if (circles_collide(battle.pellets[i].x, battle.pellets[i].y, 4,
                                     battle.heart_x, battle.heart_y, 4)) {
-                    // Transistion to flowey being confused
-                    battle.state = S_FLOWEY_CONFUSED;
-
-                    battle.pellets_used = 0;
-
-                    for (u8 j = 0; j < MAX_FLOWEY_PELLETS; ++j) {
-                        SPR_releaseSprite(battle.pellets[j].spr);
-                    }
-                    MEM_free(battle.pellets);
-
-                    // Go ahead and allocate the fireball but keep it invisible
-
-                    battle.fireball_x = FLOWEY_X + 75;
-                    battle.fireball_y = FLOWEY_Y - 20;
-                    fireball = SPR_addSprite(
-                        &toriel_fireball, battle.fireball_x, battle.fireball_y,
-                        TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-                    SPR_setVisibility(fireball, HIDDEN);
+                    battle.heart_collide = 1;
+                    // Emualate it being pressed to get next state
+                    dialogue.press = TRUE;
 
                     return;
                 }
+
+                if (battle.pellets[i].y >= PIXEL_HEIGHT)
+                    SPR_setVisibility(battle.pellets[i].spr, HIDDEN);
             }
-        }
+
+            // When the player dodges all bullets
+            if (!not_clear) {
+                battle.heart_collide = 0;
+                // Emualate it being pressed to get next state
+                dialogue.press = TRUE;
+                battle.dodge_count++;
+                return;
+            }
+
+            break;
+        case S_FLOWEY_DIE:;
+
+            //    The ring slowly forms around the player, he says die, then it
+            //   encloses the player
+
+            if (battle.pellets_used < MAX_FLOWEY_PELLETS) {
+                // Ring is still forming. The positions are already computed, we
+                // just have to make them visible.
+                SPR_setVisibility(battle.pellets[battle.pellets_used].spr,
+                                  VISIBLE);
+                battle.pellets_used++;
+
+                // Once all loaded in, we begin the move-in sequence
+                if (battle.pellets_used == MAX_FLOWEY_PELLETS) {
+                    battle.heart_blocking = FALSE;
+                    dialogue.blocking = FALSE;
+                }
+
+            } else if (tick % 9 == 0) {
+                // Ring moves in
+
+                for (u8 i = 0; i < MAX_FLOWEY_PELLETS; ++i) {
+                    battle.pellets[i].x += circle_vx[i];
+                    battle.pellets[i].y += circle_vy[i];
+                    SPR_setPosition(battle.pellets[i].spr, battle.pellets[i].x,
+                                    battle.pellets[i].y);
+
+                    // If hit, go ahead and disappear all bullets, infact - we
+                    // can just free them since they're never used after this.
+                    if (circles_collide(battle.pellets[i].x,
+                                        battle.pellets[i].y, 4, battle.heart_x,
+                                        battle.heart_y, 4)) {
+                        // Transistion to flowey being confused
+                        battle.state = S_FLOWEY_CONFUSED;
+
+                        battle.pellets_used = 0;
+
+                        for (u8 j = 0; j < MAX_FLOWEY_PELLETS; ++j) {
+                            SPR_releaseSprite(battle.pellets[j].spr);
+                        }
+                        MEM_free(battle.pellets);
+
+                        // Go ahead and allocate the fireball but keep it
+                        // invisible
+
+                        battle.fireball_x = FLOWEY_X + 75;
+                        battle.fireball_y = FLOWEY_Y - 20;
+                        fireball =
+                            SPR_addSprite(&toriel_fireball, battle.fireball_x,
+                                          battle.fireball_y,
+                                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+                        SPR_setVisibility(fireball, HIDDEN);
+
+                        return;
+                    }
+                }
+            }
+
+            break;
+        default:
+            break;
     }
 }
 void helper_scene_state() {
-    // If scene was previously pellets being thrown
     if (dialogue.i == I_FLOWEY_TALK8 && battle.heart_collide) {
+        // If scene was previously pellets being thrown and player got hit
         dialogue.i = I_FLOWEY_HIT1;
         dialogue.c = D_FLOWEY_HIT1;
         dialogue.blocking = FALSE;
     } else if (dialogue.i == I_FLOWEY_TALK8 && !battle.heart_collide) {
+        // Otherwise, the player didn't get hit
         /*
         1: "Let's try that again"
         2: "Are you braindead?"
@@ -523,30 +663,22 @@ void helper_scene_state() {
         dialogue.i = I_FLOWEY_TALK8;
         dialogue.c = 0;  // Placeholder
         dialogue.blocking = TRUE;
-        // Give him default face (note that it does that in intro)
+        // Give him default face (note that it does that)
         SPR_setAnim(flowey, 0);
     } else if (dialogue.i == I_FLOWEY_DODGE2_1) {
         dialogue.i = I_FLOWEY_DIE;
         dialogue.c = D_FLOWEY_DIE;
     } else if (dialogue.i == I_FLOWEY_DIE) {
-        dialogue.i = I_TORIEL_TALK0;
+        dialogue.i = I_TORIEL_TALK0;  // Placeholder entry, text never actually
+                                      // gets written.
         dialogue.c = D_TORIEL_TALK0;
     } else if (dialogue.i == I_TORIEL_TALK5) {  // Finish everything
         dialogue.done = TRUE;
         dialogue.blocking = TRUE;
         return;
     } else {
-        dialogue.i++;
+        dialogue.i++;  // Otherwise just continue.
     }
-
-    const u16 x = FLOWEY_X - 4;
-    const u16 y = FLOWEY_Y - 4;
-
-    const u16 end_x[5] = {FLOWEY_X - 4 - 50, FLOWEY_X - 4 - 25, FLOWEY_X - 4,
-                          FLOWEY_X - 4 + 25, FLOWEY_X - 4 + 50};
-
-    const u16 end_y[5] = {FLOWEY_Y - 21, FLOWEY_Y - 41, FLOWEY_Y - 51,
-                          FLOWEY_Y - 41, FLOWEY_Y - 21};
 
     /*
     Based on how far we are in the dialogue, we adjust accordingly.
@@ -573,13 +705,14 @@ void helper_scene_state() {
                                     TILE_ATTR(PAL1, TRUE, FALSE, FALSE), 0);
             }
             for (u8 i = 0; i < 5; ++i) {
-                SPR_setPosition(battle.pellets[i].spr, x, y);
+                SPR_setPosition(battle.pellets[i].spr, FLOWEY_X - 4,
+                                FLOWEY_Y - 4);
                 SPR_setVisibility(battle.pellets[i].spr, VISIBLE);
 
-                battle.pellets[i].x = x;
-                battle.pellets[i].y = y;
-                battle.pellets[i].start_x = x;
-                battle.pellets[i].start_y = y;
+                battle.pellets[i].x = FLOWEY_X - 4;
+                battle.pellets[i].y = FLOWEY_Y - 4;
+                battle.pellets[i].start_x = FLOWEY_X - 4;
+                battle.pellets[i].start_y = FLOWEY_Y - 4;
 
                 battle.pellets[i].end_x = end_x[i];
                 battle.pellets[i].end_y = end_y[i];
@@ -592,8 +725,8 @@ void helper_scene_state() {
             */
         case I_FLOWEY_TALK8:
             // Flowey attempts to hit you numerous times, past the first one,
-            // they spawn at where they moved to instead of moving there, so we
-            // need to keep this in mind.
+            // they spawn at where they moved to instead of moving there, so
+            // we need to keep this in mind.
             if (battle.dodge_count > 0) {
                 for (u8 i = 0; i < 5; ++i) {
                     SPR_setPosition(battle.pellets[i].spr, end_x[i], end_y[i]);
@@ -613,7 +746,8 @@ void helper_scene_state() {
             for (u8 i = 0; i < 5; ++i) {
                 s16 d_x = end_x - battle.pellets[i].x + 4;
                 s16 d_y = end_y - battle.pellets[i].y + 4;
-
+                // Good speed that is close to how fast they go
+                // in the game.
                 battle.pellets[i].v_x = d_x / 30;
                 battle.pellets[i].v_y = d_y / 30;
             }
@@ -640,7 +774,8 @@ void helper_scene_state() {
             SPR_setAnim(flowey, 5);
 
             // Resize the box (I don't know, it does this for some reason?)
-            // Heart being put in it is handled by clamp() in update sequence.
+            // Heart being put in it is handled by clamp() in update
+            // sequence.
 
             VDP_clearTileMapRect(BG_A, battle.box_x, battle.box_y, battle.box_w,
                                  battle.box_h);
@@ -692,14 +827,22 @@ void helper_scene_state() {
             break;
         case I_FLOWEY_DODGE2_0:
             battle.state = S_FLOWEY_NOTHING;
+            break;
     }
 }
 
 void helper_flowey_throw() {
+    /*
+    State handler for when flowey gets thrown off the screen by a fireball and
+    toriel zooms into the middle.
+
+    */
+
     timer++;
 
     if (toriel) {
         if (battle.toriel_x <= PIXEL_WIDTH / 2 - 36) {
+            // Now we can actually write dialogue and enter the next state.
             battle.state = S_TORIEL_ENTER;
             dialogue.press = TRUE;
         }
@@ -709,7 +852,7 @@ void helper_flowey_throw() {
 
         return;
     }
-
+    // Only do all of this if flowey != nullptr
     if (!flowey) return;
 
     // If flowey is out of the frame, we move in toriel.
