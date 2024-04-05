@@ -11,6 +11,19 @@
 #define FLOWEY_OFFSET 2
 
 /*
+  * ----------- *
+  |  IMPORTANT  |
+  * ----------- *
+
+  Font sheet must be loaded into VRAM, right on TILE_USER_INDEX, before doing
+  any of these functions. This is presumed to be called at the start at the
+  game, otherwise it will be buggy.
+  "VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);" with <resources.h>
+  included
+
+*/
+
+/*
     Pipeline flow:
 
     When you want a textbox to pop up,
