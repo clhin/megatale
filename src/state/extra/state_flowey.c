@@ -146,6 +146,7 @@ struct {
 
     u8 face_frame;
     u8 blocking;
+    u8 done;
 } dialogue;
 
 struct {
@@ -185,6 +186,7 @@ void flowey_init(state_parameters_t args) {
     toriel = NULL;
 
     tick = 0;
+    timer = 0;
 
     vram_ind = TILE_USER_INDEX;
 
@@ -200,6 +202,8 @@ void flowey_init(state_parameters_t args) {
 
     dialogue.i = 0;
     dialogue.blocking = 0;
+
+    dialogue.done = FALSE;
 
     battle.state = S_FLOWEY_NOTHING;
 
@@ -281,6 +285,11 @@ void flowey_input(u16 changed, u16 state) {
     }
 }
 void flowey_update() {
+    if (dialogue.done) {
+        state_pop();
+        return;
+    }
+
     tick++;
 
     helper_heart_tick();
@@ -325,9 +334,12 @@ void flowey_update() {
         }
     }
 }
-void flowey_clean() { VDP_clearTextArea(0, 0, 40, 28); }
+void flowey_clean() {}
 void flowey_redraw(state_return_t ret) {}
 state_return_t flowey_shutdown() {
+    VDP_clearPlane(BG_A, TRUE);
+    SPR_clear();
+
     state_return_t ret;
     return ret;
 }
@@ -519,6 +531,10 @@ void helper_scene_state() {
     } else if (dialogue.i == I_FLOWEY_DIE) {
         dialogue.i = I_TORIEL_TALK0;
         dialogue.c = D_TORIEL_TALK0;
+    } else if (dialogue.i == I_TORIEL_TALK5) {  // Finish everything
+        dialogue.done = TRUE;
+        dialogue.blocking = TRUE;
+        return;
     } else {
         dialogue.i++;
     }
