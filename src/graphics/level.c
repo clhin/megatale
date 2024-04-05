@@ -4,15 +4,18 @@
 extern short levelxlimit, levelylimit;
 extern short frisk_x, frisk_y;
 
+
+// Note: level loads need to have asyncronous fading as the MAP_scrollTo call is in the
+// camera movement function
 Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
     Map * map;
     u16 tmp = ind;
+    u16 palettebuf[64];
     switch (nextroom) {
 	case 0:
 	    levelxlimit = 680;
 	    levelylimit = 240;
     	    VDP_loadTileSet(&room_1_tiles, ind, DMA);
-//    	    ind += room_1_tiles.numTile;
     	    map = MAP_create(&room_1, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
 	    if (nextroom < prevroom) {
 	    	frisk_x = 610;
@@ -21,24 +24,30 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
 		frisk_x = 140;
 		frisk_y = 108;
 	    }
-    	    PAL_fadeInAll(ruinspal.data, 15, 1);
+    	    memcpy(&palettebuf[0], ruinspal.data, 16*2);
+	    memcpy(&palettebuf[16], heart_sprite.palette->data, 16*2);
+	    PAL_fadeInAll(palettebuf, 15, TRUE);
 	    break;
 	case 1:
 	    levelxlimit = 320;
 	    levelylimit = 416;
             VDP_loadTileSet(&room_main_tiles, ind, DMA);
-//          ind += room_main_tiles.numTile;
             map = MAP_create(&room_main, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
-//	    MAP_scrollTo(map,0,0);
-//	    waitMs(2000);
-	    if (nextroom > prevroom) {
+	    if (nextroom == prevroom) {
+		// this is main menu, nothing more needs to be done here, so we can just set the
+		// map position and then break
+		MAP_scrollTo(map, 0, 125);
+		break;
+	    }else if (nextroom > prevroom){
 		frisk_x = 152;
 		frisk_y = 376;//168;
 	    } else {
 		frisk_x = 152;
 		frisk_y = 168;
 	    }
-            PAL_fadeInAll(ruinspal.data, 15, 1);
+	    memcpy(&palettebuf[0], ruinspal.data, 16*2);
+            memcpy(&palettebuf[16], heart_sprite.palette->data, 16*2);
+            PAL_fadeInAll(palettebuf, 15, TRUE);
 	    break;
 	case 2:
 	    levelxlimit = 320;
@@ -52,7 +61,10 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
 		frisk_x = 156;
 		frisk_y = 110;
 	    }
-            PAL_fadeInAll(ruinspal.data, 15, 1);
+	    memcpy(&palettebuf[0], ruinspal.data, 16*2);
+	    memcpy(&palettebuf[16], heart_sprite.palette->data, 16*2);
+	    palettebuf[3] = RGB24_TO_VDPCOLOR(0xA098EB);
+	    PAL_fadeInAll(palettebuf, 15, TRUE);
 	    break;
 	case 3:
 	    levelxlimit = 320;
@@ -66,7 +78,10 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
 		frisk_x = 136;
 		frisk_y = 80;
 	    }
-	    PAL_fadeInAll(ruinspal.data, 15, 1);
+	    memcpy(&palettebuf[0], ruinspal.data, 16*2);
+            memcpy(&palettebuf[16], heart_sprite.palette->data, 16*2);
+            palettebuf[3] = RGB24_TO_VDPCOLOR(0xA098EB);
+            PAL_fadeInAll(palettebuf, 15, TRUE);
 	    break;
     }
     return map;
