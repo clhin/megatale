@@ -33,7 +33,7 @@ void menu_init(state_parameters_t args) {
         u16 ind = TILE_USER_INDEX + font_sheet.numTile;
         u16 tmp = ind;
 
-        menu_background = loadlevel(0, 1, tmp);
+        menu_background = loadlevel(1, 1, tmp);
         MAP_scrollTo(menu_background, 0, 125);
 
         //char buf2[32];
