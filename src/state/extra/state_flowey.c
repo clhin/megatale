@@ -153,6 +153,7 @@ Sprite *heart;
 Sprite *flowey;
 Sprite *toriel;
 Sprite *fireball;
+Sprite *health;
 
 // At what part of sprite change is flowey when he's being
 // flung
@@ -280,8 +281,8 @@ void flowey_init(state_parameters_t args) {
 
     */
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-    vram_ind = TILE_USER_INDEX;
-    vram_ind += font_sheet.numTile;
+
+    vram_ind = (u16)args.parameter_data;
 
     SPR_init();
 
@@ -321,6 +322,13 @@ void flowey_init(state_parameters_t args) {
     */
 
     box_draw(battle.box_x, battle.box_y, battle.box_w, battle.box_h, PAL1);
+
+    VDP_drawText("LV1 {| 20/20", battle.box_x - 1, battle.box_y + battle.box_h);
+
+    PAL_setPalette(PAL2, health_sprite.palette->data, DMA);
+    health = SPR_addSprite(&health_sprite, (battle.box_x + 5) * 8,
+                           (battle.box_y + battle.box_h) * 8,
+                           TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
 
     heart = SPR_addSprite(&heart_sprite, HEART_X - 4, HEART_Y,
                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
@@ -618,7 +626,7 @@ void helper_battle_tick() {
                                           battle.fireball_y,
                                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
                         SPR_setVisibility(fireball, HIDDEN);
-
+                        SPR_setFrame(health, 0);
                         return;
                     }
                 }
@@ -759,6 +767,7 @@ void helper_scene_state() {
             for (u8 i = 0; i < 5; ++i) {
                 SPR_setVisibility(battle.pellets[i].spr, HIDDEN);
             }
+            SPR_setFrame(health, 7);
             break;
             /*
             Die!

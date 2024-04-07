@@ -11,6 +11,8 @@ SPRITE battle_select	"sprites/battle_sheet.png" 7 3 FAST NONE
 SPRITE frisk_sprite	"sprites/frisk.png" 3 4 FAST 10
 
 #Battle Sprites 
+SPRITE health_sprite "battle/health.png" 1 1 FAST NONE 
+
 SPRITE flowey_battle "battle/flowey.png" 6 5 FAST NONE 
 SPRITE flowey_bullet "battle/flowey_bullet.png" 1 1 FAST 5
 SPRITE flowey_toriel "battle/flowey_toriel.png" 9 13 FAST NONE  

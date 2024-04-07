@@ -51,6 +51,7 @@ void menu_input(u16 changed, u16 state) {
         // flowey state from menu should be removed.
 
         state_parameters_t args;
+        args.parameter_data = (void *)(TILE_USER_INDEX + font_sheet.numTile);
 
         state_info_t state_info;
         state_info.clean = flowey_clean;
