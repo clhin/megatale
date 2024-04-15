@@ -17,8 +17,18 @@
 
 */
 
-// Used by draw_letter(). When we draw a letter, is there a character above it
-// that is tailed?
+/*
+
+  * ----------- *
+  |  IMPORTANT  |
+  * ----------- *
+
+  Font sheet must be loaded into VRAM, right on TILE_USER_INDEX, before doing
+  any of these functions. This is presumed to be called at the start at the
+  game, otherwise it will be buggy. This can be done with 
+  "VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);" with <resources.h> included
+
+*/
 
 #define MAX_LINE_LENGTH 33
 

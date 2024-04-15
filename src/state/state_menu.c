@@ -3,9 +3,11 @@
 #include <genesis.h>
 #include <resources.h>
 
+#include "save/save.h"
 #include "savedata.h"
 #include "state_world.h"
-#include "utils/save.h"
+
+#include "audio/audioEffects.h"
 
 #define MENU_START 0
 #define MENU_QUIT 1
@@ -44,6 +46,9 @@ void menu_input(u16 changed, u16 state) {
     }
 
     if (changed & BUTTON_A && (state & BUTTON_A)) {
+        // Play Select Sound When Pressing A
+        selectSound();
+
         state_parameters_t args;
         SYS_disableInts();
         savedata_t *p = malloc(sizeof(savedata_t));
@@ -75,4 +80,8 @@ void menu_redraw(state_return_t ret) {
     menu_init(p);
 }
 
-state_return_t menu_shutdown() {}
+state_return_t menu_shutdown() {
+    menu_clean();
+    state_return_t ret;
+    return ret;
+}

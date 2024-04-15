@@ -8,11 +8,13 @@
 #include "../graphics/level.h"
 #include "../graphics/text.h"
 #include "../graphics/textbox.h"
-#include "../graphics/utils.h"
+#include "../graphics/strutils.h"
 #include "savedata.h"
-#include "extra/state_flowey.h"
+#include "../save/save.h"
 #include "state_battle.h"
 #include "state_gamemenu.h"
+
+#include "audio/audioEffects.h"
 
 static void animate_frisk();
 static void camera_move();
@@ -59,7 +61,8 @@ void world_init(state_parameters_t args) {
     // where are we in a world init? Well, we started from the main
     // menu, and thus we have two options as to where we are: 1. we have
     // a blank save (load from the beginning), or we have save data and
-    // thus we load from our save state (not implemented yet)
+    // thus we check the validity of our save and load from our save state 
+    // (not implemented yet)
     if (SRAM_readByte(0) == SAVE_VALID) {
         // load save data
     } else {
@@ -81,6 +84,9 @@ void world_init(state_parameters_t args) {
 	savefile->gold = 0;
 	savefile->love = 1;
 	savefile->exp = 0;
+	savefile->kills = 0;
+	savefile->weapon = 2;
+	savefile->armor = 3;
     }
 }
 void world_input(u16 changed, u16 state) {
@@ -109,8 +115,7 @@ void world_input(u16 changed, u16 state) {
 	cancel = 0;
     // use as a debug button for now, later it will be the same as the start button
     if (state & BUTTON_C)
-	PAL_setColor(3, RGB24_TO_VDPCOLOR(0xA098EB));
-
+	savefile->cell = 1;
     if (state & BUTTON_START) {
         // Odd animations are taking a step, make sure we aren't animating
         // during a pause.
@@ -292,6 +297,10 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
 	    default:
 		//do nothing
 		break;
+	}
+    } else if (corner1 == 3 || corner2 == 3) {
+	if (savefile->room == 1 && !SRAM_readByte(FLOWEY_1ST_ENCOUNTER)) {
+	    //VDP_disp	
 	}
     }
 }

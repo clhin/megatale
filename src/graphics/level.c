@@ -33,7 +33,12 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
 	    levelylimit = 416;
             VDP_loadTileSet(&room_main_tiles, ind, DMA);
             map = MAP_create(&room_main, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
-	    if (nextroom > prevroom) {
+	    if (nextroom == prevroom) {
+		// this is main menu, nothing more needs to be done here, so we can just set the
+		// map position and then break
+		MAP_scrollTo(map, 0, 125);
+		break;
+	    }else if (nextroom > prevroom){
 		frisk_x = 152;
 		frisk_y = 376;//168;
 	    } else {
