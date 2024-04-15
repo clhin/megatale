@@ -7,6 +7,13 @@
 #include "../graphics/textbox.h"
 #include "../graphics/text.h"
 
+
+
+char get_letter(char *str, int idx)
+{
+    return *(str + idx);
+}
+
 int stage = 0;
 int change = 0;
 
@@ -32,7 +39,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         intro_clean();
         const char lines[3][33] = {
@@ -41,9 +48,29 @@ void intro_update() {
         "HUMANS and MONSTERS"
         };
 
+
         PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        draw_lines(lines, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
-        
+        /*
+        for(unsigned int i = 0; i< sizeof(lines); i++){
+            char* line = lines[i];
+            for(unsigned int j = 0; j < sizeof(line); j++){
+                if(i == 0){
+                    draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1+i, TILE_USER_INDEX, BG_A, PAL1);
+                }else{
+                    char* line_1 = lines[i-1];
+                    if(j<sizeof(line_1)){
+                        draw_letter(get_letter(line, j), get_letter(line_1, j), textPosX1+j, textPosY1+i, TILE_USER_INDEX, BG_A, PAL1);
+                    }else{
+                        draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1+i, TILE_USER_INDEX, BG_A, PAL1);
+                    }
+                }
+            }
+        }
+        */
+
+
+        //draw_lines(lines, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+        //draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane, u8 palette);
 
         VDP_loadTileSet(&intro_0_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -51,6 +78,25 @@ void intro_update() {
         Map *map;
         map = MAP_create(&intro_0, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
+
+
+        char* line = lines[0];
+        for(unsigned int j = 0; j < 19; j++){
+            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_1 = lines[1];
+        for(unsigned int j = 0; j < 17; j++){
+            draw_letter(get_letter(line_1, j), '\0', textPosX1+j, textPosY1+3, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_2 = lines[2];
+        for(unsigned int j = 0; j < 19; j++){
+            draw_letter(get_letter(line_2, j), '\0', textPosX1+j, textPosY1+6, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+
+
         stage++;
     }else if(stage == 1){
         s16 textPosX = 10;
@@ -58,7 +104,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -72,7 +118,6 @@ void intro_update() {
         };
 
         PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        draw_lines(lines1, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
         VDP_loadTileSet(&intro_1_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -80,6 +125,23 @@ void intro_update() {
         Map *map;
         map = MAP_create(&intro_1, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
+
+        char* line = lines1[0];
+        for(unsigned int j = 0; j < 18; j++){
+            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_1 = lines1[1];
+        for(unsigned int j = 0; j < 15; j++){
+            draw_letter(get_letter(line_1, j), '\0', textPosX1+j, textPosY1+3, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_2 = lines1[2];
+        for(unsigned int j = 0; j < 5; j++){
+            draw_letter(get_letter(line_2, j), '\0', textPosX1+j, textPosY1+6, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        
         stage++;
     }else if(stage == 2){
         s16 textPosX = 10;
@@ -87,7 +149,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -101,7 +163,6 @@ void intro_update() {
         };
 
         PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        draw_lines(lines2, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
         VDP_loadTileSet(&intro_2_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -109,6 +170,23 @@ void intro_update() {
         Map *map;
         map = MAP_create(&intro_2, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
+
+        char* line = lines2[0];
+        for(unsigned int j = 0; j < 19; j++){
+            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_1 = lines2[1];
+        for(unsigned int j = 0; j < 15; j++){
+            draw_letter(get_letter(line_1, j), '\0', textPosX1+j, textPosY1+3, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_2 = lines2[2];
+        for(unsigned int j = 0; j < 11; j++){
+            draw_letter(get_letter(line_2, j), '\0', textPosX1+j, textPosY1+6, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+
         stage++;
     }else if(stage == 3){
         s16 textPosX = 10;
@@ -116,7 +194,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -130,7 +208,6 @@ void intro_update() {
         };
 
         PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        draw_lines(lines3, 3, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
         VDP_loadTileSet(&intro_3_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -138,6 +215,24 @@ void intro_update() {
         Map *map;
         map = MAP_create(&intro_3, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
+
+
+        char* line = lines3[0];
+        for(unsigned int j = 0; j < 24; j++){
+            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_1 = lines3[1];
+        for(unsigned int j = 0; j < 24; j++){
+            draw_letter(get_letter(line_1, j), '\0', textPosX1+j, textPosY1+3, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_2 = lines3[2];
+        for(unsigned int j = 0; j < 6; j++){
+            draw_letter(get_letter(line_2, j), '\0', textPosX1+j, textPosY1+6, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+
         stage++;
     }else if(stage == 4){
         s16 textPosX = 10;
@@ -145,7 +240,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -156,7 +251,11 @@ void intro_update() {
         };
 
         PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        draw_lines(lines4, 1, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+        char* line = lines4[0];
+        for(unsigned int j = 0; j < 19; j++){
+            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
         stage++;
     }else if(stage == 5){
         s16 textPosX = 10;
@@ -164,7 +263,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -176,14 +275,25 @@ void intro_update() {
         };
 
         PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        draw_lines(lines5, 2, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
-       VDP_loadTileSet(&intro_5_tiles, index, DMA);
+        VDP_loadTileSet(&intro_5_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
         u32 offset = 0;
         Map *map;
         map = MAP_create(&intro_5, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
+
+        char* line = lines5[0];
+        for(unsigned int j = 0; j < 9; j++){
+            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_1 = lines5[1];
+        for(unsigned int j = 0; j < 4; j++){
+            draw_letter(get_letter(line_1, j), '\0', textPosX1+j, textPosY1+3, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+
         stage++;
     }else if(stage == 6){
         s16 textPosX = 10;
@@ -191,7 +301,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -206,7 +316,6 @@ void intro_update() {
 
 
         PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        draw_lines(lines6, 2, textPosX1, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
 
         VDP_loadTileSet(&intro_6_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -214,6 +323,24 @@ void intro_update() {
         Map *map;
         map = MAP_create(&intro_6, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
+
+        char* line = lines6[0];
+        for(unsigned int j = 0; j < 22; j++){
+            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_1 = lines6[1];
+        for(unsigned int j = 0; j < 22; j++){
+            draw_letter(get_letter(line_1, j), '\0', textPosX1+j, textPosY1+3, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+        char* line_2 = lines6[2];
+        for(unsigned int j = 0; j < 13; j++){
+            draw_letter(get_letter(line_2, j), '\0', textPosX1+j, textPosY1+6, TILE_USER_INDEX, BG_A, PAL1);
+            waitMs(100);
+        }
+
+
         stage++;
     }else if(stage == 7){
         s16 textPosX = 10;
@@ -221,7 +348,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -243,7 +370,7 @@ void intro_update() {
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
+        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
