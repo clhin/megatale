@@ -7,9 +7,6 @@
 #include "state_world.h"
 #include "utils/save.h"
 
-// Remove this on pull request
-#include "extra/state_flowey.h"
-
 #define MENU_START 0
 #define MENU_QUIT 1
 
@@ -47,23 +44,6 @@ void menu_input(u16 changed, u16 state) {
     }
 
     if (changed & BUTTON_A && (state & BUTTON_A)) {
-        // Note: for when pull requesting, main stuff should be restored and
-        // flowey state from menu should be removed.
-
-        state_parameters_t args;
-        args.parameter_data = (void *)(TILE_USER_INDEX + font_sheet.numTile);
-
-        state_info_t state_info;
-        state_info.clean = flowey_clean;
-        state_info.init = flowey_init;
-        state_info.redraw = flowey_redraw;
-        state_info.input = flowey_input;
-        state_info.update = flowey_update;
-        state_info.shutdown = flowey_shutdown;
-
-        state_push(state_info, args);
-
-        /*
         state_parameters_t args;
         SYS_disableInts();
         savedata_t *p = malloc(sizeof(savedata_t));
@@ -78,7 +58,7 @@ void menu_input(u16 changed, u16 state) {
         state_info.update = world_update;
         state_info.shutdown = world_shutdown;
 
-        state_push(state_info, args);*/
+        state_push(state_info, args);
     }
 }
 

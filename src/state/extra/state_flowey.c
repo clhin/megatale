@@ -10,7 +10,7 @@
 #include "../../graphics/textbox.h"
 
 // Uncomment this to see what index the dialogue is on
-#define DEBUG
+// #define DEBUG
 
 // How much pellets we need allocated in total. 64 is the full circle in the
 // original game, but to account for half the screen size we give 32.
@@ -626,6 +626,7 @@ void helper_battle_tick() {
                                           battle.fireball_y,
                                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
                         SPR_setVisibility(fireball, HIDDEN);
+                        VDP_drawText("LV1 {| 20/20", 14, 24);
                         SPR_setFrame(health, 0);
                         return;
                     }
@@ -767,6 +768,8 @@ void helper_scene_state() {
             for (u8 i = 0; i < 5; ++i) {
                 SPR_setVisibility(battle.pellets[i].spr, HIDDEN);
             }
+            VDP_drawText("LV1 {|  1/20", battle.box_x - 1,
+                         battle.box_y + battle.box_h);
             SPR_setFrame(health, 7);
             break;
             /*
