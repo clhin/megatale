@@ -10,6 +10,14 @@ SPRITE heart_sprite	    "sprites/heart.png" 1 1 FAST NONE
 SPRITE battle_select	"sprites/battle_sheet.png" 7 3 FAST NONE 
 SPRITE frisk_sprite	    "sprites/frisk.png" 3 4 FAST 10
 
+#Battle Sprites 
+SPRITE health_sprite "battle/health.png" 1 1 FAST NONE 
+
+SPRITE flowey_battle "battle/flowey.png" 6 5 FAST NONE 
+SPRITE flowey_bullet "battle/flowey_bullet.png" 1 1 FAST 5
+SPRITE flowey_toriel "battle/flowey_toriel.png" 9 13 FAST NONE  
+SPRITE toriel_fireball "battle/toriel_fireball.png" 4 4 FAST 5 
+
 #Images
 IMAGE font		        "fonts/8bitfonts.png" BEST NONE
 
@@ -78,3 +86,7 @@ WAV     sndScreenShake  "sound/screenshakeSmall.wav" 5
 WAV     sndSparkle      "sound/sparkle1Small.wav" 5
 WAV     sndSwitchPull   "sound/switchpullSmall.wav" 5
 WAV     sndTextNoise    "sound/textnoiseSmall.wav" 5
+
+#Battle Dialogue 
+BIN flowey_battle_dialogue "battle/flowey.bin" 1 0 
+
