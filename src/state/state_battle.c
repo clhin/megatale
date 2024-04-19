@@ -3,7 +3,7 @@
 #include <genesis.h>
 #include <resources.h>
 
-Sprite *heart;
+Sprite *opt_heart;
 Sprite *fight;
 Sprite *act;
 Sprite *item;
@@ -32,7 +32,7 @@ void battle_init(state_parameters_t args) {
     VDP_drawText("Start", 10, 13);
     VDP_drawText("Quit", 10, 15);
 
-    heart = SPR_addSprite(&heart_sprite, 24, 198,
+    opt_heart = SPR_addSprite(&heart_sprite, 24, 198,
                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     fight = SPR_addSprite(&battle_select, 20, 190,
@@ -68,7 +68,7 @@ void battle_input(u16 changed, u16 state) {
     */
     switch (select) {
         case 0:
-            SPR_setPosition(heart, 24, 198);
+            SPR_setPosition(opt_heart, 24, 198);
             SPR_setFrame(fight, 1);
             SPR_setFrame(act, 0);
             SPR_setFrame(item, 0);
@@ -76,21 +76,21 @@ void battle_input(u16 changed, u16 state) {
 
             break;
         case 1:
-            SPR_setPosition(heart, 100, 198);
+            SPR_setPosition(opt_heart, 100, 198);
             SPR_setFrame(fight, 0);
             SPR_setFrame(act, 1);
             SPR_setFrame(item, 0);
             SPR_setFrame(mercy, 0);
             break;
         case 2:
-            SPR_setPosition(heart, 172, 198);
+            SPR_setPosition(opt_heart, 172, 198);
             SPR_setFrame(fight, 0);
             SPR_setFrame(act, 0);
             SPR_setFrame(item, 1);
             SPR_setFrame(mercy, 0);
             break;
         case 3:
-            SPR_setPosition(heart, 248, 198);
+            SPR_setPosition(opt_heart, 248, 198);
             SPR_setFrame(fight, 0);
             SPR_setFrame(act, 0);
             SPR_setFrame(item, 0);

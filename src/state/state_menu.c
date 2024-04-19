@@ -12,7 +12,7 @@
 #include "graphics/level.h"
 
 #include "graphics/text.h"
-#include "graphics/textbox.h"
+//#include "graphics/textbox.h"
 
 #define MENU_START 0
 #define MENU_QUIT 1
