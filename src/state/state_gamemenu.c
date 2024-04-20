@@ -3,7 +3,7 @@
 #include <genesis.h>
 #include <resources.h>
 #include "graphics/text.h"
-#include "graphics/textbox.h"
+//#include "graphics/textbox.h"
 #include "graphics/strutils.h"
 #include "savedata.h"
 #include "state_menu.h"
@@ -11,7 +11,7 @@
 #include "audio/audioEffects.h"
 
 savedata_t *data;
-Sprite * heart; 
+Sprite * menu_heart; 
 u8 current_selection;
 
 #define ITEM 0
@@ -24,7 +24,7 @@ void gamemenu_init(state_parameters_t args) {
     selectSound();
     char buf[9];
     PAL_setPalette(PAL2, intropal.data, DMA);
-    heart = SPR_addSprite(&heart_sprite, 3 * 8, data->item[0] ? 11 *  8 - 1 : 13 * 8 - 1,
+    menu_heart = SPR_addSprite(&heart_sprite, 3 * 8, data->item[0] ? 11 *  8 - 1 : 13 * 8 - 1,
 			  TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
     current_selection = data->item[0] ? 0 : 1;
     data = (savedata_t *)args.parameter_data;
@@ -133,50 +133,50 @@ void gamemenu_input(u16 changed, u16 state) {
 	if (current_selection == ITEM) {
 	    if (data->cell != 0) {
 	        current_selection = CELL;
-	        SPR_setPosition(heart, 3 * 8, 15 * 8 - 1);
+	        SPR_setPosition(menu_heart, 3 * 8, 15 * 8 - 1);
 	    } else {
 	        current_selection = STAT;
-		SPR_setPosition(heart, 3 * 8, 13 * 8 - 1);
+		SPR_setPosition(menu_heart, 3 * 8, 13 * 8 - 1);
 	    }
 	
 	} else if (current_selection == STAT) {
 	    if (data->item[0] != 0) {
 		current_selection = ITEM;
-		SPR_setPosition(heart, 3 * 8, 11 * 8 - 1);	
+		SPR_setPosition(menu_heart, 3 * 8, 11 * 8 - 1);	
 	    } else if (data->cell != 0) {
 		current_selection = CELL;
-                SPR_setPosition(heart, 3 * 8, 15 * 8 - 1);
+                SPR_setPosition(menu_heart, 3 * 8, 15 * 8 - 1);
 	    }
 	} else if (current_selection == CELL) {
 	    current_selection = STAT;
-            SPR_setPosition(heart, 3 * 8, 13 * 8 - 1);
+            SPR_setPosition(menu_heart, 3 * 8, 13 * 8 - 1);
 	}
     } else if (state & BUTTON_DOWN) {
 	if (current_selection == ITEM) {
             current_selection = STAT;
-            SPR_setPosition(heart, 3 * 8, 13 * 8 - 1);
+            SPR_setPosition(menu_heart, 3 * 8, 13 * 8 - 1);
         } else if (current_selection == STAT) {
            if (data->cell != 0) {
 		current_selection = CELL;
-		SPR_setPosition(heart, 3 * 8, 15 * 8 - 1);
+		SPR_setPosition(menu_heart, 3 * 8, 15 * 8 - 1);
 	   } else if (data->item[0] != 0){
 		current_selection = ITEM;
-		SPR_setPosition(heart, 3 * 8, 11 * 8 - 1);
+		SPR_setPosition(menu_heart, 3 * 8, 11 * 8 - 1);
 	   }
         } else if (current_selection == CELL) {
 	   if (data->item[0] != 0){
                 current_selection = ITEM;
-                SPR_setPosition(heart, 3 * 8, 11 * 8 - 1);
+                SPR_setPosition(menu_heart, 3 * 8, 11 * 8 - 1);
            } else {
 		current_selection = STAT;
-		SPR_setPosition(heart, 3 * 8, 13 * 8 - 1);
+		SPR_setPosition(menu_heart, 3 * 8, 13 * 8 - 1);
 	   }
 	}
     }
 }
 void gamemenu_update() {}
 void gamemenu_clean() { 
-    SPR_releaseSprite(heart);
+    SPR_releaseSprite(menu_heart);
     VDP_clearTextArea(0, 0, 40, 28);
 }
 void gamemenu_redraw(state_return_t ret) {}

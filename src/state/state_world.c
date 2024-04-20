@@ -7,7 +7,7 @@
 #include "../collisions.h"
 #include "../graphics/level.h"
 #include "../graphics/text.h"
-#include "../graphics/textbox.h"
+//#include "../graphics/textbox.h"
 #include "../graphics/strutils.h"
 #include "savedata.h"
 #include "../save/save.h"
@@ -42,6 +42,8 @@ int8_t cancel;
 
 static u8 priority = 0;
 
+u16 textpos = 0;
+
 u16 ind = TILE_USER_INDEX;
 
 Map *map;
@@ -52,12 +54,10 @@ void world_init(state_parameters_t args) {
 
     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
     ind += font_sheet.numTile;
-
     frisk_bb.x = frisk_x;
     frisk_bb.y = frisk_y;
     frisk_bb.w = frisk_sprite.w;
     frisk_bb.h = frisk_sprite.h;
-
     // where are we in a world init? Well, we started from the main
     // menu, and thus we have two options as to where we are: 1. we have
     // a blank save (load from the beginning), or we have save data and
@@ -299,9 +299,27 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
 		break;
 	}
     } else if (corner1 == 3 || corner2 == 3) {
-	if (savefile->room == 1 && !SRAM_readByte(FLOWEY_1ST_ENCOUNTER)) {
-	    //VDP_disp	
-	}
+/*	if (savefile->room == 1 && !SRAM_readByte(FLOWEY_1ST_ENCOUNTER)) {
+	    char buf[243];
+	    u8 asterisks = 0;
+	    aplib_unpack((u8*)buf,(u8*)floweyintro);
+	    parse_dialog(buf,&textpos,&asterisks,243);
+	    if (textpos == 0) {
+	    	if (asterisks == 1)
+		    textbox_init(TEXT_FLOWEY_MODE, 1, buf, TRUE,FALSE,FALSE);
+		else if (asterisks == 2)
+		    textbox_init(TEXT_FLOWEY_MODE, 1, buf, TRUE,TRUE,FALSE);
+		else
+		    textbox_init(TEXT_FLOWEY_MODE, 1, buf, TRUE,TRUE,TRUE);
+	    } else {
+		if (asterisks == 1)
+		    textbox_flush(buf, TRUE,FALSE,FALSE);
+		else if (asterisks == 2)
+		    textbox_flush(buf, TRUE,TRUE,FALSE);
+		else
+		    textbox_flush(buf, TRUE,TRUE,TRUE);
+	    }
+	} */
     }
 }
 

@@ -175,3 +175,19 @@ const char * getitemname(u8 itemcode) {
     }
     return NULL;
 }
+
+u8 parse_dialog(const char * dialog, u16* textpos, u8 * asterisks, u8 size) {
+    for (int i = 0; i < size; i++) {
+	if (dialog[i] == '*') {
+	    ++*asterisks;
+	    continue;
+	}
+	++textpos;
+	if (dialog[i] == '\0') {
+	    if (i == size -1)
+		return TRUE;
+	    return FALSE;
+	}
+    }
+    return TRUE;
+}
