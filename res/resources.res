@@ -11,6 +11,14 @@ SPRITE heart_sprite	    "sprites/heart.png" 1 1 FAST NONE
 SPRITE battle_select	"sprites/battle_sheet.png" 7 3 FAST NONE 
 SPRITE frisk_sprite	    "sprites/frisk.png" 3 4 FAST 10
 
+#Battle Sprites 
+SPRITE health_sprite "battle/health.png" 1 1 FAST NONE 
+
+SPRITE flowey_battle "battle/flowey.png" 6 5 FAST NONE 
+SPRITE flowey_bullet "battle/flowey_bullet.png" 1 1 FAST 5
+SPRITE flowey_toriel "battle/flowey_toriel.png" 9 13 FAST NONE  
+SPRITE toriel_fireball "battle/toriel_fireball.png" 4 4 FAST 5 
+
 #Images
 IMAGE font		        "fonts/8bitfonts.png" BEST NONE
 
@@ -62,6 +70,7 @@ WAV     sndFloweyLaugh  "sound/lowFloweyLaugh.wav" XGM        # Perfect (small a
 WAV     sndFloweyVoice  "sound/snd_floweytalk1.wav" XGM       # Perfect (small and crispy)
 XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1       # Perfect (small and crispy)   
 XGM     uwa             "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)
+
 WAV     sndMoveMenu     "sound/movemenuSmall.wav" XGM         # Perfect (small and crispy)
 WAV     sndTorialTalk   "sound/txtTorialSmall.wav" XGM        # Perfect (small and crispy)
 WAV     sndSelect       "sound/selectSmall.wav" XGM           # Perfect (small and crispy)

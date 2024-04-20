@@ -143,11 +143,11 @@ void menu_input(u16 changed, u16 state) {
         selectSound();
 
         state_parameters_t args;
-	SYS_disableInts();
-	savedata_t *p = malloc(sizeof(savedata_t));
-    	readsave(p);
-	args.parameter_data = p;
-	SYS_enableInts();
+        SYS_disableInts();
+        savedata_t *p = malloc(sizeof(savedata_t));
+        readsave(p);
+        args.parameter_data = p;
+        SYS_enableInts();
         state_info_t state_info;
         state_info.clean = world_clean;
         state_info.init = world_init;

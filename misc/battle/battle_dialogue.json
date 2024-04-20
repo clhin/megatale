@@ -1,0 +1,131 @@
+{
+    "export": "battle_dialogue.h",
+    "header": "BATTLE_DIALOGUE_H_",
+    "flowey": [
+        {
+            "tag": "FLOWEY_TALK0",
+            "text": "See that heart?\nThat is your SOUL.\nthe very culmination\nof your being!",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_TALK1",
+            "text": "Your SOUL starts off\nweak, but can grow\nstrong if you gain\na lot of LV.",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_TALK2",
+            "text": "What's LV stand for?\nWhy, LOVE, of course!",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_TALK3",
+            "text": "You want some\nLOVE, don't you?",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_TALK4",
+            "text": "Don't worry,\nI'll share some\nwith you!",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_TALK5",
+            "text": "Down here, LOVE is\nshared through...",
+            "face": 1
+        },
+        {
+            "tag": "FLOWEY_TALK6",
+            "text": "Little white...\n\"friendliness\npellets.\"",
+            "face": 2
+        },
+        {
+            "tag": "FLOWEY_TALK7",
+            "text": "Are you ready?",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_TALK8",
+            "text": "Move around!\nGet as many as\nyou can!",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_HIT1",
+            "text": "You idiot.",
+            "face": 6
+        },
+        {
+            "tag": "FLOWEY_HIT2",
+            "text": "In this world, it's\nkill or BE killed.",
+            "face": 6
+        },
+        {
+            "tag": "FLOWEY_HIT3",
+            "text": "Why would ANYONE pass\nup an oppurtunity\nlike this!?",
+            "face": 6
+        },
+        {
+            "tag": "FLOWEY_DIE",
+            "text": "Die.",
+            "face": 5
+        },
+        {
+            "tag": "FLOWEY_DODGE0_0",
+            "text": "Hey buddy,\nyou missed them.",
+            "face": 3
+        },
+        {
+            "tag": "FLOWEY_DODGE0_1",
+            "text": "Let's try again,\nokay?",
+            "face": 3
+        },
+        {
+            "tag": "FLOWEY_DODGE1_0",
+            "text": "Is this a joke?\nAre you braindead?\nRUN. INTO. THE.\nBULLETS.",
+            "face": 4
+        },
+        {
+            "tag": "FLOWEY_DODGE1_1",
+            "text": "friendliness pellets",
+            "face": 0
+        },
+        {
+            "tag": "FLOWEY_DODGE2_0",
+            "text": "You know what's\ngoing on here,\ndon't you?",
+            "face": 5
+        },
+        {
+            "tag": "FLOWEY_DODGE2_1",
+            "text": "You just wanted to\nsee me suffer.",
+            "face": 5
+        },
+        {
+            "tag": "TORIEL_TALK0",
+            "text": "What a terrible\ncreature, torturing\n such a poor,\ninnocent youth...",
+            "face": 1
+        },
+        {
+            "tag": "TORIEL_TALK1",
+            "text": "Ah, do not be\nafraid, my child.",
+            "face": 0
+        },
+        {
+            "tag": "TORIEL_TALK2",
+            "text": "I am TORIEL,\ncaretaker of\nthe RUINS.",
+            "face": 0
+        },
+        {
+            "tag": "TORIEL_TALK3",
+            "text": "I pass through this\nplace every day to\nsee if anyone has\nfallen down.",
+            "face": 0
+        },
+        {
+            "tag": "TORIEL_TALK4",
+            "text": "You are the first\nhuman to come here\nin a long time.",
+            "face": 0
+        },
+        {
+            "tag": "TORIEL_TALK5",
+            "text": "Come!\nI will guide you\nthrough the\ncatacombs.",
+            "face": 0
+        }
+    ]
+}
