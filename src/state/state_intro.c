@@ -426,10 +426,24 @@ void intro_update() {
 
         VDP_loadTileSet(&intro_last_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
-        u32 offset = 0;
+        u32 offset = 170;
         Map *map;
         map = MAP_create(&intro_last, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         stage++;
+        u32 scrollDir = 1;
+        int num = 1;
+        while(num) {
+            MAP_scrollTo(map, 0, offset);
+            offset -= scrollDir;
+            if(offset <= 0) {
+                num = 0;
+            }
+            SYS_doVBlankProcess();
+        }
+
+        for(int i =0 ; i<duration; i++){
+            waitMs  (100);
+        }
     }else{
         intro_clean();
         state_info_t state_info;
