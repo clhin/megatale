@@ -149,11 +149,13 @@ const u16 end_y[5] = {FLOWEY_Y - 21, FLOWEY_Y - 41, FLOWEY_Y - 51,
 //        LOCAL VARIABLES       |
 // ---------------------------- *
 
-Sprite *heart;
-Sprite *flowey;
-Sprite *toriel;
-Sprite *fireball;
-Sprite *health;
+struct {
+    Sprite *heart;
+    Sprite *flowey;
+    Sprite *toriel;
+    Sprite *fireball;
+    Sprite *health;
+} spr;
 
 // At what part of sprite change is flowey when he's being
 // flung
@@ -234,9 +236,9 @@ void flowey_init(state_parameters_t args) {
         Give everything initial values.
     */
 
-    heart = NULL;
-    flowey = NULL;
-    toriel = NULL;
+    spr.heart = NULL;
+    spr.flowey = NULL;
+    spr.toriel = NULL;
 
     tick = 0;
     timer = 0;
@@ -318,7 +320,7 @@ void flowey_init(state_parameters_t args) {
     vram_ind += num_tiles;
 
     /*
-        Go ahead and set up flowey, heart and box that surronds the heart.
+        Go ahead and set up flowey,spr.heartand box that surronds the heart.
     */
 
     box_draw(battle.box_x, battle.box_y, battle.box_w, battle.box_h, PAL1);
@@ -326,12 +328,12 @@ void flowey_init(state_parameters_t args) {
     VDP_drawText("LV1 {| 20/20", battle.box_x - 1, battle.box_y + battle.box_h);
 
     PAL_setPalette(PAL2, health_sprite.palette->data, DMA);
-    health = SPR_addSprite(&health_sprite, (battle.box_x + 5) * 8,
-                           (battle.box_y + battle.box_h) * 8,
-                           TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
+    spr.health = SPR_addSprite(&health_sprite, (battle.box_x + 5) * 8,
+                               (battle.box_y + battle.box_h) * 8,
+                               TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
 
-    heart = SPR_addSprite(&heart_sprite, HEART_X - 4, HEART_Y,
-                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    spr.heart = SPR_addSprite(&heart_sprite, HEART_X - 4, HEART_Y,
+                              TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 
     battle.heart_x = HEART_X - 4;
     battle.heart_y = HEART_Y;
@@ -343,8 +345,8 @@ void flowey_init(state_parameters_t args) {
     battle.flowey_x = PIXEL_WIDTH / 2 - flowey_battle.w / 2;
     battle.flowey_y = 8 * 7;
 
-    flowey = SPR_addSprite(&flowey_battle, battle.flowey_x, battle.flowey_y,
-                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    spr.flowey = SPR_addSprite(&flowey_battle, battle.flowey_x, battle.flowey_y,
+                               TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 }
 void flowey_input(u16 changed, u16 state) {
     /*
@@ -359,7 +361,7 @@ void flowey_input(u16 changed, u16 state) {
     }
 
     /*
-        We set the heart velocity here instead of moving, the collision
+        We set thespr.heartvelocity here instead of moving, the collision
        detection with the box and moving is handled in update sequence.
     */
     if (state & BUTTON_RIGHT) {
@@ -414,7 +416,7 @@ void flowey_update() {
     if (!dialogue.next && !dialogue.blocking &&
         (dialogue.speed == 1 || tick % dialogue.speed)) {
         // Only one will be on screen at a time
-        Sprite *focus = (flowey) ? flowey : toriel;
+        Sprite *focus = (spr.flowey) ? spr.flowey : spr.toriel;
 
         SPR_setAnim(focus, faces[dialogue.i]);
         helper_dialogue_tick();
@@ -438,10 +440,10 @@ state_return_t flowey_shutdown() {
     SPR_clear();
 
     // Potentially prevent any dangling pointers
-    flowey = NULL;
-    toriel = NULL;
-    fireball = NULL;
-    heart = NULL;
+    spr.flowey = NULL;
+    spr.toriel = NULL;
+    spr.fireball = NULL;
+    spr.heart = NULL;
     battle.pellets = NULL;
 
     state_return_t ret;
@@ -508,7 +510,7 @@ void helper_heart_tick() {
 
     battle.heart_x = temp_x;
     battle.heart_y = temp_y;
-    SPR_setPosition(heart, battle.heart_x, battle.heart_y);
+    SPR_setPosition(spr.heart, battle.heart_x, battle.heart_y);
 }
 
 void helper_battle_tick() {
@@ -621,13 +623,13 @@ void helper_battle_tick() {
 
                         battle.fireball_x = FLOWEY_X + 75;
                         battle.fireball_y = FLOWEY_Y - 20;
-                        fireball =
+                        spr.fireball =
                             SPR_addSprite(&toriel_fireball, battle.fireball_x,
                                           battle.fireball_y,
                                           TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-                        SPR_setVisibility(fireball, HIDDEN);
+                        SPR_setVisibility(spr.fireball, HIDDEN);
                         VDP_drawText("LV1 {| 20/20", 14, 24);
-                        SPR_setFrame(health, 0);
+                        SPR_setFrame(spr.health, 0);
                         return;
                     }
                 }
@@ -673,7 +675,7 @@ void helper_scene_state() {
         dialogue.c = 0;  // Placeholder
         dialogue.blocking = TRUE;
         // Give him default face (note that it does that)
-        SPR_setAnim(flowey, 0);
+        SPR_setAnim(spr.flowey, 0);
     } else if (dialogue.i == I_FLOWEY_DODGE2_1) {
         dialogue.i = I_FLOWEY_DIE;
         dialogue.c = D_FLOWEY_DIE;
@@ -770,7 +772,7 @@ void helper_scene_state() {
             }
             VDP_drawText("LV1 {|  1/20", battle.box_x - 1,
                          battle.box_y + battle.box_h);
-            SPR_setFrame(health, 7);
+            SPR_setFrame(spr.health, 7);
             break;
             /*
             Die!
@@ -783,7 +785,7 @@ void helper_scene_state() {
             battle.heart_blocking = TRUE;
             battle.heart_collide = FALSE;
 
-            SPR_setAnim(flowey, 5);
+            SPR_setAnim(spr.flowey, 5);
 
             // Resize the box (I don't know, it does this for some reason?)
             // Heart being put in it is handled by clamp() in update
@@ -804,7 +806,7 @@ void helper_scene_state() {
             battle.heart_y = clamp(battle.heart_y, (battle.box_x + 1) * 8,
                                    (battle.box_x + battle.box_h - 2) * 8);
 
-            SPR_setPosition(heart, battle.heart_x, battle.heart_y);
+            SPR_setPosition(spr.heart, battle.heart_x, battle.heart_y);
 
             // We already have 5 bullets loaded, we have 32 in total. We load
             // the other 27.
@@ -852,7 +854,7 @@ void helper_flowey_throw() {
 
     timer++;
 
-    if (toriel) {
+    if (spr.toriel) {
         if (battle.toriel_x <= PIXEL_WIDTH / 2 - 36) {
             // Now we can actually write dialogue and enter the next state.
             battle.state = S_TORIEL_ENTER;
@@ -860,46 +862,47 @@ void helper_flowey_throw() {
         }
         battle.toriel_x -= 2;
 
-        SPR_setPosition(toriel, battle.toriel_x, battle.toriel_y);
+        SPR_setPosition(spr.toriel, battle.toriel_x, battle.toriel_y);
 
         return;
     }
     // Only do all of this if flowey != nullptr
-    if (!flowey) return;
+    if (!spr.flowey) return;
 
     // If flowey is out of the frame, we move in toriel.
-    if (flowey_thrown_i >= THROWN_FRAMES && flowey) {
-        SPR_releaseSprite(flowey);
-        flowey = NULL;  // Help for choosing which one should talk.
+    if (flowey_thrown_i >= THROWN_FRAMES && spr.flowey) {
+        SPR_releaseSprite(spr.flowey);
+        spr.flowey = NULL;  // Help for choosing which one should talk.
 
         // Spawn in toriel
         battle.toriel_x = PIXEL_WIDTH;
         battle.toriel_y = FLOWEY_Y - 60;
 
-        toriel = SPR_addSprite(&flowey_toriel, battle.toriel_x, battle.toriel_y,
-                               TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
-        SPR_setAnim(toriel, 1);  // Concerned look
+        spr.toriel =
+            SPR_addSprite(&flowey_toriel, battle.toriel_x, battle.toriel_y,
+                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+        SPR_setAnim(spr.toriel, 1);  // Concerned look
         return;
     }
     if (timer == throw_anim_t[1]) {
-        SPR_setVisibility(fireball, VISIBLE);
+        SPR_setVisibility(spr.fireball, VISIBLE);
     }
 
-    if (SPR_getVisibility(fireball) == VISIBLE) {
+    if (SPR_getVisibility(spr.fireball) == VISIBLE) {
         battle.fireball_x -= 14;
-        SPR_setPosition(fireball, battle.fireball_x, battle.fireball_y);
+        SPR_setPosition(spr.fireball, battle.fireball_x, battle.fireball_y);
     }
 
     if (flowey_thrown_i > 2) {
         battle.flowey_x -= 8;
         battle.flowey_y -= 2;
-        SPR_setPosition(flowey, battle.flowey_x, battle.flowey_y);
-        SPR_setVisibility(fireball, HIDDEN);
+        SPR_setPosition(spr.flowey, battle.flowey_x, battle.flowey_y);
+        SPR_setVisibility(spr.fireball, HIDDEN);
     }
 
     if (timer >= throw_anim_t[flowey_thrown_i]) {
-        SPR_setAnim(flowey, throw_anim_f[flowey_thrown_i] >> 4);
-        SPR_setFrame(flowey, throw_anim_f[flowey_thrown_i] & 0x0F);
+        SPR_setAnim(spr.flowey, throw_anim_f[flowey_thrown_i] >> 4);
+        SPR_setFrame(spr.flowey, throw_anim_f[flowey_thrown_i] & 0x0F);
         flowey_thrown_i++;
     }
 }

@@ -16,7 +16,7 @@ u8 running_test = FALSE;
 
 u8 category_selection = 0;
 u8 case_selection = 0;
-Sprite *heart;
+Sprite *test_heart;
 
 void test_init(state_parameters_t args) {
     categories[0].amount = 2;
@@ -36,8 +36,8 @@ void test_init(state_parameters_t args) {
     // Use the heart as the selector
     PAL_setPalette(PAL1, heart_sprite.palette->data, DMA);
 
-    heart = SPR_addSprite(&heart_sprite, 0, (4 + category_selection) * 8,
-                          TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
+    test_heart = SPR_addSprite(&heart_sprite, 0, (4 + category_selection) * 8,
+                               TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
 }
 void test_input(u16 changed, u16 state) {
     if (running_test) {
@@ -54,7 +54,7 @@ void test_input(u16 changed, u16 state) {
     } else if ((changed & BUTTON_DOWN) && (state & BUTTON_DOWN)) {
         case_selection =
             (case_selection + 1) % categories[category_selection].amount;
-        SPR_setPosition(heart, 0, (4 + case_selection) * 8);
+        SPR_setPosition(test_heart, 0, (4 + case_selection) * 8);
     }
 
     if (changed & BUTTON_A && state & BUTTON_A && at_category) {
@@ -66,7 +66,7 @@ void test_input(u16 changed, u16 state) {
         for (u8 i = 0; i < size; ++i) {
             VDP_drawText(cases[i].text, 1, 4 + i);
         }
-        SPR_setPosition(heart, 0, (4 + case_selection) * 8);
+        SPR_setPosition(test_heart, 0, (4 + case_selection) * 8);
 
         at_category = FALSE;
     } else if (changed & BUTTON_B && state & BUTTON_B && !at_category) {
@@ -77,14 +77,14 @@ void test_input(u16 changed, u16 state) {
         for (u8 i = 0; i < size; ++i) {
             VDP_drawText(categories[i].text, 1, 4 + i);
         }
-        SPR_setPosition(heart, 0, (4 + category_selection) * 8);
+        SPR_setPosition(test_heart, 0, (4 + category_selection) * 8);
 
         at_category = TRUE;
     } else if (changed & BUTTON_A && state & BUTTON_A && !at_category) {
         running_test = TRUE;
 
         test_case_t *cases = categories[category_selection].tests;
-        SPR_setVisibility(heart, HIDDEN);
+        SPR_setVisibility(test_heart, HIDDEN);
         VDP_clearTextArea(0, 4, 40, 28);
         cases[case_selection].init();
     }
@@ -106,8 +106,8 @@ void test_update() {
             for (u8 i = 0; i < size; ++i) {
                 VDP_drawText(cases[i].text, 1, 4 + i);
             }
-            SPR_setVisibility(heart, VISIBLE);
-            SPR_setPosition(heart, 0, (4 + case_selection) * 8);
+            SPR_setVisibility(test_heart, VISIBLE);
+            SPR_setPosition(test_heart, 0, (4 + case_selection) * 8);
         }
     }
 }
