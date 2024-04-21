@@ -88,3 +88,5 @@ WAV     sndScreenShake  "sound/screenshakeSmall.wav" XGM
 WAV     sndSparkle      "sound/sparkle1Small.wav" XGM
 WAV     sndSwitchPull   "sound/switchpullSmall.wav" XGM
 WAV     sndTextNoise    "sound/textnoiseSmall.wav" XGM
+
+BIN flowey_battle_dialogue "battle/flowey.bin" 1 0 
