@@ -426,7 +426,7 @@ void intro_update() {
 
         VDP_loadTileSet(&intro_last_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
-        u32 offset = 170;
+        u32 offset = 150;
         Map *map;
         map = MAP_create(&intro_last, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         stage++;
