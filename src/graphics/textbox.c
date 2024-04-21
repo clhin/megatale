@@ -8,6 +8,8 @@
     Local variables
 */
 
+text_info_t text_info;
+
 // Note: if you change MAX_LINE_SIZE, change this
 const char empty_block[MAX_LINE_SIZE + 1] =
     "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
