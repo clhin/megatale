@@ -44,7 +44,7 @@ typedef enum {
     TEXT_FLOWEY_MODE
 } TextBoxMode;
 
-struct {
+typedef struct {
     /*
         How much lines are used. This is automatically filled by textbox_init()
        or textbox_flush(). This gives indication on how big the dialogue box
@@ -82,7 +82,9 @@ struct {
     u8 x_off;
 
     Sprite *portrait;
-} text_info;
+} text_info_t;
+
+extern text_info_t text_info;
 
 /*
     Helper function to draw a box with these specifics

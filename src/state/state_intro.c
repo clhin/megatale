@@ -22,7 +22,6 @@ int duration = 50;
 void intro_init(state_parameters_t args) {
     stage = 0;
     duration = 50;
-    VDP_setScrollingMode(HSCROLL_PLANE,VSCROLL_PLANE);
 }
 
 
@@ -374,7 +373,6 @@ void intro_update() {
         map = MAP_create(&intro_9, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         stage++;
     }else if(stage == 10){
-
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
@@ -382,6 +380,7 @@ void intro_update() {
             waitMs  (100);
         }
         intro_clean();
+
 
         VDP_setTextPlane(BG_A);
         PAL_setColor(0,RGB24_TO_VDPCOLOR(0x000000));

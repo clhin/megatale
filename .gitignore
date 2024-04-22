@@ -6,4 +6,4 @@ res/workspace
 res/*.aseprite
 res/*.h
 *.DS_Store
-*c_cpp_properties.json
+.vscode/
