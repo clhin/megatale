@@ -14,13 +14,13 @@ char get_letter(char *str, int idx)
     return *(str + idx);
 }
 
-int stage = 9;
+int stage = 0;
 int change = 0;
 
 int duration = 50;
 
 void intro_init(state_parameters_t args) {
-    stage = 9;
+    stage = 0;
     duration = 50;
     VDP_setScrollingMode(HSCROLL_PLANE,VSCROLL_PLANE);
 }
