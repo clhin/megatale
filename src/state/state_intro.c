@@ -14,17 +14,15 @@ char get_letter(char *str, int idx)
     return *(str + idx);
 }
 
-int stage = 0;
+int stage = 9;
 int change = 0;
 
 int duration = 50;
 
 void intro_init(state_parameters_t args) {
-    stage = 0;
+    stage = 9;
     duration = 50;
     VDP_setScrollingMode(HSCROLL_PLANE,VSCROLL_PLANE);
-    fix16 offsetX = FIX16(0);
-    fix16 offsetY = FIX16(0);
 }
 
 
@@ -34,8 +32,6 @@ void intro_update() {
         duration = 50;
     }
     if(stage == 0){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
@@ -49,7 +45,7 @@ void intro_update() {
         };
 
 
-        PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
+        PAL_setPalette(PAL1, textpal.data, DMA);
         /*
         for(unsigned int i = 0; i< sizeof(lines); i++){
             char* line = lines[i];
@@ -99,8 +95,6 @@ void intro_update() {
 
         stage++;
     }else if(stage == 1){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
@@ -116,8 +110,6 @@ void intro_update() {
             "out between two",
             "races"
         };
-
-        PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
 
         VDP_loadTileSet(&intro_1_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -144,8 +136,6 @@ void intro_update() {
         
         stage++;
     }else if(stage == 2){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
@@ -162,7 +152,6 @@ void intro_update() {
                 "victorious."
         };
 
-        PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
 
         VDP_loadTileSet(&intro_2_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -189,8 +178,6 @@ void intro_update() {
 
         stage++;
     }else if(stage == 3){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
@@ -207,7 +194,6 @@ void intro_update() {
             "spell."
         };
 
-        PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
 
         VDP_loadTileSet(&intro_3_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -235,8 +221,6 @@ void intro_update() {
 
         stage++;
     }else if(stage == 4){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
@@ -250,16 +234,13 @@ void intro_update() {
             "Many years later..."
         };
 
-        PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
-        char* line = lines4[0];
+        const char* line = lines4[0];
         for(unsigned int j = 0; j < 19; j++){
-            draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
+            draw_letter(get_letter((char*)line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
             waitMs(100);
         }
         stage++;
     }else if(stage == 5){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
@@ -274,7 +255,6 @@ void intro_update() {
             "201X"
         };
 
-        PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
 
         VDP_loadTileSet(&intro_5_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -283,12 +263,12 @@ void intro_update() {
         map = MAP_create(&intro_5, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
 
-        char* line = lines5[0];
+        const char* line = lines5[0];
         for(unsigned int j = 0; j < 9; j++){
             draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
             waitMs(100);
         }
-        char* line_1 = lines5[1];
+        const char* line_1 = lines5[1];
         for(unsigned int j = 0; j < 4; j++){
             draw_letter(get_letter(line_1, j), '\0', textPosX1+j, textPosY1+3, TILE_USER_INDEX, BG_A, PAL1);
             waitMs(100);
@@ -296,8 +276,6 @@ void intro_update() {
 
         stage++;
     }else if(stage == 6){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
         u8 textPosX1 = 10;
@@ -315,7 +293,6 @@ void intro_update() {
         };
 
 
-        PAL_setPalette(PAL1, font_sheet_image.palette->data, DMA);
 
         VDP_loadTileSet(&intro_6_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -324,7 +301,7 @@ void intro_update() {
         map = MAP_create(&intro_6, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         MAP_scrollTo(map, offset,0);
 
-        char* line = lines6[0];
+        const char* line = lines6[0];
         for(unsigned int j = 0; j < 22; j++){
             draw_letter(get_letter(line, j), '\0', textPosX1+j, textPosY1, TILE_USER_INDEX, BG_A, PAL1);
             waitMs(100);
@@ -343,19 +320,15 @@ void intro_update() {
 
         stage++;
     }else if(stage == 7){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-        u8 textPosX1 = 10;
-        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
         }
         intro_clean();
         VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
+        PAL_setColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
         VDP_loadTileSet(&intro_7_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -365,19 +338,15 @@ void intro_update() {
         MAP_scrollTo(map, offset,0);
         stage++;
     }else if(stage == 8){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-        u8 textPosX1 = 10;
-        u8 textPosY1 = 18;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
         }
         intro_clean();
         VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
+        PAL_setColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
         VDP_loadTileSet(&intro_8_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -387,12 +356,8 @@ void intro_update() {
         MAP_scrollTo(map, offset,0);
         stage++;
     }else if(stage == 9){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-        u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
@@ -400,7 +365,7 @@ void intro_update() {
         intro_clean();
 
         VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
+        PAL_setColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
         VDP_loadTileSet(&intro_9_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
@@ -409,27 +374,23 @@ void intro_update() {
         map = MAP_create(&intro_9, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
         stage++;
     }else if(stage == 10){
-        s16 textPosX = 10;
-        s16 textPosY = 20;
+
         VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
 
-        u8 textPosX1 = 10;
-        u8 textPosY1 = 20;
         u16 index = TILE_USER_INDEX + font_sheet.numTile;
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
         }
         intro_clean();
-        VDP_setTextPlane(BG_A);
-        VDP_setPaletteColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
+        VDP_setTextPlane(BG_A);
+        PAL_setColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
         VDP_loadTileSet(&intro_last_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
-        u32 offset = 150;
+        u32 offset = 170;
         Map *map;
         map = MAP_create(&intro_last, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
-        stage++;
         u32 scrollDir = 1;
         int num = 1;
         while(num) {
@@ -444,6 +405,7 @@ void intro_update() {
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
         }
+        stage++;
     }else{
         intro_clean();
         state_info_t state_info;
