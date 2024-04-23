@@ -1,6 +1,7 @@
 #Palettes
 PALETTE intropal	    "backgrounds/intro_1.png"
 PALETTE ruinspal	    "backgrounds/start.png"
+PALETTE textpal	"fonts/font_sheet.png"
 #PALETTE ruinsmodified	"palettes/ruinsmodified.png"
 
 #text

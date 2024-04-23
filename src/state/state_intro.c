@@ -22,7 +22,6 @@ int duration = 50;
 void intro_init(state_parameters_t args) {
     stage = 0;
     duration = 50;
-    VDP_setScrollingMode(HSCROLL_PLANE,VSCROLL_PLANE);
 }
 
 
@@ -45,7 +44,7 @@ void intro_update() {
         };
 
 
-        PAL_setPalette(PAL1, ruinspal.data, DMA);
+        PAL_setPalette(PAL1, textpal.data, DMA);
         /*
         for(unsigned int i = 0; i< sizeof(lines); i++){
             char* line = lines[i];
@@ -381,16 +380,16 @@ void intro_update() {
             waitMs  (100);
         }
         intro_clean();
+
+
         VDP_setTextPlane(BG_A);
         PAL_setColor(0,RGB24_TO_VDPCOLOR(0x000000));
 
-
         VDP_loadTileSet(&intro_last_tiles, index, DMA);
         PAL_setPalette(PAL2, intropal.data, DMA);
-        u32 offset = 150;
+        u32 offset = 170;
         Map *map;
         map = MAP_create(&intro_last, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, index));
-        stage++;
         u32 scrollDir = 1;
         int num = 1;
         while(num) {
@@ -405,6 +404,7 @@ void intro_update() {
         for(int i =0 ; i<duration; i++){
             waitMs  (100);
         }
+        stage++;
     }else{
         intro_clean();
         state_info_t state_info;
