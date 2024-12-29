@@ -20,7 +20,7 @@ u8 select;
 void battle_init(state_parameters_t args) {
     SPR_init();
 
-    VDP_showCPULoad();
+    VDP_showCPULoad(1,1);
 
     char buf2[32];
 

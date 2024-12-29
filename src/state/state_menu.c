@@ -155,7 +155,6 @@ void menu_input(u16 changed, u16 state) {
         state_info.input = world_input;
         state_info.update = world_update;
         state_info.shutdown = world_shutdown;
-
         state_push(state_info, args);
     }
 }
@@ -164,8 +163,7 @@ void menu_update() {}
 
 void menu_clean() {
     VDP_clearSprites();
-
-    VDP_clearTextArea(0, 0, 40, 28);
+    VDP_clearPlane(BG_A, TRUE);
 }
 
 void menu_redraw(state_return_t ret) {

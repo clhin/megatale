@@ -6,7 +6,7 @@
 #ifdef TEST_MODE
 #include "state/testing/state_test.h"
 #else
-#include "state/state_intro.h"
+#include "state/state_menu.h"
 #endif
 #include "audio/audioEffects.h"
 #include "state/state_manager.h"
@@ -27,12 +27,12 @@ int main() {
     state_info_t state_info;
 
 #ifndef TEST_MODE
-    state_info.clean = intro_clean;
-    state_info.init = intro_init;
-    state_info.redraw = intro_redraw;
-    state_info.input = intro_input;
-    state_info.update = intro_update;
-    state_info.shutdown = intro_shutdown;
+    state_info.clean = menu_clean;
+    state_info.init = menu_init;
+    state_info.redraw = menu_redraw;
+    state_info.input = menu_input;
+    state_info.update = menu_update;
+    state_info.shutdown = menu_shutdown;
 #else
     state_info.clean = test_clean;
     state_info.init = test_init;
