@@ -5,7 +5,8 @@ PALETTE textpal	"fonts/font_sheet.png"
 #PALETTE ruinsmodified	"palettes/ruinsmodified.png"
 
 #text
-BIN floweyintro "dialog/floweyintro.txt" 2 2 0 APLIB FALSE
+BIN introtext "dialog/introtext.txt" 2 2 0 APLIB FALSE
+BIN flowey_battle_dialogue "dialog/floweyintro.txt" 2 2 0 APLIB FALSE
 
 #Sprites
 SPRITE heart_sprite	    "sprites/heart.png" 1 1 FAST NONE
@@ -20,12 +21,12 @@ SPRITE flowey_bullet "battle/flowey_bullet.png" 1 1 FAST 5
 SPRITE flowey_toriel "battle/flowey_toriel.png" 9 13 FAST NONE  
 SPRITE toriel_fireball "battle/toriel_fireball.png" 4 4 FAST 5 
 
-#Images
-IMAGE font		        "fonts/8bitfonts.png" BEST NONE
-
 #Tilesets
-TILESET title_tiles		    "backgrounds/titlescreen.png" AUTO 1
+TILESET font			"fonts/8bitfonts.png" AUTO 0
+TILESET dialogfont		"fonts/dialogfont.png" AUTO 0
+TILESET title_tiles		"backgrounds/titlescreen.png" AUTO 1
 TILESET intro_0_tiles		"backgrounds/intro_0.png" AUTO 1
+TILESET intro_0_alt_tiles	"backgrounds/intro_0_alt.png" AUTO 1
 TILESET intro_1_tiles		"backgrounds/intro_1.png" AUTO 1
 TILESET intro_2_tiles		"backgrounds/intro_2.png" AUTO 1
 TILESET intro_3_tiles		"backgrounds/intro_3.png" AUTO 1
@@ -47,6 +48,7 @@ SPRITE portrait_flowey  "portrait/flowey.png" 6 5 FAST NONE
 
 #Maps
 MAP titlescreen		    "backgrounds/titlescreen.png" title_tiles -1
+MAP intro_0_alt			"backgrounds/intro_0_alt.png" intro_0_alt_tiles -1
 MAP intro_0		        "backgrounds/intro_0.png" intro_0_tiles -1
 MAP intro_1		        "backgrounds/intro_1.png" intro_1_tiles -1
 MAP intro_2		        "backgrounds/intro_2.png" intro_2_tiles -1
@@ -64,30 +66,19 @@ MAP room_ruins2		    "backgrounds/room_ruins2.png" room_ruins2_tiles -1
 MAP start_menu          "backgrounds/mainroom.png" start_menu_tiles BEST 0
 
 #Sounds (background music and sound effects)
-XGM     ruins           "sound/ruinsSmall.vgm" -1           # Small version
-WAV     sndLevelup      "sound/levelup-16khz.wav" XGM         # Small but has weird fuzz at the end
-XGM     FallenDown      "sound/FallenDown.vgm"  -1          # Perfect (small and crispy)
-WAV     sndFloweyLaugh  "sound/lowFloweyLaugh.wav" XGM        # Perfect (small and crispy)
-WAV     sndFloweyVoice  "sound/snd_floweytalk1.wav" XGM       # Perfect (small and crispy)
-XGM     heartacheSmall  "sound/heartacheSmall.vgm" -1       # Perfect (small and crispy)   
-XGM     uwa             "sound/uwaSmall.vgm" -1             # Perfect (small and crispy)
-
-WAV     sndMoveMenu     "sound/movemenuSmall.wav" XGM         # Perfect (small and crispy)
-WAV     sndTorialTalk   "sound/txtTorialSmall.wav" XGM        # Perfect (small and crispy)
-WAV     sndSelect       "sound/selectSmall.wav" XGM           # Perfect (small and crispy)
-WAV     sndHeartshot    "sound/heartshotSmall.wav" XGM
-WAV     sndBattlefall   "sound/battlefallSmall.wav" XGM
-WAV     sndBell         "sound/bellSmall.wav" XGM
-WAV     sndBomb         "sound/bombSmall.wav" XGM
-WAV     sndDamage       "sound/damageSmall.wav" XGM
-WAV     sndFall         "sound/fallSmall.wav" XGM
-WAV     sndSwitches     "sound/goodSwitchpull_nSmall.wav" XGM
-WAV     sndLightSwitch  "sound/lightswitchSmall.wav" XGM
-WAV     sndPhone        "sound/phoneSmall.wav" XGM
-WAV     sndSave         "sound/saveSmall.wav" XGM
-WAV     sndScreenShake  "sound/screenshakeSmall.wav" XGM
-WAV     sndSparkle      "sound/sparkle1Small.wav" XGM
-WAV     sndSwitchPull   "sound/switchpullSmall.wav" XGM
-WAV     sndTextNoise    "sound/textnoiseSmall.wav" XGM
-
-BIN flowey_battle_dialogue "battle/flowey.bin" 1 0 
+XGM2    FallenDown      "sound/fallendown.vgm"
+XGM2	startmenu	"sound/startmenu.vgm"
+XGM2	yourbestfriend	"sound/yourbestfriend.vgm"
+XGM2	anticipation	"sound/anticipation.vgm"
+XGM2	determination	"sound/determination.vgm"
+XGM2	unnecessarytension	"sound/unnecessary_tension.vgm"
+XGM2	heartache	"sound/heartache.vgm"
+XGM2	ruins		"sound/ruins.vgm"
+XGM2    onceuponatime   "sound/onceuponatime.vgm"
+XGM2	shop		"sound/shop.vgm"
+XGM2	thundersnail	"sound/thundersnail.vgm"
+XGM2	megalovania	"sound/megalovania.vgm"
+XGM2	anothermedium	"sound/another_medium.vgm"
+XGM2	showtime	"sound/itsshowtime.vgm"
+XGM2	deathbyglamour	"sound/deathbyglamour.vgm"
+XGM2	sans		"sound/sans.vgm"

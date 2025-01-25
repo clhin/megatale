@@ -3,7 +3,6 @@
 #include <genesis.h>
 #include <resources.h>
 
-#include "../audio/audioEffects.h"
 #include "../collisions.h"
 #include "../graphics/level.h"
 #include "../graphics/text.h"
@@ -13,8 +12,6 @@
 #include "../save/save.h"
 #include "state_battle.h"
 #include "state_gamemenu.h"
-
-#include "audio/audioEffects.h"
 
 static void animate_frisk();
 static void camera_move();

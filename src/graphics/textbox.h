@@ -41,7 +41,8 @@
 typedef enum {
     TEXT_DIALOGUE_MODE,
     TEXT_BATTLE_MODE,
-    TEXT_FLOWEY_MODE
+    TEXT_FLOWEY_MODE,
+    TEXT_INTRO_MODE
 } TextBoxMode;
 
 typedef struct {

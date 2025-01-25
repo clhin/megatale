@@ -8,7 +8,7 @@ extern short frisk_x, frisk_y;
 // Note: level loads need to have asyncronous fading as the MAP_scrollTo call is in the
 // camera movement function
 Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
-    Map * map;
+    Map * map = NULL;
     u16 tmp = ind;
     u16 palettebuf[64];
     switch (nextroom) {

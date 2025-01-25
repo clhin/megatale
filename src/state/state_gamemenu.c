@@ -3,12 +3,10 @@
 #include <genesis.h>
 #include <resources.h>
 #include "graphics/text.h"
-//#include "graphics/textbox.h"
+#include "graphics/textbox.h"
 #include "graphics/strutils.h"
 #include "savedata.h"
 #include "state_menu.h"
-
-#include "audio/audioEffects.h"
 
 savedata_t *data;
 Sprite * menu_heart; 
@@ -21,7 +19,7 @@ u8 current_selection;
 const char option_texts[3][MAX_LINE_LENGTH] = {"ITEM", "STAT", "CELL"};
 
 void gamemenu_init(state_parameters_t args) {
-    selectSound();
+    //selectSound();
     char buf[9];
     PAL_setPalette(PAL2, intropal.data, DMA);
     menu_heart = SPR_addSprite(&heart_sprite, 3 * 8, data->item[0] ? 11 *  8 - 1 : 13 * 8 - 1,

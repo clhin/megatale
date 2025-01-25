@@ -4,7 +4,6 @@
 #include <globals.h>
 #include <resources.h>
 
-#include "../../audio/audioEffects.h"
 #include "../../battle/battle_data.h"
 #include "../../battle/battle_dialogue.h"
 #include "../../graphics/textbox.h"

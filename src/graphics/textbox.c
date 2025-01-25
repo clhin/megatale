@@ -31,7 +31,7 @@ void set_dialogue(const char *text, u8 asterisk_one, u8 asterisk_two,
 #define LEFT_CORNER_BORDER 153
 #define LEFT_BORDER_ANIM_1 154
 #define LEFT_BORDER_ANIM_2 155
-#define ASTERISK 158
+#define ASTERISK 162
 
 void box_draw(u8 x, u8 y, u8 w, u8 h, u8 pal) {
     if (w < 3 || h < 3) return;
@@ -94,8 +94,10 @@ void textbox_show(TextBoxMode mode) {
                 SPR_addSprite(&portrait_flowey, 4 * 8, (full_off + 1) * 8,
                               TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
             break;
+	case TEXT_INTRO_MODE:
+	    text_info.x_off = 7;
+	    return;
     }
-
     /*
         Explanation:
 
@@ -233,6 +235,7 @@ void letter_help(char c, u8 line, u8 position, u8 x, u8 y) {
     // we check for tails. With the tail we then draw the letter.
     // we emptied the lines with \0 beforehand, so no garbage should be
     // possible.
+    
     char above_c = text_info.lines[line - 1][position];
 
     draw_letter(c, above_c, x, y, TILE_USER_INDEX, BG_A, PAL1);

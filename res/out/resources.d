@@ -1,0 +1,36 @@
+out/resources.o: resources.res \
+dialog/floweyintro.txt \
+backgrounds/intro_1.png \
+sprites/frisk.png \
+backgrounds/intro_6.png \
+sound/FallenDown.vgm \
+battle/flowey_bullet.png \
+backgrounds/intro_2.png \
+backgrounds/intro_7.png \
+fonts/8bitfonts.png \
+fonts/font_sheet.png \
+backgrounds/room_ruins2.png \
+backgrounds/intro_5.png \
+battle/health.png \
+sprites/heart.png \
+battle/toriel_fireball.png \
+sound/startmenu.vgm \
+backgrounds/room_ruins1.png \
+battle/flowey.png \
+backgrounds/intro_last.png \
+fonts/dialogfont.png \
+sound/anticipation.vgm \
+sprites/battle_sheet.png \
+sound/unnecessary_tension.vgm \
+backgrounds/start.png \
+sound/yourbestfriend.vgm \
+backgrounds/intro_9.png \
+dialog/introtext.txt \
+battle/flowey_toriel.png \
+backgrounds/mainroom.png \
+backgrounds/intro_0.png \
+backgrounds/titlescreen.png \
+portrait/flowey.png \
+backgrounds/intro_3.png \
+backgrounds/intro_8.png \
+sound/lvup.vgm

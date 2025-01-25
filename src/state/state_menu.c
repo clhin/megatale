@@ -7,8 +7,6 @@
 #include "savedata.h"
 #include "state_world.h"
 
-#include "audio/audioEffects.h"
-
 #include "graphics/level.h"
 
 #include "graphics/text.h"
@@ -99,7 +97,7 @@ void menu_input(u16 changed, u16 state) {
 
         if (changed & BUTTON_A && (state & BUTTON_A)) {
             // Play Select Sound When Pressing A
-            selectSound();
+            //selectSound();
 
             state_parameters_t args;
 	        SYS_disableInts();
@@ -140,7 +138,8 @@ void menu_input(u16 changed, u16 state) {
 
     if (changed & BUTTON_A && (state & BUTTON_A)) {
         // Play Select Sound When Pressing A
-        selectSound();
+        //selectSound();
+
 
         state_parameters_t args;
         SYS_disableInts();
