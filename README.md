@@ -9,6 +9,16 @@ Here are some design prinicples we abide by:
 License for materials:
 Code - GPLv3
 Assets and Music - Copyright Toby Fox
+Covers of the following tracks made by John Tay, with modifications made for size purposes:
+Megalovania
+Fallen Down
+Another Medium
+Death by Glamour
+Its showtime!
+Heartache
+Ruins
+Shop
+Thundersnail
 
 ## Summary of Project
 
