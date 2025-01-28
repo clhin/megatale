@@ -1,22 +1,21 @@
 #include "level.h"
 #include <resources.h>
+#include "../globals.h"
 
 extern short levelxlimit, levelylimit;
 extern short frisk_x, frisk_y;
 
-
 // Note: level loads need to have asyncronous fading as the MAP_scrollTo call is in the
 // camera movement function
-Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
-    Map * map = NULL;
-    u16 tmp = ind;
+Map* loadlevel(u8 prevroom, u8 nextroom) {
+    Map * newmap = NULL;
     u16 palettebuf[64];
     switch (nextroom) {
 	case 0:
 	    levelxlimit = 680;
 	    levelylimit = 240;
-    	    VDP_loadTileSet(&room_1_tiles, ind, DMA);
-    	    map = MAP_create(&room_1, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
+    	    VDP_loadTileSet(&room_1_tiles, vram_index, DMA);
+    	    newmap = MAP_create(&room_1, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, vram_index));
 	    if (nextroom < prevroom) {
 	    	frisk_x = 610;
             	frisk_y = 140;
@@ -31,12 +30,12 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
 	case 1:
 	    levelxlimit = 320;
 	    levelylimit = 416;
-            VDP_loadTileSet(&room_main_tiles, ind, DMA);
-            map = MAP_create(&room_main, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
+            VDP_loadTileSet(&room_main_tiles, vram_index, DMA);
+            newmap = MAP_create(&room_main, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, vram_index));
 	    if (nextroom == prevroom) {
 		// this is main menu, nothing more needs to be done here, so we can just set the
-		// map position and then break
-		MAP_scrollTo(map, 0, 125);
+		// newmap position and then break
+		MAP_scrollTo(newmap, 0, 125);
 		break;
 	    }else if (nextroom > prevroom){
 		frisk_x = 152;
@@ -52,8 +51,8 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
 	case 2:
 	    levelxlimit = 320;
 	    levelylimit = 480;
-            VDP_loadTileSet(&room_ruins1_tiles, ind, DMA);
-	    map = MAP_create(&room_ruins1, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
+            VDP_loadTileSet(&room_ruins1_tiles, vram_index, DMA);
+	    newmap = MAP_create(&room_ruins1, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, vram_index));
 	    if (nextroom > prevroom) {
 	    	frisk_x = 150;
             	frisk_y = 420;//420;
@@ -69,8 +68,8 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
 	case 3:
 	    levelxlimit = 320;
 	    levelylimit = 240;
-	    VDP_loadTileSet(&room_ruins2_tiles, ind, DMA);
-	    map = MAP_create(&room_ruins2, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, tmp));
+	    VDP_loadTileSet(&room_ruins2_tiles, vram_index, DMA);
+	    newmap = MAP_create(&room_ruins2, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, vram_index));
 	    if (nextroom > prevroom) {
 	    	frisk_x = 152;
             	frisk_y = 160;
@@ -84,5 +83,5 @@ Map* loadlevel(u8 prevroom, u8 nextroom, u16 ind) {
             PAL_fadeInAll(palettebuf, 15, TRUE);
 	    break;
     }
-    return map;
+    return newmap;
 }

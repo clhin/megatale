@@ -8,16 +8,11 @@
 #include "../graphics/text.h"
 //#include "../graphics/textbox.h"
 #include "../graphics/strutils.h"
+#include "../globals.h"
 #include "savedata.h"
 #include "../save/save.h"
 #include "state_battle.h"
 #include "state_gamemenu.h"
-
-static void animate_frisk();
-static void camera_move();
-static void handle_collision();
-static void handle_collision_helper(u8,u8,u8,u8*);
-static u8 map_collision_locator(u16 idx);
 
 Sprite *frisk;
 
@@ -39,18 +34,17 @@ int8_t cancel;
 
 static u8 priority = 0;
 
-u16 textpos = 0;
-
-u16 ind = TILE_USER_INDEX;
-
-Map *map;
 savedata_t *savefile;
+
+static void animate_frisk();  
+static void camera_move();  
+static void handle_collision();  
+static void handle_collision_helper(u8,u8,u8,u8*);  
+static u8 map_collision_locator(u16 idx); 
 
 void world_init(state_parameters_t args) {
     SPR_init();  // Needs to be called after clear?
 
-    VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
-    ind += font_sheet.numTile;
     frisk_bb.x = frisk_x;
     frisk_bb.y = frisk_y;
     frisk_bb.w = frisk_sprite.w;
@@ -63,7 +57,7 @@ void world_init(state_parameters_t args) {
     if (SRAM_readByte(0) == SAVE_VALID) {
         // load save data
     } else {
-	map = loadlevel(0,0, ind);
+	map = loadlevel(0,0);
     	cur_cam_x = 0;
     	cur_cam_y = 0;
     	MAP_scrollTo(map, cur_cam_x, cur_cam_y);
@@ -252,7 +246,7 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
 		PAL_fadeOutAll(15,FALSE);
 		VDP_clearTextAreaBG(BG_B, 0, 0, 80, 35);
 		MAP_release(map);
-		map = loadlevel(savefile->room, savefile->room + 1, ind);
+		map = loadlevel(savefile->room, savefile->room + 1);
 		++savefile->room;
 		break;
 	    case 1:
@@ -260,10 +254,11 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
                 VDP_clearTextAreaBG(BG_B, 0, 0, 40, 52);
                 MAP_release(map);
 		if (frisk_y >= 160) {
-                	map = loadlevel(savefile->room, savefile->room - 1, ind);
+			MAP_release(map);
+                	map = loadlevel(savefile->room, savefile->room - 1);
 			--savefile->room;
 		} else {
-			map = loadlevel(savefile->room, savefile->room + 1, ind);
+			map = loadlevel(savefile->room, savefile->room + 1);
 			++savefile->room;
 		}
 		break;
@@ -272,10 +267,10 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
                 VDP_clearTextAreaBG(BG_B, 0, 0, 40, 60);
                 MAP_release(map);
 		if (frisk_y >= 420) {
-                	map = loadlevel(savefile->room, savefile->room - 1, ind);
+                	map = loadlevel(savefile->room, savefile->room - 1);
 			--savefile->room;
 		} else {
-			map = loadlevel(savefile->room, savefile->room + 1, ind);
+			map = loadlevel(savefile->room, savefile->room + 1);
 			++savefile->room;
 		}
 		break;
@@ -284,10 +279,10 @@ void handle_collision_helper(u8 corner1, u8 corner2, u8 x, u8 *flag) {
                 VDP_clearTextAreaBG(BG_B, 0, 0, 40, 30);
                 MAP_release(map);
 		if (frisk_y >= 190) {
-                	map = loadlevel(savefile->room, savefile->room - 1, ind);
+                	map = loadlevel(savefile->room, savefile->room - 1);
 			--savefile->room;
 		 } else {
-			map = loadlevel(savefile->room, savefile->room + 1, ind);
+			map = loadlevel(savefile->room, savefile->room + 1);
 			++savefile->room;
 		}
 		break;

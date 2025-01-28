@@ -23,5 +23,4 @@ void world_update();
 void world_clean();
 void world_redraw(state_return_t);
 state_return_t world_shutdown();
-
 #endif

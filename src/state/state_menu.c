@@ -23,15 +23,11 @@ int y = 8;
 
 void menu_init(state_parameters_t args) {
      SPR_init();
-     VDP_loadTileSet(&font_sheet, TILE_USER_INDEX, DMA);
     // This checks the case where there is no save data (0x42 is the flag that says whether or not
     // there is data that has been saved)
     if (SRAM_readByte(0) == 0x42) {
     
-        u16 ind = TILE_USER_INDEX + font_sheet.numTile;
-        u16 tmp = ind;
-
-        menu_background = loadlevel(1, 1, tmp);
+        menu_background = loadlevel(1, 1);
         MAP_scrollTo(menu_background, 0, 125);
 
         //char buf2[32];
