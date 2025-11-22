@@ -9,10 +9,14 @@
 #include "../audio/audio.h"
 #include "../globals.h"
 
+
 void intro_init(state_parameters_t args) {
-	char * buf = (char*)malloc(327 * sizeof(char));
 	vram_index = TILE_USER_INDEX;
 	VDP_loadTileSet(&font_sheet, vram_index, DMA);
+	char * buf = (char*)malloc(328 * sizeof(char));
+	aplib_unpack((u8*)introtext,(u8*)buf);
+	txtptr = buf;
+	textbox_init(TEXT_INTRO_MODE, 18, txtptr, FALSE, FALSE, FALSE);
 	vram_index += font_sheet.numTile;
 	VDP_loadTileSet(&intro_cover_tiles, vram_index, DMA);
 	foregroundmap = MAP_create(&intro_cover, BG_A, TILE_ATTR_FULL(PAL1, FALSE, FALSE, FALSE, vram_index));
@@ -20,25 +24,13 @@ void intro_init(state_parameters_t args) {
 	VDP_loadTileSet(&intro_0_tiles, vram_index, DMA);
 	map = MAP_create(&intro_0, BG_B, TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, vram_index)); 
 	PAL_setPalette(PAL2, intropal.data, DMA);
-	aplib_unpack((u8*)introtext,(u8*)buf);
-	txtptr = buf;
-	textbox_init(TEXT_INTRO_MODE, 18, txtptr, FALSE, FALSE, FALSE);
-	playmusic(onceuponatime, 0);
+	playmusic(onceuponatime, 0); 
 	MAP_scrollTo(foregroundmap,0,0);
         MAP_scrollTo(map, 196,236);
 }
 
 void intro_update() {
-	char buf2[32];
 	int time = XGM2_getElapsed();
-
-        intToStr(time, buf2, 1);
-
-        VDP_drawText(buf2, 1, 1);
-	VDP_showCPULoad(1,2);
-
-
-    //VDP_drawText(buf3, 1, 3);
 	if (time % 5 == 0 && textbox_tick()) {
 		if (time == 410) {
 			intro_helper(196,236,60,intro_1,intro_1_tiles);
@@ -77,18 +69,10 @@ void intro_update() {
 			XGM2_fadeOutAndStop(15);
 			PAL_fadeOutPalette(PAL2,15,FALSE);
 			state_parameters_t args;
-                	state_info_t state_info;
-                	state_info.clean = menu_clean;
-                	state_info.init = menu_init;
-                	state_info.redraw = menu_redraw;
-                	state_info.input = menu_input;
-                	state_info.update = menu_update;
-                	state_info.shutdown = menu_shutdown;
-                	state_push(state_info, args);
+			state_pusher(args,menu_init,menu_input, menu_update, menu_clean,menu_redraw,menu_shutdown);
 		}
 	}
 }
-
 void intro_helper(u8 x, u16 y, u16 idx, const MapDefinition mapDef, const TileSet tileset ){
 	PAL_fadeOutPalette(PAL2,15,FALSE);
         MAP_release(map);
@@ -105,14 +89,7 @@ void intro_helper(u8 x, u16 y, u16 idx, const MapDefinition mapDef, const TileSe
 void intro_input(u16 changed, u16 state) {
     if (changed & BUTTON_A && (state & BUTTON_A)) {
 	state_parameters_t args;
-        state_info_t state_info;
-        state_info.clean = menu_clean;
-        state_info.init = menu_init;
-        state_info.redraw = menu_redraw;
-        state_info.input = menu_input;
-        state_info.update = menu_update;
-        state_info.shutdown = menu_shutdown;
-        state_push(state_info, args);
+	state_pusher(args,menu_init,menu_input, menu_update, menu_clean,menu_redraw,menu_shutdown);
     }
 //    if (state & BUTTON_B)
 			
@@ -132,7 +109,15 @@ void intro_clean() {
         SPR_clear();
 }
 
-void intro_redraw(state_return_t ret) {}
+void intro_redraw(state_return_t ret) {
+	// eventually we will evalute the return values for the fake intro
+	if (*(char*)(ret.return_data) == 'f') {
+		//insert fake flowey intro
+	} else {
+		state_parameters_t args;
+		intro_init(args);
+	}
+}
 
 state_return_t intro_shutdown() {
     intro_clean();

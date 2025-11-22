@@ -51,5 +51,18 @@ void state_push(state_info_t state, state_parameters_t args);
 void state_replace(state_info_t state, state_parameters_t args);
 void state_pop();
 state_info_t *state_top();
-
+void state_pusher(state_parameters_t args, 
+                  void (*init)(state_parameters_t),
+                  void (*input)(u16,u16),
+                  void (*update)(void),
+                  void(*clean)(void),
+                  void(*redraw)(state_return_t),
+                  state_return_t (*shutdown)(void));
+void state_replacer(state_parameters_t args,
+                  void (*init)(state_parameters_t),
+                  void (*input)(u16,u16),
+                  void (*update)(void),
+                  void(*clean)(void),
+                  void(*redraw)(state_return_t),
+                  state_return_t (*shutdown)(void));
 #endif

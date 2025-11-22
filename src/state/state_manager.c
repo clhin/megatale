@@ -43,3 +43,45 @@ state_info_t *state_top() {
 
     return &game_states[state_on - 1];
 }
+/*
+(*init)(state_parameters_t);
+    void (*input)(u16, u16);
+    void (*update)(void);
+    void (*clean)(void);
+    void (*redraw)(state_return_t);
+    state_return_t (*shutdown)(void);
+*/
+
+void state_pusher(state_parameters_t args, 
+		  void (*init)(state_parameters_t),
+		  void (*input)(u16,u16),
+		  void (*update)(void),
+		  void(*clean)(void),
+		  void(*redraw)(state_return_t),
+		  state_return_t (*shutdown)(void)) {
+                        state_info_t state_info;
+			state_info.clean = clean;
+                        state_info.init = init;
+                        state_info.redraw = redraw;
+                        state_info.input = input;
+                        state_info.update = update;
+                        state_info.shutdown = shutdown;
+                        state_push(state_info, args);
+}
+
+void state_replacer(state_parameters_t args,
+                  void (*init)(state_parameters_t),
+                  void (*input)(u16,u16),
+                  void (*update)(void),
+                  void(*clean)(void),
+                  void(*redraw)(state_return_t),
+                  state_return_t (*shutdown)(void)) {
+                        state_info_t state_info;
+                        state_info.clean = clean;
+                        state_info.init = init;
+                        state_info.redraw = redraw;
+                        state_info.input = input;
+                        state_info.update = update;
+                        state_info.shutdown = shutdown;
+                        state_push(state_info, args);
+}

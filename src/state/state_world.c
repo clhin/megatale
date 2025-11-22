@@ -114,17 +114,9 @@ void world_input(u16 changed, u16 state) {
 
         yvelocity = 0;
         xvelocity = 0;
-        state_info_t state_info;
-        state_info.clean = gamemenu_clean;
-        state_info.init = gamemenu_init;
-        state_info.redraw = gamemenu_redraw;
-        state_info.input = gamemenu_input;
-        state_info.update = gamemenu_update;
-        state_info.shutdown = gamemenu_shutdown;
-
         state_parameters_t args;
 	args.parameter_data = savefile;
-        state_push(state_info, args);
+	state_pusher(args,gamemenu_init, gamemenu_input, gamemenu_update, gamemenu_clean,gamemenu_redraw,gamemenu_shutdown);
     }
 }
 void world_update() {

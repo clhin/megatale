@@ -7,10 +7,11 @@
 #include "graphics/strutils.h"
 #include "savedata.h"
 #include "state_menu.h"
+#include "../globals.h"
 
 savedata_t *data;
 Sprite * menu_heart; 
-u8 current_selection;
+extern u8 current_selection;
 
 #define ITEM 0
 #define STAT 1

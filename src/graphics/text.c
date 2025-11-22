@@ -45,11 +45,9 @@
 
 #define GET_BOTTOM(arr) (arr[2] & 0x7F)
 #define GET_BOTTOM_HFLIP(arr) (arr[2] >> 7)
-
 void draw_letter(char letter, char above, u8 x, u8 y, u16 offset, u8 plane,
                  u8 palette) {
     const u8 *arr = get_char_info(letter);
-
     // Handle the top of the letter base on character
     switch (above) {
         case 'g':
@@ -116,7 +114,6 @@ void draw_lines(const char lines[][MAX_LINE_LENGTH], u8 num, u8 x, u8 y,
         for (u8 j = 0; j < size; ++j) {
             // \0 e.g. nothing above.
             char above = (j < size_above) ? lines[i - 1][j] : '\0';
-
             draw_letter(lines[i][j], above, x + j, y + i * 2, offset, BG_A,
                         PAL1);
         }

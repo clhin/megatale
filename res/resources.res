@@ -7,6 +7,7 @@ PALETTE textpal	"fonts/font_sheet.png"
 #text
 BIN introtext "dialog/introtext.txt" 2 2 0 APLIB FALSE
 BIN flowey_battle_dialogue "dialog/floweyintro.txt" 2 2 0 APLIB FALSE
+BIN mainmenu_text		"dialog/mainmenu.txt" 2 2 0 APLIB FALSE
 
 #Sprites
 SPRITE heart_sprite	    "sprites/heart.png" 1 1 FAST NONE
@@ -24,7 +25,7 @@ SPRITE toriel_fireball "battle/toriel_fireball.png" 4 4 FAST 5
 #Tilesets
 TILESET font			"fonts/8bitfonts.png" AUTO 0
 TILESET dialogfont		"fonts/dialogfont.png" AUTO 0
-TILESET title_tiles		"backgrounds/titlescreen.png" AUTO 1
+TILESET titlescreen_tiles	"backgrounds/titlescreen.png" AUTO 1
 TILESET intro_0_tiles		"backgrounds/intro_0.png" AUTO 1
 TILESET intro_1_tiles		"backgrounds/intro_1.png" AUTO 1
 TILESET intro_2_tiles		"backgrounds/intro_2.png" AUTO 1
@@ -44,10 +45,10 @@ TILESET font_sheet 		    "fonts/font_sheet.png" AUTO 1
 TILESET start_menu_tiles    "backgrounds/mainroom.png" BEST ALL
 
 #Portraits (Tilesets)
-SPRITE portrait_flowey  "portrait/flowey.png" 6 5 FAST NONE
+#SPRITE portrait_flowey  "portrait/flowey.png" 6 5 FAST NONE
 
 #Maps
-MAP titlescreen		    "backgrounds/titlescreen.png" title_tiles -1
+MAP titlescreen		    "backgrounds/titlescreen.png" titlescreen_tiles -1
 MAP intro_0		        "backgrounds/intro_0.png" intro_0_tiles -1
 MAP intro_1		        "backgrounds/intro_1.png" intro_1_tiles -1
 MAP intro_2		        "backgrounds/intro_2.png" intro_2_tiles -1
@@ -66,19 +67,22 @@ MAP room_ruins2		    "backgrounds/room_ruins2.png" room_ruins2_tiles -1
 MAP start_menu          "backgrounds/mainroom.png" start_menu_tiles BEST 0
 
 #Sounds (background music and sound effects)
-XGM2    FallenDown      "sound/fallendown.vgm"
-XGM2	startmenu	"sound/startmenu.vgm"
-XGM2	yourbestfriend	"sound/yourbestfriend.vgm"
-XGM2	anticipation	"sound/anticipation.vgm"
-XGM2	determination	"sound/determination.vgm"
-XGM2	unnecessarytension	"sound/unnecessary_tension.vgm"
-XGM2	heartache	"sound/heartache.vgm"
-XGM2	ruins		"sound/ruins.vgm"
-XGM2    onceuponatime   "sound/onceuponatime.vgm"
-XGM2	shop		"sound/shop.vgm"
-XGM2	thundersnail	"sound/thundersnail.vgm"
-XGM2	megalovania	"sound/megalovania.vgm"
-XGM2	anothermedium	"sound/another_medium.vgm"
-XGM2	showtime	"sound/itsshowtime.vgm"
-XGM2	deathbyglamour	"sound/deathbyglamour.vgm"
-XGM2	sans		"sound/sans.vgm"
+XGM2    FallenDown      "sound/music/fallendown.vgm"
+XGM2	startmenu	"sound/music/startmenu.vgm"
+XGM2	yourbestfriend	"sound/music/yourbestfriend.vgm"
+XGM2	anticipation	"sound/music/anticipation.vgm"
+XGM2	determination	"sound/music/determination.vgm"
+XGM2	unnecessarytension	"sound/music/unnecessary_tension.vgm"
+XGM2	heartache	"sound/music/heartache.vgm"
+XGM2	ruins		"sound/music/ruins.vgm"
+XGM2    onceuponatime   "sound/music/onceuponatime.vgm"
+XGM2	shop		"sound/music/shop.vgm"
+XGM2	thundersnail	"sound/music/thundersnail.vgm"
+XGM2	megalovania	"sound/music/megalovania.vgm"
+XGM2	anothermedium	"sound/music/another_medium.vgm"
+XGM2	showtime	"sound/music/itsshowtime.vgm"
+XGM2	deathbyglamour	"sound/music/deathbyglamour.vgm"
+XGM2	sans		"sound/music/sans.vgm"
+XGM2	home_guitar	"sound/music/home_acoustic.vgm"
+XGM2	home_musicbox	"sound/music/home_music_box.vgm"
+XGM2	ghost_fight	"sound/music/ghostfight.vgm"

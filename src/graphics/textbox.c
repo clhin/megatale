@@ -91,7 +91,7 @@ void textbox_show(TextBoxMode mode) {
         case TEXT_FLOWEY_MODE:
             text_info.x_off = 12;
             text_info.portrait =
-                SPR_addSprite(&portrait_flowey, 4 * 8, (full_off + 1) * 8,
+                SPR_addSprite(&flowey_battle, 4 * 8, (full_off + 1) * 8,
                               TILE_ATTR(PAL1, TRUE, FALSE, FALSE));
             break;
 	case TEXT_INTRO_MODE:

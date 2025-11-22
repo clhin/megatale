@@ -36,10 +36,11 @@ Map* loadlevel(u8 prevroom, u8 nextroom) {
 		// this is main menu, nothing more needs to be done here, so we can just set the
 		// newmap position and then break
 		MAP_scrollTo(newmap, 0, 125);
-		break;
+		PAL_fadeInAll(palettebuf, 0, FALSE);
+		return;
 	    }else if (nextroom > prevroom){
 		frisk_x = 152;
-		frisk_y = 376;//168;
+		frisk_y = 376;
 	    } else {
 		frisk_x = 152;
 		frisk_y = 168;
@@ -55,7 +56,7 @@ Map* loadlevel(u8 prevroom, u8 nextroom) {
 	    newmap = MAP_create(&room_ruins1, BG_B, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, vram_index));
 	    if (nextroom > prevroom) {
 	    	frisk_x = 150;
-            	frisk_y = 420;//420;
+            	frisk_y = 420;
 	    } else {
 		frisk_x = 156;
 		frisk_y = 110;
